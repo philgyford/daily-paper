@@ -39,7 +39,7 @@ Libraries API](http://code.google.com/apis/libraries/).
 ## Issues
 
 There are various known issues/enhancements/proposals listed on the project's
-[Issues page](https://bitbucket.org/philgyford/daily-paper/issues).
+[Issues page](https://github.com/philgyford/daily-paper/issues).
 
 The site should work fine in most desktop web browsers, and not too bad on 
 iPhone/iPad/iPod Touch. I've never used it on an Android device.
@@ -52,16 +52,13 @@ iPhone/iPad/iPod Touch. I've never used it on an Android device.
 
 2. Install the BeautifulSoup and Smartypants Python libraries.
 
-3. Check out or download the code. ([HgInit](http://hginit.com/) is a good
-   Mercurial introduction if you need one.)
-
-4. Make the daily-paper/public/ directory readable from the web. You can move
+3. Make the daily-paper/public/ directory readable from the web. You can move
    it elsewhere without breaking the Python script, although I guess that will
-   confuse Mercurial. Or you could symlink it to somewhere appropriate.
+   confuse Git. Or you could symlink it to somewhere appropriate.
 
-5. Copy daily-paper/scripts/scraper-example.cfg to daily-paper/scripts/scraper.cfg.
+4. Copy daily-paper/scripts/scraper-example.cfg to daily-paper/scripts/scraper.cfg.
 
-6. Edit scraper.cfg and add: 
+5. Edit scraper.cfg and add: 
 
 	* Your API key.
 	* The path to the directory where you want the dated folders for saved HTML
