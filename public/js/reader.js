@@ -887,10 +887,30 @@ var reader = {
 				// Scrollbar present.
 				var prevWidth = ( $(window).width() - $('#main').width() ) / 2;
 				var nextWidth = prevWidth;
+				$('div.current div.body').height('auto');
+				$('#window').height($('.current').height());
 			} else {
 				// No scrollbar.
 				var prevWidth = ( $(window).width() - scrollbarWidth - $('#main').width() ) / 2;
 				var nextWidth = prevWidth + scrollbarWidth;
+				// We want to expand the height of the article body so that it
+				// fills all the empty space on the page. So that the swipeable
+				// area on iPads etc is the full page.
+				$('div.current div.body').height(
+					$(window).height() 
+					- $('#main').padding().top 
+					- $('#main').padding().bottom 
+					- $('#title').height() 
+					- $('#progress').outerHeight(true) 
+					- $('.current .meta').outerHeight(true)
+					- $('.current .meta').border().bottom
+					- $('.current .headline h2').outerHeight(true)
+					- $('.current .intro .byline').outerHeight(true)
+					- $('.current .intro .standfirst').outerHeight(true)
+					- $('.current .footer').outerHeight(true)
+					- $('#footer').outerHeight(true) 
+				);
+				$('#window').height($('.current').height());
 			}
 			$('#wrapper').margin({'right': nextWidth});
 			
