@@ -1,0 +1,31 @@
+.clearfix {height:1px;}
+
+/*
+Fixed Positioning in IE6 
+http://ryanfait.com/
+*/
+* {
+	margin: 0;
+}
+html, body {
+	height: 100%;
+	overflow: auto;
+}
+#wrapper {
+	position: relative;
+	width: 100%;
+	height: 100%;
+	overflow: auto;
+}
+* html #prev,
+* html #next,
+* html #about-page { 
+	position: absolute;
+}
+
+
+/* Fix double-margin float bug. */
+#title,
+#progress {
+	display: inline;
+}

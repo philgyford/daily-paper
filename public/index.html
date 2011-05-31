@@ -1,0 +1,52 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN"
+   "http://www.w3.org/TR/html4/strict.dtd">
+<html lang="en">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<title>Today's Paper</title>
+	<link rel="stylesheet" href="css/reader.css?v=7" type="text/css" media="screen" charset="utf-8">
+	<!--[if IE 6]>
+		<link rel="stylesheet" href="css/ie6.css" type="text/css" media="screen" charset="utf-8">
+	<![endif]-->
+	
+	<meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=0;" />
+	<meta name="apple-mobile-web-app-capable" content="yes" />
+	<link rel="apple-touch-icon" href="img/apple-touch-icon.png" />
+	<link rel="shortcut icon" href="img/favicon.ico" />
+
+	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+	<script src="js/reader.js?v=6" type="text/javascript" charset="utf-8"></script>
+
+	<script type="text/javascript" charset="utf-8">
+		$(document).ready(function() {
+			reader.initialize();
+		});
+	</script>
+
+</head>
+<body>
+	<div id="wrapper">
+		
+		<div id="main" class="clearfix">
+			<div id="title" class="clearfix">
+				<p id="paper-date"></p>
+				<p id="nav"><a id="about" href="about.html" title="Learn more about this site"><span>About</span></a></p>
+			</div>
+			<div id="progress" class="clearfix"></div>
+			<div id="window">
+				<div id="pages" class="clearfix"></div>
+			</div>
+			<div id="footer">
+				<p>This site is by <a href="http://www.gyford.com/">Phil Gyford</a> using content from the <a href="http://www.guardian.co.uk/open-platform">Guardian&nbsp;Open&nbsp;Platform</a>.</p> 
+			</div>
+		</div>
+	</div>
+	<div id="controls">
+		<a href="" id="prev" class="off"><span>&larr;</span></a>
+		<a href="" id="next" class="off"><span>&rarr;</span></a>
+	</div>
+	
+	<div id="error"></div>
+	<div id="about-page"><a class="close" href="" title="Close his overlay">Close</a><div id="about-page-inner"></div></div>
+</body>
+</html>

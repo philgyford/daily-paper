@@ -1,0 +1,509 @@
+/***************************************************
+ * Eric Meyer's Reset Reloaded from http://meyerweb.com/eric/thoughts/2007/05/01/reset-reloaded/
+ */
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, font, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td {
+	margin: 0;
+	padding: 0;
+	border: 0;
+	outline: 0;
+	font-weight: inherit;
+	font-style: inherit;
+	font-size: 100%;
+	font-family: inherit;
+	vertical-align: baseline;
+}
+/* remember to define focus styles! */
+:focus {
+	outline: 0;
+}
+body {
+	line-height: 1;
+	color: black;
+	background: white;
+}
+ol, ul {
+	list-style: none;
+}
+/* tables still need 'cellspacing="0"' in the markup */
+table {
+	border-collapse: separate;
+	border-spacing: 0;
+}
+caption, th, td {
+	text-align: left;
+	font-weight: normal;
+}
+blockquote:before, blockquote:after,
+q:before, q:after {
+	content: "";
+}
+blockquote, q {
+	quotes: "" "";
+}
+
+.clearfix:after {
+content:".";
+display:block;
+height:0;
+clear:both;
+visibility:hidden;
+}
+.clearfix {display:inline-block;}
+/* Hide from IE Mac \*/
+.clearfix {display:block;}
+/* End hide from IE Mac */
+
+
+/***************************************************
+ * MAIN STRUCTURE
+ */
+
+body {
+	font-family: Georgia, Times, "Times New Roman", serif;
+	position: relative;
+	background: #fbfbfb;
+}
+#wrapper {
+	margin: 0 auto;
+	width: 610px;
+}
+#main {
+	text-align: left;
+	width: 610px;
+	padding: 1em 0;
+	color: #080000;
+	background: #fbfbfb;
+}
+#window {
+	width: 610px;
+	overflow: hidden;
+	position: relative;
+}
+#pages {
+	/*width: 1830px;*/ /* #window width * 3 */
+	position: relative;
+	top: 0;
+	left: 0;
+}
+#pages div.page {
+	width: 530px; /* The page width is also set in reader.js, so change there too if you change it. */
+	padding: 0 40px;
+	float: left;
+}
+#error {
+	position: absolute;
+	top: 40px;
+	left: 100px;
+	color: #933;
+	background: #fff;
+	padding: 1em 20px;
+	display: none;
+	border: 1px solid #666;
+}
+
+
+/***************************************************
+ * UNIVERSAL ELEMENTS
+ */
+a {
+	color: #092499;
+	text-decoration: underline;
+}
+
+strong {
+	font-weight: bold;
+}
+em,
+cite {
+	font-style: italic;
+}
+
+hr {
+	display: none;
+}
+div.hr {
+	height: 1px;
+	margin-top: 1em;
+	border-top: 1px solid #ccc;
+	padding-top: 1em;
+}
+
+
+/***************************************************
+ * TOP OF PAGE
+ */
+
+#title {
+	margin: 0 40px 0.5em 40px;
+	width: 530px;
+	color: #999;
+	font-family: "Lucida Sans", "Lucida Grande", "Lucida Sans Unicode", sans-serif;
+	border-bottom: 1px solid #ccc;
+}
+#title #paper-date {
+	float: left;
+	width: 80%;
+	height: 1.3em
+}
+#title #nav {
+	float: right;
+	width: 15%;
+	text-align: right;
+	height: 1.3em;
+}
+
+#progress {
+ 	width: 530px;
+	margin: 0.5em 40px 1.5em 40px;
+}
+#progress div {
+	float: left;
+	margin-right: 10px;
+	cursor: pointer;
+}
+#progress div {
+	color: #999;
+}
+#progress div.on,
+#progress div:hover {
+	color: #666;
+}
+#progress div span {
+	font-family: "Lucida Sans", "Lucida Grande", "Lucida Sans Unicode", sans-serif;
+	white-space: nowrap;
+	overflow: visible;
+}
+#progress li {
+	padding: 4px 0;
+	height: 12px;
+	float: left;
+}
+#progress li span {
+	width: 2px;
+	background: #999;
+	display: block;
+}
+#progress li.on {
+	background: #f99;
+}
+#progress div.on li span,
+#progress div:hover li span {
+	background: #666;
+}
+
+
+/***************************************************
+ * CONTENT
+ */
+
+.page p {
+	margin-bottom: 1em;
+}
+.page .meta {
+	width: 530px;
+	border-bottom: 3px solid #333;
+	color: #333;
+	margin-bottom: 0.8em;
+	height: 1.5em;
+}
+.section-news .meta { border-color: #D61D00; color: #D61D00; }
+.section-sport .meta { border-color: #008000; color: #008000; }
+.section-comment .meta { border-color: #0061A6; color: #0061A6; }
+.section-culture .meta { border-color: #D1008B; color: #D1008B; }
+.section-business .meta { border-color: #3246AB; color: #3246AB; }
+.section-money .meta { border-color: #8F1AB6; color: #8F1AB6; }
+.section-life .meta { border-color: #AD532F; color: #AD532F; }
+.section-travel .meta { border-color: #066EC9; color: #066EC9; }
+.section-environment .meta { border-color: #4A7801; color: #4A7801; }
+
+.page .meta .publication {
+	display: none;
+}
+.page .meta .section {
+	margin-bottom: 0;
+}
+.page h2 {
+	clear: both;
+	margin-bottom: 0.667em;
+}
+.page .byline {
+	border-top: 1px solid #ddd;
+	border-bottom: 1px solid #ddd;
+	margin-bottom: 1.8em;
+	padding: 0.4em 0 0.4em 0;
+	font-family: "Lucida Sans", "Lucida Grande", "Lucida Sans Unicode", sans-serif;
+	color: #999;
+	line-height: 1.2em;
+}
+.standfirst {
+	font-weight: bold;
+}
+.page .body {
+	float: left;
+	width: 530px;
+}
+.page .body .no-rights,
+.page .body .no-body {
+	font-style: italic;
+}
+.page .body .thumbnail {
+	float: right;
+	margin: 0.3em 0 0.5em 10px;
+}
+.page .body h2 {
+	font-weight: bold;
+}
+.page .footer {
+	clear: both;
+	float: left;
+	margin-top: 1.5em;
+	width: 530px;
+	font-family: "Lucida Sans", "Lucida Grande", "Lucida Sans Unicode", sans-serif;
+}
+.page blockquote {
+	margin-left: 25px;
+}
+
+div.gu_advert {
+	height: 250px;
+}
+
+
+/***************************************************
+ * L/R NAVIGATION
+ */
+
+#prev,
+#next {
+	display: block;
+	position: fixed;
+	top: 0;
+	background: #ddd;
+	text-align: center;
+	font-size: 4em;
+	cursor: default;
+	font-family: "Times New Roman", Georgia, serif;
+	text-decoration: none;
+}
+#prev span,
+#next span {
+	display: none;
+}
+.on#next,
+.on#prev {
+	cursor: pointer;
+}
+#prev {
+	left: 0;
+	background: #eee url(img/bg_prev.png) right top repeat-y;
+}
+#next {
+	right: 0;
+	background: #eee url(img/bg_next.png) left top repeat-y;
+}
+
+/***************************************************
+ * FOOTER.
+ */
+#footer {
+	margin-top: 2em;
+	padding-bottom: 3em;
+	width: 100%;
+	float: left;
+	color: #999;
+	font-family: "Lucida Sans", "Lucida Grande", "Lucida Sans Unicode", sans-serif;
+}
+#footer p {
+	border-top: 1px solid #ccc;
+	padding-top: 1em;
+	line-height: 1.4em;
+	margin: 0 40px;
+}
+
+/***************************************************
+ * ABOUT PAGE
+ */
+
+#about-page {
+	display: none;
+	background: #fff;
+	width: 640px;
+	height: auto;
+	position: absolute;
+	top: 10px;
+	left: 0;
+	text-align: left;
+	box-shadow: 5px 5px 10px #999;
+	-webkit-box-shadow: 5px 5px 10px #999;
+	-moz-box-shadow: 5px 5px 10px #999;
+	overflow: auto;
+	border: 1px solid #ccc;
+	padding: 1.5em 30px 1em 30px;
+	z-index: 1000;
+}
+body#about-page {
+	display: block;
+	box-shadow: none;
+	-webkit-box-shadow: none;
+	-mox-box-shadow: none;
+	border: none;
+}
+#about-page .close {
+	position: absolute;
+	top: 10px;
+	right: 20px;
+	font-family: "Lucida Sans", "Lucida Grande", "Lucida Sans Unicode", sans-serif;
+}
+#about-page h1 {
+	margin-bottom: 0.8em;
+}
+#about-page p {
+	margin-bottom: 1.5em;
+}
+#about-page #keys {
+	width: 500px;
+	margin-left: auto;
+	margin-right: auto;
+}
+#about-page #keys span {
+	display: block;
+	margin-bottom: 0.5em;
+}
+#about-page #keys-up,
+#about-page #keys-down {
+	text-align: center;
+	clear: both;
+}
+#about-page #keys-left {
+	float: left;
+}
+#about-page #keys-right {
+	float: right;
+}
+
+
+/***************************************************
+ * TOUCH-SPECIFIC STYLES
+ * body.touch is set in reader.js.
+ */
+
+/**
+ * Changing widths to max-widths.
+ */
+.touch #wrapper,
+.touch #main,
+.touch #window {
+	width: auto;
+	max-width: 610px;
+}
+.touch #pages div.page,
+.touch #title,
+.touch #progress,
+.touch .page .meta,
+.touch .page .body,
+.touch .page .footer {
+	width: auto;
+	max-width: 590px;
+}
+.touch #about-page #keys {
+	width: auto;
+	max-width: 500px;
+}
+
+.touch #pages div.page {
+	float: none;
+	position: absolute;
+	top: 0;
+	left: 0;
+	display: block;
+	padding-left: 10px;
+	padding-right: 10px;
+	-webkit-transition: -webkit-transform 200ms linear;
+	-webkit-transform: translate3d(0, 0, 0);
+}
+
+.touch #pages div.page.right {
+	-webkit-transform: translate3d(100%, 0, 0);
+}
+.touch #pages div.page.current {
+}
+.touch #pages div.page.left {
+	-webkit-transform: translate3d(-100%, 0, 0);
+}
+.touch #title,
+.touch #progress,
+.touch #footer p {
+	margin-left: 10px;
+	margin-right: 10px;
+}
+.touch #controls {
+	display: none;
+}
+.touch #progress {
+	margin-top: 1em;
+}
+.touch #about-page {
+	width: auto;
+	max-width: 530px;
+	height: auto;
+}
+.touch #about-page h1 {
+	font-weight: bold;
+}
+
+.touch .meta p,
+#about-page #keys {
+	-webkit-text-size-adjust: none;
+}
+
+/***************************************************
+ * FONT SIZES
+ */
+
+#title,
+#progress span,
+.page p.byline,
+.page .footer p,
+#about-page .close,
+#footer {
+	font-size: 0.625em; /* 10px */
+}
+
+/*
+.touch .page .meta p {
+	font-size: 0.625em;
+}
+.touch #title,
+.touch #progress span  {
+	font-size: 1em;
+}
+.touch #about-page .close {
+	font-size: 1.25em;
+}
+.touch #about-page #keys-right,
+.touch #about-page #keys-left {
+	font-size: 1.5em;
+}
+.touch #footer {
+	line-height: 1.5em;
+}*/
+
+
+.page h2,
+#about-page h1 {
+	font-size: 1.5em; /* 24px */
+	line-height: 1.333em; /* 36px */
+}
+.page .body h2,
+.page p,
+#about-page p {
+	font-size: 1em;
+	line-height: 1.5em; /* 24px */
+}

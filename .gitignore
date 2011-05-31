@@ -1,0 +1,4 @@
+*.pyc
+
+scripts/scraper.cfg
+public/archive/*
