@@ -267,6 +267,9 @@ div.hr {
 	width: 530px;
 	font-family: "Lucida Sans", "Lucida Grande", "Lucida Sans Unicode", sans-serif;
 }
+.page .footer p.share input {
+	width: 12em;
+}
 .page blockquote {
 	margin-left: 25px;
 }
