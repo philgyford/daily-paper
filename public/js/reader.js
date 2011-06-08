@@ -1,6 +1,6 @@
 /**
  * Today's Guardian javascript.
- * https://bitbucket.org/philgyford/daily-paper/
+ * https://github.com/philgyford/daily-paper/ 
  * This file contains various libraries in one file for loading speed.
  *
  * The main code (reader) under the 3-clause BSD License (see LICENSE.txt).
@@ -12,6 +12,7 @@
  *  * ScrollTo - The generic code for handling the "scroll to this position stuff".
  *  * HotKeys - The generic code for handling the keyboard control.
  *  * JSizes - The generic code for detecting/setting sizes of things.
+ *  * Live Query - For attaching events to elements when they appear.
  *
  * 
  *  Start this all working with:
@@ -34,6 +35,15 @@
 // So we can do things like if ($('.classname').exists()) {}
 jQuery.fn.exists = function(){return jQuery(this).length>0;}
 
+// usage: log('inside coolFunc',this,arguments);
+// paulirish.com/2009/log-a-lightweight-wrapper-for-consolelog/
+window.log = function(){
+	log.history = log.history || [];   // store logs to an array for reference
+	log.history.push(arguments);
+	if(this.console){
+		console.log( Array.prototype.slice.call(arguments) );
+	}
+};
 
 /**
  * The custom code for the main functionality of the site.
@@ -268,19 +278,7 @@ var reader = {
 			reader.resizePage();
 		});
 		
-		if (reader.hasTouch) {
-			// For iPhone, iPad etc.
-			
-			// Occasionally we get an article that's so short it doesn't fill the full width of the page.
-			// And because we don't have any fixed widths for .touch styles (because it screws up iPhone scaling)
-			// the page shrinks to the min-width. And that screws up the transform to/from the too-small page.
-			// So we're going to manually set the width of all the .pages based on the width of the #window
-			// (minus the padding applied to the .pages).
-			$('.page').width( 
-				$('#window').width() - $('#page-'+reader.currentPos).padding().left - $('#page-'+reader.currentPos).padding().right 
-			);
-
-		} else {
+		if ( ! reader.hasTouch) {
 			// Standard web browsers.
 			
 			//reader.glowNav('next');
@@ -508,6 +506,15 @@ var reader = {
 		}
 		
 		reader.moveToArticle(articleIdx);
+
+		if (reader.hasTouch) {
+			$('div#page-'+articleIdx+' div.body').livequery(function(){
+				// For some reason the first article doesn't finish loading
+				// when resizePage() is first called on iPad etc, so we call it
+				// again once we know things have loaded.
+				reader.resizePage();
+			});
+		};
 	},
 	
 	
@@ -667,6 +674,7 @@ var reader = {
 			$('#page-'+toIdx).addClass('current');
 			
 			var p = reader.whereAmI();
+
 			if (p.is_at_top) {
 				// If we're already at the top of the page, go to the pre-loading of another page.
 				reader.moveToArticleAfter(toIdx);
@@ -870,12 +878,37 @@ var reader = {
 	 */
 	resizePage: function() {
 		
-		if ( ! reader.hasTouch) {
-			var scrollbarWidth = $.scrollbarWidth();
+		var stretchShortArticle = function() {
+			// For articles that are shorter than the full height.
+			//
+			// We want to expand the height of the article body so that it
+			// fills all the empty space on the page. So that the swipeable
+			// area on iPads etc is the full page.
+			$('div.current div.body').height(
+				$(window).height() 
+				- $('#main').padding().top 
+				- $('#main').padding().bottom 
+				- $('#title').height() 
+				- $('#progress').outerHeight(true) 
+				- $('.current .meta').outerHeight(true)
+				- $('.current .meta').border().bottom
+				- $('.current .headline h2').outerHeight(true)
+				- $('.current .intro .byline').outerHeight(true)
+				- $('.current .intro .standfirst').outerHeight(true)
+				- $('.current .footer').outerHeight(true)
+				- $('#footer').outerHeight(true) 
+			);
+			$('#window').height($('div.current').height());
+		};
 
-			// First, test if the scrollbar is visible. We'll add some space to the right if it's not, 
-			// to stop the main content jiggling as the scrollbar appears/disappears.
-			var viewportHeight = window.innerHeight ? window.innerHeight : $(window).height();
+		var viewportHeight = window.innerHeight ? window.innerHeight : $(window).height();
+
+		if ( ! reader.hasTouch) {
+			// As well as stretching short articles vertically,
+			// we need to add space to the right of short articles so that
+			// everything is the same width as when the scrollbar is there,
+			// to stop things jiggling.
+			var scrollbarWidth = $.scrollbarWidth();
 
 			if ($.browser.msie) {
 				if(parseInt($.browser.version) == 7) {
@@ -889,28 +922,16 @@ var reader = {
 				var nextWidth = prevWidth;
 				$('div.current div.body').height('auto');
 				$('#window').height($('.current').height());
+
 			} else {
 				// No scrollbar.
-				var prevWidth = ( $(window).width() - scrollbarWidth - $('#main').width() ) / 2;
+				stretchShortArticle();
+
+				var prevWidth = ( 
+						$(window).width() - scrollbarWidth - $('#main').width() 
+					) / 2;
+
 				var nextWidth = prevWidth + scrollbarWidth;
-				// We want to expand the height of the article body so that it
-				// fills all the empty space on the page. So that the swipeable
-				// area on iPads etc is the full page.
-				$('div.current div.body').height(
-					$(window).height() 
-					- $('#main').padding().top 
-					- $('#main').padding().bottom 
-					- $('#title').height() 
-					- $('#progress').outerHeight(true) 
-					- $('.current .meta').outerHeight(true)
-					- $('.current .meta').border().bottom
-					- $('.current .headline h2').outerHeight(true)
-					- $('.current .intro .byline').outerHeight(true)
-					- $('.current .intro .standfirst').outerHeight(true)
-					- $('.current .footer').outerHeight(true)
-					- $('#footer').outerHeight(true) 
-				);
-				$('#window').height($('.current').height());
 			}
 			$('#wrapper').margin({'right': nextWidth});
 			
@@ -931,10 +952,17 @@ var reader = {
 			});
 			
 		} else {
+			// Touch device.
 
+			if(viewportHeight > $('#wrapper').height()) {
+				// No scrollbar.
+				stretchShortArticle();
+				// Make sure it's the full width as well.
+				$('div.body').width( $('div.page').innerWidth() );
+			};
 		}
 	},
-	
+
 	
 	/**
 	 * Jump ahead one section.
@@ -1302,3 +1330,13 @@ jQuery.cookie = function(name, value, options) {
         return cookieValue;
     }
 };
+
+/* Copyright (c) 2010 Brandon Aaron (http://brandonaaron.net)
+ * Dual licensed under the MIT (MIT_LICENSE.txt)
+ * and GPL Version 2 (GPL_LICENSE.txt) licenses.
+ *
+ * Version: 1.1.1
+ * Requires jQuery 1.3+
+ * Docs: http://docs.jquery.com/Plugins/livequery
+ */
+(function(a){a.extend(a.fn,{livequery:function(e,d,c){var b=this,f;if(a.isFunction(e)){c=d,d=e,e=undefined}a.each(a.livequery.queries,function(g,h){if(b.selector==h.selector&&b.context==h.context&&e==h.type&&(!d||d.$lqguid==h.fn.$lqguid)&&(!c||c.$lqguid==h.fn2.$lqguid)){return(f=h)&&false}});f=f||new a.livequery(this.selector,this.context,e,d,c);f.stopped=false;f.run();return this},expire:function(e,d,c){var b=this;if(a.isFunction(e)){c=d,d=e,e=undefined}a.each(a.livequery.queries,function(f,g){if(b.selector==g.selector&&b.context==g.context&&(!e||e==g.type)&&(!d||d.$lqguid==g.fn.$lqguid)&&(!c||c.$lqguid==g.fn2.$lqguid)&&!this.stopped){a.livequery.stop(g.id)}});return this}});a.livequery=function(b,d,f,e,c){this.selector=b;this.context=d;this.type=f;this.fn=e;this.fn2=c;this.elements=[];this.stopped=false;this.id=a.livequery.queries.push(this)-1;e.$lqguid=e.$lqguid||a.livequery.guid++;if(c){c.$lqguid=c.$lqguid||a.livequery.guid++}return this};a.livequery.prototype={stop:function(){var b=this;if(this.type){this.elements.unbind(this.type,this.fn)}else{if(this.fn2){this.elements.each(function(c,d){b.fn2.apply(d)})}}this.elements=[];this.stopped=true},run:function(){if(this.stopped){return}var d=this;var e=this.elements,c=a(this.selector,this.context),b=c.not(e);this.elements=c;if(this.type){b.bind(this.type,this.fn);if(e.length>0){a.each(e,function(f,g){if(a.inArray(g,c)<0){a.event.remove(g,d.type,d.fn)}})}}else{b.each(function(){d.fn.apply(this)});if(this.fn2&&e.length>0){a.each(e,function(f,g){if(a.inArray(g,c)<0){d.fn2.apply(g)}})}}}};a.extend(a.livequery,{guid:0,queries:[],queue:[],running:false,timeout:null,checkQueue:function(){if(a.livequery.running&&a.livequery.queue.length){var b=a.livequery.queue.length;while(b--){a.livequery.queries[a.livequery.queue.shift()].run()}}},pause:function(){a.livequery.running=false},play:function(){a.livequery.running=true;a.livequery.run()},registerPlugin:function(){a.each(arguments,function(c,d){if(!a.fn[d]){return}var b=a.fn[d];a.fn[d]=function(){var e=b.apply(this,arguments);a.livequery.run();return e}})},run:function(b){if(b!=undefined){if(a.inArray(b,a.livequery.queue)<0){a.livequery.queue.push(b)}}else{a.each(a.livequery.queries,function(c){if(a.inArray(c,a.livequery.queue)<0){a.livequery.queue.push(c)}})}if(a.livequery.timeout){clearTimeout(a.livequery.timeout)}a.livequery.timeout=setTimeout(a.livequery.checkQueue,20)},stop:function(b){if(b!=undefined){a.livequery.queries[b].stop()}else{a.each(a.livequery.queries,function(c){a.livequery.queries[c].stop()})}}});a.livequery.registerPlugin("append","prepend","after","before","wrap","attr","removeAttr","addClass","removeClass","toggleClass","empty","remove","html");a(function(){a.livequery.play()})})(jQuery);
