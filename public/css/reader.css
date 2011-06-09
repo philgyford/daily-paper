@@ -248,6 +248,10 @@ div.hr {
 .page .body {
 	float: left;
 	width: 530px;
+	/* These probably do nothing at the moment: */
+	hyphens: auto;
+	-webkit-hyphens: auto;
+	-moz-hyphens: auto;
 }
 .page .body .no-rights,
 .page .body .no-body {
