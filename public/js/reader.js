@@ -957,9 +957,8 @@ var reader = {
 			if(viewportHeight > $('#wrapper').height()) {
 				// No scrollbar.
 				stretchShortArticle();
-				// Make sure it's the full width as well.
-				$('div.body').width( $('div.page').innerWidth() );
-			};
+				$('div.body').width( $('div#window').innerWidth() );
+			}
 		}
 	},
 
