@@ -312,7 +312,7 @@ div.gu_advert {
 }
 #next {
 	right: 0;
-	background: #e00 url(img/bg_next.png) left top repeat-y;
+	background: #eee url(img/bg_next.png) left top repeat-y;
 }
 
 /***************************************************
@@ -449,12 +449,6 @@ body#about-page {
 	margin-left: 10px;
 	margin-right: 10px;
 }
-.touch #prev {
-	background: #f00;
-}
-.touch #next {
-	background: #0f0;
-}
 .touch #progress {
 	margin-top: 1em;
 }
@@ -470,6 +464,11 @@ body#about-page {
 .touch .meta p,
 #about-page #keys {
 	-webkit-text-size-adjust: none;
+}
+
+.touch #prev,
+.touch #next {
+	background: none;
 }
 
 /***************************************************

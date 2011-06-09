@@ -25,7 +25,7 @@
  * 				{'trackEvents': true}
  *  If you're using Google Analytics, this will then send this call whenever
  *  a new article is viewed:
- *  _gaq.push(['_trackEvent', 'Articles', 'View', reader.issueArticles[idx-1]['path']]);§
+ *  _gaq.push(['_trackEvent', 'Articles', 'View', reader.issueArticles[idx-1]['path']]);
  * 
  *  By default, event tracking is off.
  * 
@@ -91,6 +91,9 @@ var reader = {
 	
 	// Will be true while the page is moving from one article to another.
 	currentlyMoving: false,
+
+	// Keep track of nav that's in the process glowing on/off.
+	navGlowing: {'next':false, 'prev':false},
 	
 	initialize: function(options) {
 		if (! options) {
@@ -161,9 +164,25 @@ var reader = {
 	
 	/**
 	 * Make one of the direction arrows glow on and off.
+	 * direction is 'next' or 'prev'.
+	 * speed is 'normal' or 'fast'.
 	 */
-	glowNav: function(direction) {
-		$('#'+direction+' span').fadeIn(300).delay(1000).fadeOut(1500);
+	glowNav: function(direction, speed) {
+		// Keep track of what's int he process of glowing, so we don't store up
+		// multiple glows.
+		var in_speed = 300;
+		var delay_speed = 1000;
+		var out_speed = 1500;
+		if (speed == 'fast') {
+			delay_speed = 0;
+			out_speed = 1000;
+		};
+		if ( ! reader.navGlowing[direction]) {
+			reader.navGlowing[direction] = true;
+			$('#'+direction+' span').fadeIn(in_speed).delay(delay_speed).fadeOut(out_speed, function(){
+				reader.navGlowing[direction] = false;
+			});
+		};
 	},
 	
 	
@@ -269,38 +288,75 @@ var reader = {
 		);
 		document.title = "Today's "+paperName;
 		
-		// Either loads the first article, or the one whose ID is saved in the user's cookie.
+		// Gets either 1, or the ID of the article in the user's cookie.
+		var initialArticleIdx = reader.getInitialArticleIdx();
+
 		// After this reader.currentPos will be set.
-		reader.loadInitialArticle();
-		
-		// Set the next/prev links and main content position to change if we resize the window.
+		// But probably too late to be of use here, but we can keep using
+		// articleIdx. 
+		reader.moveToArticle(initialArticleIdx);
+
+		if (reader.hasTouch) {
+			$('div#page-'+initialArticleIdx+' div.body').livequery(function(){
+				// For some reason the first article doesn't finish loading
+				// when resizePage() is first called on iPad etc, so we call it
+				// again once we know things have loaded.
+				reader.resizePage();
+			});
+			// iPhone etc.
+			// Occasionally we get an article that's so short it doesn't fill the
+			// full width of the page. And because we don't have any fixed widths
+			// for .touch styles (because it screws up iPhone scaling) the page
+			// shrinks to the min-width. And that screws up the transform to/from 
+			// the too-small page.
+			// So we're going to manually set the width of all the .pages based on
+			// the width of the #window (minus the padding applied to the .pages).
+			$('.page').width( 
+				  $('#window').width() 
+				- $('#page-'+reader.currentPos).padding().left 
+				- $('#page-'+reader.currentPos).padding().right 
+			);
+		};
+
+		// Make the nav appear briefly where available.
+		if (initialArticleIdx == 1) {
+			// First article.
+			reader.glowNav('next', 'normal');
+		} else if (initialArticleIdx == reader.issueArticles.length) {
+			// Last article.
+			reader.glowNav('prev', 'normal');
+		} else { 
+			reader.glowNav('next', 'normal');
+			reader.glowNav('prev', 'normal');
+		};
+
+		// Set the next/prev links and main content position to change if we 
+		// resize the window.
 		$(window).resize(function(){
 			reader.resizePage();
 		});
-		
-		if ( ! reader.hasTouch) {
-			// Standard web browsers.
-			
-			//reader.glowNav('next');
-			$('#next span').fadeIn(300);
-			
-			// Switch the 'next' link on, as we're at the start of the articles.
-			reader.switchNav('next', 'on');
 
-			// Set up the next/prev buttons to go to the next/prev story, but only if they're 'on'.
-			// They're not 'on' when at the beginning or end of the articles as appropriate.
-			$('.off#next').live('click', function(){return false;});
-			$('.on#next').live('click', function(){
-				reader.articleNext();
-				return false;
-			});
-			$('.off#prev').live('click', function(){return false;});
-			$('.on#prev').live('click', function(){
-				reader.articlePrev();
-				return false;
-			});
-		}
-		
+		// Set up the next/prev buttons to go to the next/prev story, but only if
+		// they're 'on'.
+		// They're not 'on' when at the beginning or end of the articles as
+		// appropriate.
+		$('.off#next').live('click', function(){return false;});
+		$('.on#next').live('click', function(){
+			if (reader.hasTouch) {
+				reader.glowNav('next', 'fast');
+			};
+			reader.articleNext();
+			return false;
+		});
+		$('.off#prev').live('click', function(){return false;});
+		$('.on#prev').live('click', function(){
+			if (reader.hasTouch) {
+				reader.glowNav('prev', 'fast');
+			};
+			reader.articlePrev();
+			return false;
+		});
+			
 		// Set up the keyboard shortcuts.
 		$(document).bind('keydown', 'd', function(){ reader.articleNext(); });
 		$(document).bind('keydown', 'shift+d', function(){ reader.sectionNext(); });
@@ -377,7 +433,8 @@ var reader = {
 	/**
 	 * Load the HTML from the article file for this article.
 	 * idx is the numerical, 1-based index of the filename from reader.issueArticles.
-	 * position is either 'onscreen' (this is the article we're about to view) or 'offscreen' (for cached articles).
+	 * position is either 'onscreen' (this is the article we're about to view) or
+	 * 'offscreen' (for cached articles).
 	 */
 	loadArticleFile: function(idx, position) {
 		if ( $('#page-'+idx).exists() && ! $('#page-'+idx).hasClass('loaded') ) {
@@ -466,9 +523,11 @@ var reader = {
 	/**
 	 * Which article do we display when first arriving at the page?
 	 * If there's no cookie, it's the first one. 
-	 * Otherwise we'll jump straight to the one with the ID in the user's cookie (if it's in today's paper).
+	 * If there is a cookie we'll jump straight to the one with the ID in their
+	 * (if it's in today's paper).
+	 * This method just returns the articleIdx to display first.
 	 */
-	loadInitialArticle: function() {
+	getInitialArticleIdx: function() {
 		// The article number we're going to move to.
 		var articleIdx = 1;
 
@@ -504,17 +563,8 @@ var reader = {
 				$.cookie('guardian', null);
 			}
 		}
-		
-		reader.moveToArticle(articleIdx);
 
-		if (reader.hasTouch) {
-			$('div#page-'+articleIdx+' div.body').livequery(function(){
-				// For some reason the first article doesn't finish loading
-				// when resizePage() is first called on iPad etc, so we call it
-				// again once we know things have loaded.
-				reader.resizePage();
-			});
-		};
+		return articleIdx;
 	},
 	
 	
@@ -674,9 +724,9 @@ var reader = {
 			$('#page-'+toIdx).addClass('current');
 			
 			var p = reader.whereAmI();
-
 			if (p.is_at_top) {
-				// If we're already at the top of the page, go to the pre-loading of another page.
+				// If we're already at the top of the page, go to the pre-loading
+				// of another page.
 				reader.moveToArticleAfter(toIdx);
 			} else {
 				// We're not at the top of the page, so scroll, then pre-load.
@@ -691,7 +741,8 @@ var reader = {
 				// We have nice animations, so slide away...
 				
 				if (fromIdx == 0 && toIdx == 1) {
-					// If the user comes here with no cookie, then we're going to page 1.
+					// If the user comes here with no cookie, then we're going to
+					// page 1.
 					// No fancy transitions required.
 					resetPagePosition();
 					
@@ -702,18 +753,22 @@ var reader = {
 					});
 					
 					if (direction == 'next') {
-						// Sliding left - move current article to left, remove 'right' status from next one.
+						// Sliding left - move current article to left, remove
+						// 'right' status from next one.
 						$('#page-'+fromIdx).addClass('left');
 						$('#page-'+toIdx).removeClass('right');
 					} else {
-						// Sliding right - move current article to right, remove 'left' status from previous one.
+						// Sliding right - move current article to right, remove
+						// 'left' status from previous one.
 						$('#page-'+fromIdx).addClass('right');
 						$('#page-'+toIdx).removeClass('left');
 					}
 
 					if (toIdx - fromIdx < -1 || toIdx - fromIdx > 1) {
-						// We're jumping to more than the immediately next/prev article.
-						// We need to set all the pages that are now to the right of the current article to have a class of 'right'.
+						// We're jumping to more than the immediately next/prev
+						// article.
+						// We need to set all the pages that are now to the right
+						// of the current article to have a class of 'right'.
 						// And vice versa.
 						$('.page:gt('+(toIdx-1)+')').removeClass('left').addClass('right');
 						$('.page:lt('+(toIdx-1)+')').removeClass('right').addClass('left');
@@ -721,8 +776,10 @@ var reader = {
 					
 					if (fromIdx == 0) {
 						// This is the first page we're viewing.
-						// Because there's been no real movement (apparently), the webkit-transition that usually happens
-						// when we change the .left and .right classes doesn't happen. So the webkitTransitionEnd callback
+						// Because there's been no real movement (apparently), the
+						// webkit-transition that usually happens
+						// when we change the .left and .right classes doesn't
+						// happen. So the webkitTransitionEnd callback
 						// doesn't happen. So we need to manually call:
 						resetPagePosition();
 					}
@@ -871,16 +928,32 @@ var reader = {
 	
 	/**
 	 * Set the dimensions of the next/prev links and main content.
-	 * Called when the page is first drawn, whenever the window is resized, and when we move to a new article.
+	 * Called when the page is first drawn, whenever the window is resized, and 
+	 * when we move to a new article.
 	 *
 	 * Scrollbar detection:
 	 * http://stackoverflow.com/questions/2571514/is-detecting-scrollbar-presence-with-jquery-still-difficult
 	 */
 	resizePage: function() {
 		
-		var stretchShortArticle = function() {
-			// For articles that are shorter than the full height.
-			//
+		var scrollbarWidth = $.scrollbarWidth();
+
+		var viewportHeight = window.innerHeight ? window.innerHeight : $(window).height();
+
+		if ($.browser.msie) {
+			if(parseInt($.browser.version) == 7) {
+				viewportHeight -= 3;
+			};
+		};
+		
+		if(viewportHeight <= $('#wrapper').height()) {
+			// Scrollbar present.
+			var prevWidth = ( $(window).width() - $('#main').width() ) / 2;
+			var nextWidth = prevWidth;
+			$('div.current div.body').height('auto');
+
+		} else {
+			// No scrollbar.
 			// We want to expand the height of the article body so that it
 			// fills all the empty space on the page. So that the swipeable
 			// area on iPads etc is the full page.
@@ -898,70 +971,40 @@ var reader = {
 				- $('.current .footer').outerHeight(true)
 				- $('#footer').outerHeight(true) 
 			);
-			$('#window').height($('div.current').height());
-		};
-
-		var viewportHeight = window.innerHeight ? window.innerHeight : $(window).height();
-
-		if ( ! reader.hasTouch) {
+			if (reader.hasTouch) {
+				$('div.body').width( $('div#window').innerWidth() );
+			};
 			// As well as stretching short articles vertically,
 			// we need to add space to the right of short articles so that
 			// everything is the same width as when the scrollbar is there,
 			// to stop things jiggling.
-			var scrollbarWidth = $.scrollbarWidth();
+			var prevWidth = ( 
+					$(window).width() - scrollbarWidth - $('#main').width() 
+				) / 2;
 
-			if ($.browser.msie) {
-				if(parseInt($.browser.version) == 7) {
-					viewportHeight -= 3;
-				}
-			}
+			var nextWidth = prevWidth + scrollbarWidth;
+		};
+		$('#window').height($('div.current').height());
+
+		$('#wrapper').margin({'right': nextWidth});
 		
-			if(viewportHeight <= $('#wrapper').height()) {
-				// Scrollbar present.
-				var prevWidth = ( $(window).width() - $('#main').width() ) / 2;
-				var nextWidth = prevWidth;
-				$('div.current div.body').height('auto');
-				$('#window').height($('.current').height());
-
-			} else {
-				// No scrollbar.
-				stretchShortArticle();
-
-				var prevWidth = ( 
-						$(window).width() - scrollbarWidth - $('#main').width() 
-					) / 2;
-
-				var nextWidth = prevWidth + scrollbarWidth;
-			}
-			$('#wrapper').margin({'right': nextWidth});
-			
-			$('#next').width(
-				nextWidth
-			).height(
-				$(window).height()
-			).css({
-				'line-height': ($('#next').innerHeight() * 0.96) +'px'
-			});
-		
-			$('#prev').width(
-				prevWidth
-			).height(
-				$(window).height()
-			).css({
-				'line-height': ($('#prev').innerHeight() * 0.96) +'px'
-			});
-			
-		} else {
-			// Touch device.
-
-			if(viewportHeight > $('#wrapper').height()) {
-				// No scrollbar.
-				stretchShortArticle();
-				$('div.body').width( $('div#window').innerWidth() );
-			}
-		}
+		$('#next').width(
+			nextWidth
+		).height(
+			$(window).height()
+		).css({
+			'line-height': ($('#next').innerHeight() * 0.96) +'px'
+		});
+	
+		$('#prev').width(
+			prevWidth
+		).height(
+			$(window).height()
+		).css({
+			'line-height': ($('#prev').innerHeight() * 0.96) +'px'
+		});
 	},
-
+	
 	
 	/**
 	 * Jump ahead one section.
@@ -1022,22 +1065,25 @@ var reader = {
 		if ($('#'+direction).hasClass(state)) {
 			// No need to do anything.
 			return;
-		}
+		};
 		var titleText = 'Next (d, l)';
 		if (direction == 'prev') {
 			titleText = 'Previous (a, h)';
-		}
+		};
 		if (state == 'on') {
-			$('#'+direction).addClass('on').removeClass('off').attr({title:titleText}).hover(
-				function() {
-					reader.glowNav(direction);
-				},
-				function(){}
-			);
+			$('#'+direction).addClass('on').removeClass('off').attr({title:titleText});
+			if ( ! reader.hasTouch) {
+				$('#'+direction).hover(
+					function() {
+						reader.glowNav(direction, 'normal');
+					},
+					function(){}
+				);
+			};
 		} else {
 			$('#'+direction).addClass('off').removeClass('on').attr({title:''});
 			$('#'+direction).unbind('click mouseenter mouseleave');
-		}
+		};
 	},
 	
 	
