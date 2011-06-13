@@ -370,7 +370,8 @@ class GuardianGrabber:
         
         if 'body' in content['fields']:
             if content['fields']['body'] == '<!-- Redistribution rights for this field are unavailable -->':
-                html += '<p class="no-rights">Redistribution rights for the article body are unavailable. <a href="' + content['webUrl'] + '">See original.</a></p>'
+                # We link this link to the easier-to-read print version.
+                html += '<p class="no-rights">Redistribution rights for the article body are unavailable. <a class="see-original" href="' + content['webUrl'] + '/print">See original.</a></p>'
             else:
                 
                 # Get rid of the empty <p> tags that are sometimes in articles, then add to html.

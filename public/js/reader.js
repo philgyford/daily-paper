@@ -357,7 +357,19 @@ var reader = {
 			return false;
 		});
 			
-		// Set up the keyboard shortcuts.
+		reader.enableKeyboardShortcuts();
+		
+		$('a#about').click(function(){
+			reader.showAbout();
+			return false;
+		});
+	},
+
+
+	/**
+	 * When page is initialized, and whenever we open a modal dialog.
+	 */
+	enableKeyboardShortcuts: function() {
 		$(document).bind('keydown', 'd', function(){ reader.articleNext(); });
 		$(document).bind('keydown', 'shift+d', function(){ reader.sectionNext(); });
 		$(document).bind('keydown', 'l', function(){ reader.articleNext(); });
@@ -395,11 +407,14 @@ var reader = {
 				return true;
 			}
 		});
-		
-		$('a#about').click(function(){
-			reader.showAbout();
-			return false;
-		});
+	},
+
+
+	/**
+	 * When we open a modal dialog.
+	 */
+	disableKeyboardShortcuts: function() {
+			$(document).unbind('keydown');
 	},
 	
 	
@@ -1045,11 +1060,13 @@ var reader = {
 	 * Show the 'About' page.
 	 */
 	showAbout: function() {
+		reader.disableKeyboardShortcuts();
 		var leftPos = ($(window).width() - $('#about-page').outerWidth()) / 2;
 		$('#about-page').css({left: leftPos}).show(0, function(){
 			$('#about-page-inner').load('about.html');
 			$('#about-page .close').click(function(){
 				$('#about-page').hide();
+				reader.enableKeyboardShortcuts();
 				return false;
 			})
 		});
