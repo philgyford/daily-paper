@@ -242,7 +242,7 @@ div.hr {
 	margin-bottom: 1.8em;
 	padding: 0.4em 0 0.4em 0;
 	font-family: "Lucida Sans", "Lucida Grande", "Lucida Sans Unicode", sans-serif;
-	color: #999;
+	color: #666;
 	line-height: 1.2em;
 }
 .standfirst {
@@ -517,4 +517,17 @@ body#about-page {
 #about-page p {
 	font-size: 1em;
 	line-height: 1.5em; /* 24px */
+}
+
+
+/***************************************************
+ * IPHONE/IPOD ETC TWEAKS.  */
+
+.ipad #title,
+.ipad #progress span,
+.ipad .page p.byline,
+.ipad .page .footer p,
+.ipad #about-page .close,
+.ipad #footer {
+	font-size: 0.75em;
 }

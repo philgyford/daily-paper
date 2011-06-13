@@ -244,6 +244,8 @@ var reader = {
 	
 	/**
 	 * Is this an iPhone or similar?
+	 * Sets a class of iphone/ipad/android on the <body> if so,
+	 * and returns true/false.
 	 */
 	hasTouchSupport: function(){
 		// Also returns true for Google Chrome.
@@ -258,13 +260,22 @@ var reader = {
 		// 	return false;
 		// }
 		
-		// Not ideal, but seems like there's no foolproof way of detecting touch support without snagging Chrome too.
-		var IsIphone = navigator.userAgent.indexOf('iPhone') != -1 ;
-	 	var IsIpod = navigator.userAgent.indexOf('iPod') != -1 ;
-	 	var IsIpad = navigator.userAgent.indexOf('iPad') != -1 ;
-	 	var isAndroid = navigator.userAgent.indexOf('Android') != -1 ;
-	
-		return IsIphone || IsIpod || IsIpad || isAndroid;
+		// not ideal, but seems like there's no foolproof way of detecting touch support without snagging chrome too.
+
+		if (navigator.userAgent.indexOf('iPhone') != -1
+			||
+			navigator.userAgent.indexOf('iPod') != -1) {
+			$('body').addClass('iphone');
+			return true;
+		} else if (navigator.userAgent.indexOf('iPad') != -1) {
+			$('body').addClass('ipad');
+			return true;
+		} else if (navigator.userAgent.indexOf('Android') != -1) {
+			$('body').addClass('android');
+			return true;
+		};
+
+		return false;
 	},
 
 	
@@ -937,9 +948,14 @@ var reader = {
 			$('#progress').append($progressDiv.append($progressList));
 		});
 
+		var progressWidth = 0;
+		$('#progress div').each(function(n) {
+			progressWidth += $(this).outerWidth() + $(this).margin().left + $(this).margin().right;
+		});
 		// If the progress bar spans more than one row, we indicate it should
 		// be in compact format. (See CSS.)
-		if ($('#progress li').first().position().top < $('#progress li').last().position().top) {
+		if ($('#progress').innerWidth() < progressWidth) {
+			log('compact');
 			$('#progress').addClass('compact');
 		};
 		
