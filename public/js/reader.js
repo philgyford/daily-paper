@@ -889,12 +889,14 @@ var reader = {
 			$progressList = $('<ol/>');
 			
 			$.each(section.links, function(m, link) {
-				// Go through each article in this section and add to the progress and contents.
+				// Go through each article in this section and add to the progress
+				// and contents.
 
 				// Add this one to the list of articles.
 				reader.issueArticles.push(link);
 				
-				// Map the Guardian's long IDs to the position of this article in reader.issueArticles.
+				// Map the Guardian's long IDs to the position of this article in
+				// reader.issueArticles.
 				reader.issueArticleIds[link.id] = reader.issueArticles.length;
 				
 				var lengthPercent = Math.round((link.words / reader.issueContents.meta.max_words) * 100);
@@ -926,18 +928,25 @@ var reader = {
 				}
 				$('#pages').append(
 					// No idea why we need to add some HTML to it.
-					// If we don't, then when we jump to a new section we seem to get the wrong page.
+					// If we don't, then when we jump to a new section we seem to
+					// get the wrong page.
 					$('<div/>').addClass(className).attr({id:'page-'+reader.issueArticles.length}).html('&nbsp;')
 				);
 			});
 			
 			$('#progress').append($progressDiv.append($progressList));
 		});
+
+		// If the progress bar spans more than one row, we indicate it should
+		// be in compact format. (See CSS.)
+		if ($('#progress li').first().position().top < $('#progress li').last().position().top) {
+			$('#progress').addClass('compact');
+		};
 		
 		if ( ! reader.hasTouch) {
 			// Set the width of div#pages to the width of all its contents.
 			$('#pages').width( $('.page').size() * reader.pageWidth );
-		}
+		};
 	},
 	
 	

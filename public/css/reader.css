@@ -190,6 +190,9 @@ div.hr {
 	background: #999;
 	display: block;
 }
+#progress.compact li span {
+	width: 1px;
+}
 #progress li.on {
 	background: #f99;
 }
