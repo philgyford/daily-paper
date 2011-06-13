@@ -308,13 +308,13 @@ var reader = {
 		reader.moveToArticle(initialArticleIdx);
 
 		if (reader.hasTouch) {
+			// iPhone etc.
 			$('div#page-'+initialArticleIdx+' div.body').livequery(function(){
 				// For some reason the first article doesn't finish loading
 				// when resizePage() is first called on iPad etc, so we call it
 				// again once we know things have loaded.
 				reader.resizePage();
 			});
-			// iPhone etc.
 			// Occasionally we get an article that's so short it doesn't fill the
 			// full width of the page. And because we don't have any fixed widths
 			// for .touch styles (because it screws up iPhone scaling) the page
@@ -479,9 +479,9 @@ var reader = {
 						e.preventDefault();
 					});
 					if (position == 'onscreen') {
-						// If we've just loaded the article we're going to view we need to set the height of #window to accomodate it.
-						// We add 20px to allow for the change in height that happens when the thumbnail belatedly image loads.
-						$('#window').height($('#page-'+idx).height() + 20);
+						// If we've just loaded the article we're going to view we
+						// need to set the height of #window to accomodate it.
+						$('#window').height($('#page-'+idx).height());
 					}
 				},
 				error: function(XMLHttpRequest, textStatus, errorThrown) {
@@ -955,7 +955,6 @@ var reader = {
 		// If the progress bar spans more than one row, we indicate it should
 		// be in compact format. (See CSS.)
 		if ($('#progress').innerWidth() < progressWidth) {
-			log('compact');
 			$('#progress').addClass('compact');
 		};
 		
@@ -1043,6 +1042,10 @@ var reader = {
 		).css({
 			'line-height': ($('#prev').innerHeight() * 0.96) +'px'
 		});
+
+		if ($('#about-page:visible').exists()) {
+			reader.setAboutSize();
+		};
 	},
 	
 	
@@ -1086,8 +1089,8 @@ var reader = {
 	 */
 	showAbout: function() {
 		reader.disableKeyboardShortcuts();
-		var leftPos = ($(window).width() - $('#about-page').outerWidth()) / 2;
-		$('#about-page').css({left: leftPos}).show(0, function(){
+		reader.setAboutSize();
+		$('#about-page').show(0, function(){
 			$('#about-page-inner').load('about.html');
 			$('#about-page .close').click(function(){
 				$('#about-page').hide();
@@ -1095,6 +1098,12 @@ var reader = {
 				return false;
 			})
 		});
+	},
+
+	setAboutSize: function() {
+		$('#about-page').width(parseInt($(window).width() * 0.75));
+		var leftPos = ($(window).width() - $('#about-page').outerWidth()) / 2;
+		$('#about-page').css({left: leftPos});
 	},
 	
 	

@@ -263,6 +263,8 @@ div.hr {
 .page .body .thumbnail {
 	float: right;
 	margin: 0.3em 0 0.5em 10px;
+	width: 140px;
+	height: 84px;
 }
 .page .body h2 {
 	font-weight: bold;
@@ -322,8 +324,8 @@ div.gu_advert {
  * FOOTER.
  */
 #footer {
-	margin-top: 2em;
-	padding-bottom: 3em;
+	margin-top: 1em;
+	padding-bottom: 1em;
 	width: 100%;
 	float: left;
 	color: #999;
@@ -343,7 +345,6 @@ div.gu_advert {
 #about-page {
 	display: none;
 	background: #fff;
-	width: 640px;
 	height: auto;
 	position: absolute;
 	top: 10px;
@@ -483,29 +484,9 @@ body#about-page {
 .page p.byline,
 .page .footer p,
 #about-page .close,
-#footer {
+#footer p {
 	font-size: 0.625em; /* 10px */
 }
-
-/*
-.touch .page .meta p {
-	font-size: 0.625em;
-}
-.touch #title,
-.touch #progress span  {
-	font-size: 1em;
-}
-.touch #about-page .close {
-	font-size: 1.25em;
-}
-.touch #about-page #keys-right,
-.touch #about-page #keys-left {
-	font-size: 1.5em;
-}
-.touch #footer {
-	line-height: 1.5em;
-}*/
-
 
 .page h2,
 #about-page h1 {
@@ -523,6 +504,46 @@ body#about-page {
 /***************************************************
  * IPHONE/IPOD ETC TWEAKS.  */
 
+/* iPhone */
+.iphone #progress {
+	margin-top: 0;
+	margin-bottom: 0.5em;
+}
+.iphone #progress.compact li span {
+	width: 1px;
+}
+.iphone .page .meta {
+	height: 1.2em;
+}
+.iphone .page .byline {
+	height: 1em;
+	margin-bottom: 1em;
+}
+.iphone #controls {
+	display: none;
+}
+.iphone #about-page {
+	padding-left: 20px;
+	padding-right: 20px;
+}
+.iphone .page p.byline {
+	font-size: 0.6em;
+}
+.iphone .page h2,
+.iphone #about-page h1 {
+	font-size: 1em;
+}
+.iphone .page .body h2,
+.iphone .page p,
+.iphone #about-page p {
+	font-size: 0.75em;
+}
+.iphone #footer p {
+	font-size: 0.4em;
+	line-height: 1.2em;
+}
+
+/* iPad */
 .ipad #title,
 .ipad #progress span,
 .ipad .page p.byline,
@@ -531,3 +552,5 @@ body#about-page {
 .ipad #footer {
 	font-size: 0.75em;
 }
+
+
