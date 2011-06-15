@@ -170,14 +170,16 @@ var reader = {
 	 * speed is 'normal' or 'fast'.
 	 */
 	glowNav: function(direction, speed) {
-		// Keep track of what's int he process of glowing, so we don't store up
+		// Keep track of what's in the process of glowing, so we don't store up
 		// multiple glows.
 		var in_speed = 300;
 		var delay_speed = 1000;
 		var out_speed = 1500;
 		if (speed == 'fast') {
 			delay_speed = 0;
-			out_speed = 1000;
+			out_speed = 500;
+		} else if (speed == 'slow') {
+			delay_speed = 2500;
 		};
 		if ( ! reader.navGlowing[direction]) {
 			reader.navGlowing[direction] = true;
@@ -350,13 +352,13 @@ var reader = {
 		// Make the nav appear briefly where available.
 		if (initialArticleIdx == 1) {
 			// First article.
-			reader.glowNav('next', 'normal');
+			reader.glowNav('next', 'slow');
 		} else if (initialArticleIdx == reader.issueArticles.length) {
 			// Last article.
-			reader.glowNav('prev', 'normal');
+			reader.glowNav('prev', 'slow');
 		} else { 
-			reader.glowNav('next', 'normal');
-			reader.glowNav('prev', 'normal');
+			reader.glowNav('next', 'slow');
+			reader.glowNav('prev', 'slow');
 		};
 
 		// Set the next/prev links and main content position to change if we 
