@@ -14,7 +14,6 @@
  *  * JSizes - The generic code for detecting/setting sizes of things.
  *  * Live Query - For attaching events to elements when they appear.
  *
- * 
  *  Start this all working with:
  * 
  *  		$(document).ready(function() {
@@ -497,11 +496,8 @@ var reader = {
 					}).mouseup(function(e){
 						e.preventDefault();
 					});
-					if (position == 'onscreen') {
-						// If we've just loaded the article we're going to view we
-						// need to set the height of #window to accomodate it.
-						$('#window').height($('#page-'+idx).height());
-					}
+					// Make the newly-loaded article the correct size.
+					reader.resizeArticle($('#page-'+idx), position);
 				},
 				error: function(XMLHttpRequest, textStatus, errorThrown) {
 					reader.error("Can't load article file: "+textStatus + ', '+errorThrown);
@@ -1000,76 +996,118 @@ var reader = {
 	 */
 	resizePage: function() {
 		
-		var scrollbarWidth = $.scrollbarWidth();
+		if (reader.hasTouch) {
+			$('div.body').width( $('div#window').innerWidth() );
+		};	
+
+		// Go through the currently-viewed article and one to either side,
+		// resize its height and the next/prev links (for the current article).
+		$.each(['current', 'next', 'prev'], function(idx, article) {
+			if (article == 'current') {
+				reader.resizeArticle( $('.current'), 'onscreen');
+			} else if (article == 'next') {
+				reader.resizeArticle( $('.current').next(), 'offscreen');
+			} else {
+				reader.resizeArticle( $('.current').prev(), 'offscreen');
+			};
+		});
+
+		$('#window').height($('div.current').height());
+
+		if ($('#about-page:visible').exists()) {
+			reader.setAboutSize();
+		};
+	},
+	
+
+	/**
+	 * Resize a single .page article.
+	 * Makes sure the article is the correct height, and next/prev nav are the
+	 * correct width.
+	 * $obj is a jQuery object representing a div.page element.
+	 * position is either 'onscreen' or 'offscreen', depending on if this is
+	 * visible or not.
+	 */
+	resizeArticle: function($obj, position) {
 
 		var viewportHeight = window.innerHeight ? window.innerHeight : $(window).height();
-
 		if ($.browser.msie) {
 			if(parseInt($.browser.version) == 7) {
 				viewportHeight -= 3;
 			};
 		};
+					   
+		// The height of all the elements that don't change from one article to
+		// the next.
+		var furnitureHeight = $('#main').padding().top 
+				+ $('#main').padding().bottom 
+				+ $('#title').height() 
+				+ $('#progress').outerHeight(true) 
+				+ $('#footer').outerHeight(true);
 		
-		if(viewportHeight <= $('#wrapper').height()) {
-			// Scrollbar present.
-			var prevWidth = ( $(window).width() - $('#main').width() ) / 2;
-			var nextWidth = prevWidth;
-			$('div.current div.body').height('auto');
+		// Height of this article, not including the .body element.
+		var articleHeightMinusBody = $('.meta', $obj).outerHeight(true)
+			+ $('.meta', $obj).border().bottom
+			+ $('.headline h2', $obj).outerHeight(true)
+			+ $('.intro .byline', $obj).outerHeight(true)
+			+ $('.intro .standfirst', $obj).outerHeight(true)
+			+ $('.footer', $obj).outerHeight(true);
+
+		var articleHeight = articleHeightMinusBody + $('.body', $obj).height();
+
+		// If tooShort==true, there'll be no scrollbar when this article is
+		// visible.
+		var tooShort = (articleHeight + furnitureHeight) <= viewportHeight ? true : false;
+		
+		if (tooShort) {
+			// Stretch article body so it'll fill the page.
+			$('div.body', $obj).height(
+				$(window).height()
+				- furnitureHeight 
+				- articleHeightMinusBody
+			);
 
 		} else {
-			// No scrollbar.
-			// We want to expand the height of the article body so that it
-			// fills all the empty space on the page. So that the swipeable
-			// area on iPads etc is the full page.
-			$('div.current div.body').height(
-				$(window).height() 
-				- $('#main').padding().top 
-				- $('#main').padding().bottom 
-				- $('#title').height() 
-				- $('#progress').outerHeight(true) 
-				- $('.current .meta').outerHeight(true)
-				- $('.current .meta').border().bottom
-				- $('.current .headline h2').outerHeight(true)
-				- $('.current .intro .byline').outerHeight(true)
-				- $('.current .intro .standfirst').outerHeight(true)
-				- $('.current .footer').outerHeight(true)
-				- $('#footer').outerHeight(true) 
-			);
-			if (reader.hasTouch) {
-				$('div.body').width( $('div#window').innerWidth() );
-			};
-			// As well as stretching short articles vertically,
-			// we need to add space to the right of short articles so that
-			// everything is the same width as when the scrollbar is there,
-			// to stop things jiggling.
-			var prevWidth = ( 
-					$(window).width() - scrollbarWidth - $('#main').width() 
-				) / 2;
-
-			var nextWidth = prevWidth + scrollbarWidth;
+			$('div.body', $obj).height('auto');
 		};
-		$('#window').height($('div.current').height());
 
-		$('#wrapper').margin({'right': nextWidth});
-		
-		$('#next').width(
-			nextWidth
-		).height(
-			$(window).height()
-		).css({
-			'line-height': ($('#next').innerHeight() * 0.96) +'px'
-		});
+
+		if (position == 'onscreen') {
+			// Set the next/prev areas to the correct width, depending on
+			// whether the scrollbar is visible.
+			var scrollbarWidth = $.scrollbarWidth();
+
+			if (tooShort) {
+				// We need to add space to the right of short articles so that
+				// everything is the same width as when the scrollbar is there,
+				// to stop things jiggling.
+				var prevWidth = ( 
+						$(window).width() - scrollbarWidth - $('#main').width() 
+					) / 2;
+
+				var nextWidth = prevWidth + scrollbarWidth;
+			} else {
+				var prevWidth = ( $(window).width() - $('#main').width() ) / 2;
+				var nextWidth = prevWidth;
+			};
+
+			$('#wrapper').margin({'right': nextWidth});
+			
+			$('#next').width(
+				nextWidth
+			).height(
+				$(window).height()
+			).css({
+				'line-height': ($('#next').innerHeight() * 0.96) +'px'
+			});
 	
-		$('#prev').width(
-			prevWidth
-		).height(
-			$(window).height()
-		).css({
-			'line-height': ($('#prev').innerHeight() * 0.96) +'px'
-		});
-
-		if ($('#about-page:visible').exists()) {
-			reader.setAboutSize();
+			$('#prev').width(
+				prevWidth
+			).height(
+				$(window).height()
+			).css({
+				'line-height': ($('#prev').innerHeight() * 0.96) +'px'
+			});
 		};
 	},
 	
