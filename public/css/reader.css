@@ -548,7 +548,7 @@ body#about-page {
 .ipad .page p.byline,
 .ipad .page .footer p,
 .ipad #about-page .close,
-.ipad #footer {
+.ipad #footer p {
 	font-size: 0.75em;
 }
 
