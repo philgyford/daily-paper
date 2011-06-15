@@ -1012,7 +1012,6 @@ var reader = {
 			};
 		});
 
-		$('#window').height($('div.current').height());
 
 		if ($('#about-page:visible').exists()) {
 			reader.setAboutSize();
@@ -1108,6 +1107,8 @@ var reader = {
 			).css({
 				'line-height': ($('#prev').innerHeight() * 0.96) +'px'
 			});
+
+			$('#window').height($('div.current').height());
 		};
 	},
 	
