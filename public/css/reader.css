@@ -274,6 +274,7 @@ div.hr {
 	float: left;
 	margin-top: 1.5em;
 	width: 530px;
+	overflow: hidden;
 	font-family: "Lucida Sans", "Lucida Grande", "Lucida Sans Unicode", sans-serif;
 }
 .page .footer p.share input {

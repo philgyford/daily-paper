@@ -999,7 +999,12 @@ var reader = {
 	resizePage: function() {
 		
 		if (reader.hasTouch) {
-			$('div.body').width( $('div#window').innerWidth() );
+			var articleWidth = $('div#window').innerWidth() 
+								- $('div.page').padding().left 
+								- $('div.page').padding().right;
+			$('div.body').width( articleWidth );
+			// Make sure footer is correct width, or long URLs will extend it.
+			$('div.footer').width( articleWidth );
 		};	
 
 		// Go through the currently-viewed article and one to either side,
