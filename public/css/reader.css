@@ -233,7 +233,7 @@ div.hr {
 	margin-bottom: 0;
 }
 .page h2 {
-	clear: both;
+	clear: left;
 	margin-bottom: 0.667em;
 }
 .page .byline {
