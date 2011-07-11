@@ -971,15 +971,7 @@ var reader = {
 			$('#progress').append($progressDiv.append($progressList));
 		});
 
-		var progressWidth = 0;
-		$('#progress div').each(function(n) {
-			progressWidth += $(this).outerWidth() + $(this).margin().left + $(this).margin().right;
-		});
-		// If the progress bar spans more than one row, we indicate it should
-		// be in compact format. (See CSS.)
-		if ($('#progress').innerWidth() < progressWidth) {
-			$('#progress').addClass('compact');
-		};
+		// Width of the progress bar might be set to 'compact' in resizePage().
 		
 		if ( ! reader.hasTouch) {
 			// Set the width of div#pages to the width of all its contents.
@@ -1022,6 +1014,11 @@ var reader = {
 
 		if ($('#about-page:visible').exists()) {
 			reader.setAboutSize();
+		};
+		// Set whether there's enough room to show the full-width progress bar
+		// or if it's wrapping onto another line, in which case, compact.
+		if ($('#progress').height() > $('#progress div').height()) {
+			$('#progress').addClass('compact');
 		};
 	},
 	
