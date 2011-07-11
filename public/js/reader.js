@@ -366,6 +366,7 @@ var reader = {
 		$(window).resize(function(){
 			reader.resizePage();
 		});
+		$('body').bind('orientationchange', reader.resizePage);
 
 		// Set up the next/prev buttons to go to the next/prev story, but only if
 		// they're 'on'.
@@ -994,6 +995,7 @@ var reader = {
 			var articleWidth = $('div#window').innerWidth() 
 								- $('div.page').padding().left 
 								- $('div.page').padding().right;
+			$('div.page').width( articleWidth );
 			$('div.body').width( articleWidth );
 			// Make sure footer is correct width, or long URLs will extend it.
 			$('div.footer').width( articleWidth );
