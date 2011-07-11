@@ -526,8 +526,10 @@ body#about-page {
 	padding-left: 20px;
 	padding-right: 20px;
 }
-.iphone .page p.byline {
-	font-size: 0.6em;
+
+.iphone .page p.byline,
+.iphone .page .footer p {
+	font-size: 0.5625em;
 }
 .iphone .page h2,
 .iphone #about-page h1 {
@@ -536,11 +538,11 @@ body#about-page {
 .iphone .page .body h2,
 .iphone .page p,
 .iphone #about-page p {
-	font-size: 0.75em;
+	font-size: 0.8125em; /* 13px */
 }
 .iphone #footer p {
-	font-size: 0.4em;
-	line-height: 1.2em;
+	font-size: 0.35em;
+	line-height: 1.1em;
 }
 
 /* iPad */
