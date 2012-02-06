@@ -1,4 +1,16 @@
-import ConfigParser, datetime, json, os, re, shutil, smartypants, sys, time, urllib, urllib2, urlparse
+import ConfigParser
+import datetime
+import fcntl
+import json
+import os
+import re
+import shutil
+import smartypants
+import sys
+import time
+import urllib
+import urllib2
+import urlparse
 from BeautifulSoup import BeautifulSoup
 
 
@@ -41,24 +53,27 @@ class GuardianGrabber:
             'sections': []
         }
         
-        # This will be set in get_list_of_articles() depending on what issue we're fetching.
-        # A datetime object.
+        # This will be set in get_list_of_articles() depending on what issue we're 
+        # etching. A datetime object.
         self.issue_date = ''
         
         # Will be set in start() to a path of self.archive_dir plus self.issue_date
         self.issue_archive_dir = ''
         
-        # The URLs of the full list of the current issue of the Guardian and Observer.
+        # The URLs of the full list of the current issue of the Guardian and
+        # Observer.
         self.source_urls = {
             'guardian': 'http://www.guardian.co.uk/theguardian/all/',
             'observer': 'http://www.guardian.co.uk/theobserver/all/',
         }
         
-        # When we've worked out what date we're on, this will be either 'guardian' or 'observer'.
+        # When we've worked out what date we're on, this will be either 'guardian'
+        # or 'observer'.
         self.paper_name = ''
         
         
-        # Mapping the sectionId of a story to the (smaller number) of different coloured sections.
+        # Mapping the sectionId of a story to the (smaller number) of different
+        # coloured sections.
         self.section_ids = {
             'artanddesign':     'culture',
             'books':            'culture',
@@ -83,6 +98,11 @@ class GuardianGrabber:
             'uk':               'news',
             'world':            'news',
         }
+
+        # Will be the lockfile we check to make sure this script doesn't run
+        # multiple times.
+        self.lock_file_path = ".lock.pod"
+        self.lock_file = None
         
         
         # Second, load stuff from the config file.
@@ -101,12 +121,29 @@ class GuardianGrabber:
         
         self.verbose = config.getboolean('Settings', 'verbose')
         
-        
+    def lockFile(self):
+        """
+        Create a file to show this script is running.
+        """
+        if os.path.isfile(self.lock_file_path):
+            # Oops, file is there already, the script must be running. 
+            raise ScraperError("Lock file found (" + self.lock_file_path + "), exiting.")
+            sys.exit(0)
+        else:
+            # No lock file. Create one and onwards we go.
+            self.lock_file = os.open(self.lock_file_path, 777)
+
+    def unlockFile(self):
+        os.close(self.lock_file)
+        os.remove(self.lock_file_path)
         
     def start(self):
         """
-        The main action. Fetches all of the required data for today's paper and saves it locally.
+        The main action. Fetches all of the required data for today's paper and
+        saves it locally.
         """
+
+        self.lockFile()
         
         # Populate self.contents.
         self.get_list_of_articles()
@@ -130,12 +167,15 @@ class GuardianGrabber:
         if os.path.exists(old_dir):
             shutil.rmtree(old_dir)
  
-        # Write all the information about this issue to a contents.json file within the dated folder.
+        # Write all the information about this issue to a contents.json file within
+        # the dated folder.
         try:
             with open(self.issue_archive_dir + 'contents.json', mode='w') as fp:
                 json.dump(self.contents, fp)
         except EnvironmentError:
             raise ScraperError("Unable to write the contents.json file.")
+
+        self.unlockFile()
         
 
     def get_list_of_articles(self):
@@ -167,9 +207,9 @@ class GuardianGrabber:
                 o = urlparse.urlparse(article_url)
                 new_section['links'].append({
                     'path': o.path,
-                    # We also store the title here, rather than use the one from the API,
-                    # in case we fail to fetch the page from the API - we'll still want to 
-                    # display the title in the article's page.
+                    # We also store the title here, rather than use the one from the
+                    # API, in case we fail to fetch the page from the API - we'll
+                    # still want to display the title in the article's page.
                     'title': a.string
                 })
             
@@ -186,18 +226,20 @@ class GuardianGrabber:
         # Close enough to UK time. Can't work out how to get GMT/BST appropriately.
         date_today = datetime.datetime.utcnow()
         
-        # Get the page of paper contents correct for this day, and put the HTML into Beautiful Soup.
+        # Get the page of paper contents correct for this day, and put the HTML into
+        # Beautiful Soup.
         soup = BeautifulSoup( self.fetch_page( self.paper_url(date_today) ) )
         
-        # Scrape the page for the date printed on it and compare that to today's date.
+        # Scrape the page for the date printed on it and compare that to today's
+        # date.
         date_diff = date_today - self.scrape_print_date(soup)
         
         # What's the difference between the dates?.
         # If it's one day out, that's fine - could be that it's currently
         # just past midnight and yesterday's Guardian is still up.
-        # But if it's more than one day, it could be that it's just past midnight on Monday and
-        # we've fetched the Guardian's current contents but it's Saturday's. So we need to try 
-        # again, and fetch Sunday's Observer instead.
+        # But if it's more than one day, it could be that it's just past midnight on
+        # Monday and we've fetched the Guardian's current contents but it's
+        # Saturday's. So we need to try again, and fetch Sunday's Observer instead.
         if date_diff.days > 1:
             print "Difference is more than one day."
             date_yesterday = date_today - datetime.timedelta(1)
@@ -219,8 +261,9 @@ class GuardianGrabber:
     
     def scrape_print_date(self, soup):
         """
-        Given a Beautiful Soup object of the page of a Guardian/Observer issue contents
-        this will extract the date of the issue from the page and return a datetime object.
+        Given a Beautiful Soup object of the page of a Guardian/Observer issue
+        contents this will extract the date of the issue from the page and return a
+        datetime object.
         """
         # Get the URL for the issue we're looking at, from the calendar <table>.
         today_url = soup.find('a', {'class': 'today'}).get('href', '')
@@ -246,7 +289,8 @@ class GuardianGrabber:
         
     def fetch_all_articles(self):
         """
-        Fetches all of the contents of the articles from the API and saves the HTMLised version to disk.
+        Fetches all of the contents of the articles from the API and saves the
+        HTMLised version to disk.
         """
         
         url_args = {
@@ -269,14 +313,16 @@ class GuardianGrabber:
                 try:
                     response = urllib2.urlopen(req)
                 except urllib2.URLError, e:
-                    # We shoudn't get an error, as we got all the URLs from the Guardian,
+                    # We shoudn't get an error, as we got all the URLs from the
+                    # Guardian,
                     # but I've still had 404s on occasion.
                     if hasattr(e, 'reason'):
                         message = "We failed to reach a server. Reason: "+e.reason
                     elif hasattr(e, 'code'):
                         message = "The server couldn't fulfill the request. Error code: "+str(e.code)
                     self.message(message)
-                    # Fake a JSON structure, so that we still have a page for this story.
+                    # Fake a JSON structure, so that we still have a page for this
+                    # story.
                     result = {
                         'response': {
                             'content': {
@@ -299,7 +345,8 @@ class GuardianGrabber:
                 html = self.make_article_html(result['response']['content'])
                 
                 # Get the last part of the article's URL
-                # eg 'trident-savings-nuclear-deterrent' from '/uk/2010/may/19/trident-savings-nuclear-deterrent'
+                # eg 'trident-savings-nuclear-deterrent' from
+                # '/uk/2010/may/19/trident-savings-nuclear-deterrent'
                 match_filename = re.compile(r'/([^/]*)$')
                 filename = match_filename.search(link['path']).groups()[0] + '.html'
                 self.contents['sections'][section_index]['links'][link_index]['file'] = filename
@@ -329,7 +376,8 @@ class GuardianGrabber:
         
     def make_article_html(self, content):
         """
-        Takes the content dictionary from the Guardian Item API call and returns a simple HTML version of it.
+        Takes the content dictionary from the Guardian Item API call and returns a
+        simple HTML version of it.
         """
         
         if 'sectionId' in content and content['sectionId'] in self.section_ids:
