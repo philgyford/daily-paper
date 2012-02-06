@@ -101,7 +101,7 @@ class GuardianGrabber:
 
         # Will be the lockfile we check to make sure this script doesn't run
         # multiple times.
-        self.lock_file_path = ".lock.pod"
+        self.lock_file_path = sys.path[0]+'/.lock.pod'
         self.lock_file = None
         
         
