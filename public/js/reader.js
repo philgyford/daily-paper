@@ -333,20 +333,6 @@ var reader = {
 				- $('#page-'+reader.currentPos).padding().left 
 				- $('#page-'+reader.currentPos).padding().right 
 			);
-
-			if (reader.isIOS) {
-				// Stupid fix for iOS's inability to implement position:fixed.
-				// Also in moveToArticleAfter().
-				var adjustNextPrev = function(){
-					$('#next,#prev').css({top: window.pageYOffset + 'px'}).height($(window).height());
-				};
-				$(window).scroll(adjustNextPrev).load(function(){
-					// The page might (re)load and jump immediately to part-way
-					// down. So need to adjust nextprev as if scrolled.
-					// But without the setTimeout it doesn't happen.
-					setTimeout(adjustNextPrev, 500);
-				});
-			};
 		};
 
 		// Make the nav appear briefly where available.
@@ -869,12 +855,6 @@ var reader = {
 		
 		// In case scrollbars have appeared/disappeared and changed page width.
 		reader.resizePage();
-
-		if (reader.isIOS) {
-			// Stupid fix for iOS's inability to implement position:fixed.
-			// Also in initializePage().
-			$('#next,#prev').css({top: window.pageYOffset + 'px'}).height($(window).height());
-		};
 
 		// Pre-load more pages.
 		reader.loadCachedArticles();
