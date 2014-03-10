@@ -449,7 +449,7 @@ class GuardianGrabber:
         Make text more nicerer. Run it through SmartyPants and Widont.
         """
         text = self.widont(text)
-        text = smartypants.smartyPants(text)
+        text = smartypants.smartypants(text)
         return text
         
         
