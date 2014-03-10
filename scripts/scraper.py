@@ -131,10 +131,10 @@ class GuardianGrabber:
             sys.exit(0)
         else:
             # No lock file. Create one and onwards we go.
-            self.lock_file = os.open(self.lock_file_path, 777)
+            self.lock_file = open(self.lock_file_path, 'w+')
 
     def unlockFile(self):
-        os.close(self.lock_file)
+        self.lock_file.close()
         os.remove(self.lock_file_path)
         
     def start(self):
