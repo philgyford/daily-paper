@@ -317,7 +317,7 @@ class GuardianGrabber:
                     # Guardian,
                     # but I've still had 404s on occasion.
                     if hasattr(e, 'reason'):
-                        message = "We failed to reach a server. Reason: "+e.reason
+                        message = "We failed to reach a server. Reason: "+e.reason+str(e.code)
                     elif hasattr(e, 'code'):
                         message = "The server couldn't fulfill the request. Error code: "+str(e.code)
                     self.message(message)
@@ -331,7 +331,7 @@ class GuardianGrabber:
                                 'webUrl': 'http://www.theguardian.com' + link['path'],
                                 'fields': {
                                     'headline': link['title'],
-                                    'body': '(Sorry, there was an error fetching this article: '+message+')'
+                                    'body': '(There was an error fetching this article: '+message+')'
                                 }
                             }
                         }
