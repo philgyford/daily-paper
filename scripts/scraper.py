@@ -320,7 +320,7 @@ class GuardianGrabber:
                     # v2 of the API seems to return 404 if the article is just
                     # not available due to rights. Grrrrr.
                     if hasattr(e, 'code') and e.code == 404:
-                        message = "We couldn't find this article. It might not be available due to rights issues."
+                        message = "We couldn't find it. It might be unavailable due to rights issues."
                     elif hasattr(e, 'reason'):
                         message = "We failed to reach a server. Reason: "+e.reason
                     elif hasattr(e, 'code'):
@@ -336,7 +336,7 @@ class GuardianGrabber:
                                 'webUrl': 'http://www.theguardian.com' + link['path'],
                                 'fields': {
                                     'headline': link['title'],
-                                    'body': '(There was an error fetching this article: '+message+')'
+                                    'body': '<div class="error"><p>There was an error fetching this article:<br>'+message+'</p><p><a href="http://www.theguardian.com'+link['path']+'">View on theGuardian.com</a></p></div>'
                                 }
                             }
                         }

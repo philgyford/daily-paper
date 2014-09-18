@@ -201,6 +201,11 @@ div.hr {
 	background: #666;
 }
 
+.alert {
+	margin-left: 40px;
+	margin-right: 40px;
+	line-height: 1.5em;
+}
 
 /***************************************************
  * CONTENT
@@ -216,6 +221,12 @@ div.hr {
 	margin-bottom: 0.8em;
 	height: 1.5em;
 }
+.page .error {
+	color: #999;
+	border-top: 1px solid #ddd;
+	padding-top: 1em;
+}
+
 .section-news .meta { border-color: #D61D00; color: #D61D00; }
 .section-sport .meta { border-color: #008000; color: #008000; }
 .section-comment .meta { border-color: #0061A6; color: #0061A6; }
@@ -283,7 +294,11 @@ div.hr {
 .page blockquote {
 	margin-left: 25px;
 }
-
+.page .gu-video {
+	width: 100%;
+	margin-top: 1em;
+	margin-bottom: 1em;
+}
 div.gu_advert {
 	height: 250px;
 }
