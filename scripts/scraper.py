@@ -316,8 +316,13 @@ class GuardianGrabber:
                     # We shoudn't get an error, as we got all the URLs from the
                     # Guardian,
                     # but I've still had 404s on occasion.
-                    if hasattr(e, 'reason'):
-                        message = "We failed to reach a server. Reason: "+e.reason+str(e.code)
+
+                    # v2 of the API seems to return 404 if the article is just
+                    # not available due to rights. Grrrrr.
+                    if hasattr(e, 'code') and e.code == 404:
+                        message = "We couldn't find this article. It might not be available due to rights issues."
+                    elif hasattr(e, 'reason'):
+                        message = "We failed to reach a server. Reason: "+e.reason
                     elif hasattr(e, 'code'):
                         message = "The server couldn't fulfill the request. Error code: "+str(e.code)
                     self.message(message)
