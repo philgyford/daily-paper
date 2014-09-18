@@ -63,8 +63,8 @@ class GuardianGrabber:
         # The URLs of the full list of the current issue of the Guardian and
         # Observer.
         self.source_urls = {
-            'guardian': 'http://www.guardian.co.uk/theguardian/all/',
-            'observer': 'http://www.guardian.co.uk/theobserver/all/',
+            'guardian': 'http://www.theguardian.com/theguardian/all/',
+            'observer': 'http://www.theguardian.com/theobserver/all/',
         }
         
         # When we've worked out what date we're on, this will be either 'guardian'
@@ -328,7 +328,7 @@ class GuardianGrabber:
                             'content': {
                                 'id': link['path'],
                                 'webTitle': link['title'],
-                                'webUrl': 'http://www.guardian.co.uk' + link['path'],
+                                'webUrl': 'http://www.theguardian.com' + link['path'],
                                 'fields': {
                                     'headline': link['title'],
                                     'body': '(Sorry, there was an error fetching this article: '+message+')'
