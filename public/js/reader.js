@@ -45,6 +45,14 @@ window.log = function(){
 };
 
 /**
+ * Capitalizes first character of a string.
+ * eg 'hello'.capitalize() => 'Hello'
+ */
+String.prototype.capitalize = function() {
+    return this.charAt(0).toUpperCase() + this.slice(1);
+}
+
+/**
  * The custom code for the main functionality of the site.
  */
 var reader = {
@@ -893,10 +901,14 @@ var reader = {
 	processContents: function() {
 		$.each(reader.issueContents.sections, function(n, section) {
 			
+      // Make section names a bit shorter by turning things like
+      // "Guardian review" into "Review".
+      var sectionName = section.meta.title.replace(/^(Guardian|Observer) /, '').capitalize()
+
 			// Make a <div> to hold the progress markers for each section.
 			$progressDiv = $('<div/>').attr({
 				'id': 'progress-'+(n+1)
-			}).html('<span>'+section.meta.title+'</span>').click(function(){
+			}).html('<span>'+sectionName+'</span>').click(function(){
 				reader.changeSection(n+1);
 			});
 			
