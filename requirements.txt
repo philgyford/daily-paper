@@ -1,2 +1,3 @@
 BeautifulSoup==3.2.1
+requests==2.5.1
 smartypants==1.8.6

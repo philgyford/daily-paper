@@ -26,10 +26,12 @@ stored in a dated directory within the archive/ directory.
 
 ## Requirements
 
-The Python script for fetching the papers' content requires: the 
+The Python script for fetching the papers' content requires:
 
 * [Beautiful Soup](http://www.crummy.com/software/BeautifulSoup/).
+* [Requests](http://docs.python-requests.org/en/latest/)
 * [Smartypants](http://web.chad.org/projects/smartypants.py/)
+
 
 The JavaScript requires [jQuery](http://jquery.com/) and a copy is
 automatically included from [Google's
@@ -50,7 +52,9 @@ iPhone/iPad/iPod Touch. I've never used it on an Android device.
 1. [Get an API key](http://guardian.mashery.com/) for the Guardian Open
    Platform.
 
-2. Install the BeautifulSoup and Smartypants Python libraries.
+2. Install the BeautifulSoup, Requests and Smartypants Python libraries. It's 
+   easiest to use [pip](https://pip.pypa.io/en/latest/) and do
+   `pip install -r requirements.txt` in your shell.
 
 3. Make the daily-paper/public/ directory readable from the web. You can move
    it elsewhere without breaking the Python script, although I guess that will

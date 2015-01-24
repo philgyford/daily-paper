@@ -4,12 +4,11 @@ import fcntl
 import json
 import os
 import re
+import requests
 import shutil
 import smartypants
 import sys
 import time
-import urllib
-import urllib2
 import urlparse
 from BeautifulSoup import BeautifulSoup
 
@@ -300,32 +299,35 @@ class GuardianGrabber:
             'show-factboxes': 'all',
         }
         
-        query_string = '?' + urllib.urlencode(url_args)
-        
         for section_index, section in enumerate(self.contents['sections']):
             for link_index, link in enumerate(section['links']):
                 article_url = 'http://content.guardianapis.com' + link['path']
                 
                 self.message('Fetching JSON: ' + article_url)
-                
-                req = urllib2.Request(article_url + query_string)
+
+                error_message = ''
                 
                 try:
-                    response = urllib2.urlopen(req)
-                except urllib2.URLError, e:
-                    # We shoudn't get an error, as we got all the URLs from the
-                    # Guardian,
-                    # but I've still had 404s on occasion.
+                    response = requests.get(article_url, params=url_args,
+                                            timeout=10)
+                except requests.exceptions.ConnectionError as e:
+                    error_message = "Can't connect to domain."
+                except requests.exceptions.ConnectTimeout as e:
+                    error_message = "Connection timed out."
+                except requests.exceptions.ReadTimeout as e:
+                    error_message = "Read timed out."
 
-                    # v2 of the API seems to return 404 if the article is just
-                    # not available due to rights. Grrrrr.
-                    if hasattr(e, 'code') and e.code == 404:
-                        message = "We couldn't find it. It might be unavailable due to rights issues."
-                    elif hasattr(e, 'reason'):
-                        message = "We failed to reach a server. Reason: "+e.reason
-                    elif hasattr(e, 'code'):
-                        message = "The server couldn't fulfill the request. Error code: "+str(e.code)
-                    self.message(message)
+                try:
+                    response.raise_for_status()
+                except requests.exceptions.HTTPError as e:
+                    error_message = "HTTP Error: %s" % response.status_code
+
+                if error_message:
+                    if response.status_code == 403:
+                        error_message = "This article can only be read on theguardian.com due to rights issues."
+                    elif response.status_code == 404:
+                        error_message = "This article was missing when we tried to fetch it."
+                    self.message(error_message)
                     # Fake a JSON structure, so that we still have a page for this
                     # story.
                     result = {
@@ -336,16 +338,15 @@ class GuardianGrabber:
                                 'webUrl': 'http://www.theguardian.com' + link['path'],
                                 'fields': {
                                     'headline': link['title'],
-                                    'body': '<div class="error"><p>There was an error fetching this article:<br>'+message+'</p><p><a href="http://www.theguardian.com'+link['path']+'">View on theGuardian.com</a></p></div>'
+                                    'body': '<div class="error"><p>'+error_message+'</p><p><a href="http://www.theguardian.com'+link['path']+'">View on theGuardian.com</a></p></div>'
                                 }
                             }
                         }
                     }
-                    e.close()
                     
                 else:
                     # We got a pagea successfully.
-                    result = json.load(response)
+                    result = response.json()
                 
                 html = self.make_article_html(result['response']['content'])
                 
@@ -517,17 +518,21 @@ class GuardianGrabber:
 
         self.message('Fetching: ' + url)
         
-        req = urllib2.Request(url)
-        
         try:
-            response = urllib2.urlopen(req)
-        except IOError, e:
-            if hasattr(e, 'reason'):
-                raise ScraperError("We failed to reach a server. Reason: ", e.reason)
-            elif hasattr(e, 'code'):
-                raise ScraperError("The server couldn't fulfill the request. Error code: ", e.code)
-        else:
-            return response.read()
+            response = requests.get(url, timeout=10)
+        except requests.exceptions.ConnectionError as e:
+            raise ScraperError("Can't connect to domain.")
+        except requests.exceptions.ConnectTimeout as e:
+            raise ScraperError("Connection timed out.")
+        except requests.exceptions.ReadTimeout as e:
+            raise ScraperError("Read timed out.")
+
+        try:
+            response.raise_for_status()
+        except requests.exceptions.HTTPError as e:
+            raise ScraperError("HTTP Error: %s" % response.status_code)
+
+        return response.text
     
     def count_words(self, text):
         self.LINE_SEPS = ['\n']
