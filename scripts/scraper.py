@@ -6,10 +6,12 @@ import os
 import re
 import requests
 import shutil
+import signal
 import smartypants
 import sys
 import time
 import urlparse
+import warnings
 from BeautifulSoup import BeautifulSoup
 
 
@@ -100,9 +102,7 @@ class GuardianGrabber:
 
         # Will be the lockfile we check to make sure this script doesn't run
         # multiple times.
-        self.lock_file_path = sys.path[0]+'/.lock.pod'
-        self.lock_file = None
-        
+        self.lockfile_path = sys.path[0]+'/lock.pid'
         
         # Second, load stuff from the config file.
         
@@ -120,21 +120,43 @@ class GuardianGrabber:
         
         self.verbose = config.getboolean('Settings', 'verbose')
         
-    def lockFile(self):
+    def checkForOldProcesses(self):
+        """
+        Checks the lockfile to see if there's an older process running.
+        If so, tries to kill it and deletes the lockfile.
+        """
+        if os.access(self.lockfile_path, os.F_OK):
+            # If the file is there, check the PID number.
+            lockfile = open(self.lockfile_path, 'r')
+            lockfile.seek(0)
+            old_pid = lockfile.readline()
+            if old_pid:
+                try:
+                    # Doesn't kill it, but checks to see if the pid exists.
+                    os.kill(int(old_pid), 0)
+                    try:
+                        os.kill(int(old_pid), signal.SIGQUIT)
+                        self.removeLockfile
+                        warnings.warn("Lockfile found ("+self.lockfile_path+"). An instance of this program was already running as process "+old_pid+" but it was killed. Continuing")
+                    except OSError:
+                        # Couldn't kill it. Quit.
+                        raise ScraperError("Lockfile found (%s).\nAn instance of this program is already running as process %s but it could not be killed.\nExiting." % (self.lockfile_path, old_pid))
+                except OSError:
+                    # Process not running. Just delete file.
+                    self.removeLockfile
+            else:
+                warnings.warn("Lockfile found ("+self.lockfile_path+") but it did not contain a PID. Deleting it and continuing.")
+
+    def makeLockfile(self):
         """
         Create a file to show this script is running.
         """
-        if os.path.isfile(self.lock_file_path):
-            # Oops, file is there already, the script must be running. 
-            raise ScraperError("Lock file found (" + self.lock_file_path + "), exiting.")
-            sys.exit(0)
-        else:
-            # No lock file. Create one and onwards we go.
-            self.lock_file = open(self.lock_file_path, 'w+')
+        lockfile = open(self.lockfile_path, 'w')
+        lockfile.write("%s" % os.getpid())
+        lockfile.close()
 
-    def unlockFile(self):
-        self.lock_file.close()
-        os.remove(self.lock_file_path)
+    def removeLockfile(self):
+        os.remove(self.lockfile_path)
         
     def start(self):
         """
@@ -142,7 +164,8 @@ class GuardianGrabber:
         saves it locally.
         """
 
-        self.lockFile()
+        self.checkForOldProcesses()
+        self.makeLockfile()
         
         # Populate self.contents.
         self.get_list_of_articles()
@@ -174,7 +197,7 @@ class GuardianGrabber:
         except EnvironmentError:
             raise ScraperError("Unable to write the contents.json file.")
 
-        self.unlockFile()
+        self.removeLockfile()
         
 
     def get_list_of_articles(self):
@@ -521,16 +544,16 @@ class GuardianGrabber:
         try:
             response = requests.get(url, timeout=10)
         except requests.exceptions.ConnectionError as e:
-            raise ScraperError("Can't connect to domain.")
+            self.message("Can't connect to domain.")
         except requests.exceptions.ConnectTimeout as e:
-            raise ScraperError("Connection timed out.")
+            self.message("Connection timed out.")
         except requests.exceptions.ReadTimeout as e:
-            raise ScraperError("Read timed out.")
+            self.message("Read timed out.")
 
         try:
             response.raise_for_status()
         except requests.exceptions.HTTPError as e:
-            raise ScraperError("HTTP Error: %s" % response.status_code)
+            self.message("HTTP Error: %s" % response.status_code)
 
         return response.text
     
