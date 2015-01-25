@@ -347,7 +347,7 @@ class GuardianGrabber:
 
                 if error_message:
                     if response.status_code == 403:
-                        error_message = "This article can only be read on theguardian.com due to rights issues."
+                        error_message = "This article can only be read on theGuardian.com due to rights issues."
                     elif response.status_code == 404:
                         error_message = "This article was missing when we tried to fetch it."
                     self.message(error_message)
