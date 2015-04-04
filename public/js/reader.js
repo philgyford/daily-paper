@@ -1,6 +1,6 @@
 /**
  * Today's Guardian javascript.
- * https://github.com/philgyford/daily-paper/ 
+ * https://github.com/philgyford/daily-paper/
  * This file contains various libraries in one file for loading speed.
  *
  * The main code (reader) under the 3-clause BSD License (see LICENSE.txt).
@@ -15,19 +15,19 @@
  *  * Live Query - For attaching events to elements when they appear.
  *
  *  Start this all working with:
- * 
+ *
  *  		$(document).ready(function() {
  * 			reader.initialize();
  * 		});
- * 
+ *
  *  You can optionally pass this in to the initialize() function:
  * 				{'trackEvents': true}
  *  If you're using Google Analytics, this will then send this call whenever
  *  a new article is viewed:
  *  _gaq.push(['_trackEvent', 'Articles', 'View', reader.issueArticles[idx-1]['path']]);
- * 
+ *
  *  By default, event tracking is off.
- * 
+ *
  */
 
 
@@ -318,7 +318,7 @@ var reader = {
 
 		// After this reader.currentPos will be set.
 		// But probably too late to be of use here, but we can keep using
-		// articleIdx. 
+		// articleIdx.
 		reader.moveToArticle(initialArticleIdx);
 
 		if (reader.hasTouch) {
@@ -332,14 +332,14 @@ var reader = {
 			// Occasionally we get an article that's so short it doesn't fill the
 			// full width of the page. And because we don't have any fixed widths
 			// for .touch styles (because it screws up iPhone scaling) the page
-			// shrinks to the min-width. And that screws up the transform to/from 
+			// shrinks to the min-width. And that screws up the transform to/from
 			// the too-small page.
 			// So we're going to manually set the width of all the .pages based on
 			// the width of the #window (minus the padding applied to the .pages).
-			$('.page').width( 
-				  $('#window').width() 
-				- $('#page-'+reader.currentPos).padding().left 
-				- $('#page-'+reader.currentPos).padding().right 
+			$('.page').width(
+				  $('#window').width()
+				- $('#page-'+reader.currentPos).padding().left
+				- $('#page-'+reader.currentPos).padding().right
 			);
 		};
 
@@ -350,12 +350,12 @@ var reader = {
 		} else if (initialArticleIdx == reader.issueArticles.length) {
 			// Last article.
 			reader.glowNav('prev', 'slow');
-		} else { 
+		} else {
 			reader.glowNav('next', 'slow');
 			reader.glowNav('prev', 'slow');
 		};
 
-		// Set the next/prev links and main content position to change if we 
+		// Set the next/prev links and main content position to change if we
 		// resize the window.
 		$(window).resize(function(){
 			reader.resizePage();
@@ -560,7 +560,7 @@ var reader = {
 
 	/**
 	 * Which article do we display when first arriving at the page?
-	 * If there's no cookie, it's the first one. 
+	 * If there's no cookie, it's the first one.
 	 * If there is a cookie we'll jump straight to the one with the ID in their
 	 * (if it's in today's paper).
 	 * This method just returns the articleIdx to display first.
@@ -975,7 +975,7 @@ var reader = {
 	
 	/**
 	 * Set the dimensions of the next/prev links and main content.
-	 * Called when the page is first drawn, whenever the window is resized, and 
+	 * Called when the page is first drawn, whenever the window is resized, and
 	 * when we move to a new article.
 	 *
 	 * Scrollbar detection:
@@ -984,8 +984,8 @@ var reader = {
 	resizePage: function() {
 		
 		if (reader.hasTouch) {
-			var articleWidth = $('div#window').innerWidth() 
-								- $('div.page').padding().left 
+			var articleWidth = $('div#window').innerWidth()
+								- $('div.page').padding().left
 								- $('div.page').padding().right;
 			$('div.page').width( articleWidth );
 			$('div.body').width( articleWidth );
@@ -1033,13 +1033,13 @@ var reader = {
 				viewportHeight -= 3;
 			};
 		};
-					   
+
 		// The height of all the elements that don't change from one article to
 		// the next.
-		var furnitureHeight = $('#main').padding().top 
-				+ $('#main').padding().bottom 
-				+ $('#title').height() 
-				+ $('#progress').outerHeight(true) 
+		var furnitureHeight = $('#main').padding().top
+				+ $('#main').padding().bottom
+				+ $('#title').height()
+				+ $('#progress').outerHeight(true)
 				+ $('#footer').outerHeight(true);
 		
 		// Height of this article, not including the .body element.
@@ -1060,7 +1060,7 @@ var reader = {
 			// Stretch article body so it'll fill the page.
 			$('div.body', $obj).height(
 				$(window).height()
-				- furnitureHeight 
+				- furnitureHeight
 				- articleHeightMinusBody
 			);
 
@@ -1078,8 +1078,8 @@ var reader = {
 				// We need to add space to the right of short articles so that
 				// everything is the same width as when the scrollbar is there,
 				// to stop things jiggling.
-				var prevWidth = ( 
-						$(window).width() - scrollbarWidth - $('#main').width() 
+				var prevWidth = (
+						$(window).width() - scrollbarWidth - $('#main').width()
 					) / 2;
 
 				var nextWidth = prevWidth + scrollbarWidth;
@@ -1114,7 +1114,7 @@ var reader = {
 	/**
 	 * Jump ahead one section.
 	 */
-	sectionNext: function() { 
+	sectionNext: function() {
 		var sectionToMoveTo = reader.currentSection + 1;
 		if ($('#progress-'+sectionToMoveTo).exists()) {
 			reader.changeSection(sectionToMoveTo);
@@ -1236,7 +1236,7 @@ var reader = {
 /*!
  * jQuery scrollbarWidth - v0.2 - 2/11/2009
  * http://benalman.com/projects/jquery-misc-plugins/
- * 
+ *
  * Copyright (c) 2010 "Cowboy" Ben Alman
  * Dual licensed under the MIT and GPL licenses.
  * http://benalman.com/about/license/
@@ -1246,21 +1246,21 @@ var reader = {
 
 (function($,undefined,width){
   '$:nomunge'; // Used by YUI compressor.
-  
+
   $.scrollbarWidth = function() {
     var parent,
       child;
-    
+
     if ( width === undefined ) {
       parent = $('<div style="width:50px;height:50px;overflow:auto"><div/></div>').appendTo('body');
       child = parent.children();
       width = child.innerWidth() - child.height( 99 ).innerWidth();
       parent.remove();
     }
-    
+
     return width;
   };
-  
+
 })(jQuery);
 
 
@@ -1298,16 +1298,16 @@ var reader = {
 		specialKeys: {
 			8: "backspace", 9: "tab", 13: "return", 16: "shift", 17: "ctrl", 18: "alt", 19: "pause",
 			20: "capslock", 27: "esc", 32: "space", 33: "pageup", 34: "pagedown", 35: "end", 36: "home",
-			37: "left", 38: "up", 39: "right", 40: "down", 45: "insert", 46: "del", 
+			37: "left", 38: "up", 39: "right", 40: "down", 45: "insert", 46: "del",
 			96: "0", 97: "1", 98: "2", 99: "3", 100: "4", 101: "5", 102: "6", 103: "7",
-			104: "8", 105: "9", 106: "*", 107: "+", 109: "-", 110: ".", 111 : "/", 
-			112: "f1", 113: "f2", 114: "f3", 115: "f4", 116: "f5", 117: "f6", 118: "f7", 119: "f8", 
+			104: "8", 105: "9", 106: "*", 107: "+", 109: "-", 110: ".", 111 : "/",
+			112: "f1", 113: "f2", 114: "f3", 115: "f4", 116: "f5", 117: "f6", 118: "f7", 119: "f8",
 			120: "f9", 121: "f10", 122: "f11", 123: "f12", 144: "numlock", 145: "scroll", 191: "/", 224: "meta"
 		},
 
 		shiftNums: {
-			"`": "~", "1": "!", "2": "@", "3": "#", "4": "$", "5": "%", "6": "^", "7": "&", 
-			"8": "*", "9": "(", "0": ")", "-": "_", "=": "+", ";": ": ", "'": "\"", ",": "<", 
+			"`": "~", "1": "!", "2": "@", "3": "#", "4": "$", "5": "%", "6": "^", "7": "&",
+			"8": "*", "9": "(", "0": ")", "-": "_", "=": "+", ";": ": ", "'": "\"", ",": "<",
 			".": ">",  "/": "?",  "\\": "|"
 		}
 	};
