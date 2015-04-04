@@ -280,6 +280,47 @@ div.hr {
 .page .body h2 {
 	font-weight: bold;
 }
+
+/* Images and videos */
+.page figure {
+	margin: 1em auto;
+	/* To help keep the figcaption to the right width (see below). */
+	display: table;
+}
+.page figure img,
+.page figure video {
+	display: block;
+	margin: 0 auto;
+	max-width: 100%;
+	width: 100%;
+	height: auto;
+}
+.page figure figcaption {
+	margin-top: 0.3em;
+	font-family: "Lucida Sans", "Lucida Grande", "Lucida Sans Unicode", sans-serif;
+	line-height: 1.5em;
+	min-width: 200px; /* So it doesn't get too thin, if image is thin. */
+	/* Keeps it the same width as the image. */
+	display: table-caption;
+	caption-side: bottom;
+}
+.page figure figcaption span {
+	display: block;
+}
+.page figure figcaption .element-image__credit {
+	color: #999;
+}
+.page blockquote footer {
+	margin-bottom: 1em;
+}
+
+/* Distractions to hide: */
+.page .element-rich-link,
+.page .element-pullquote {
+	display: none;
+}
+
+/* Page footer */
 .page .footer {
 	clear: both;
 	float: left;
@@ -498,6 +539,7 @@ body#about-page {
 #title,
 #progress span,
 .page p.byline,
+.page figure figcaption,
 .page .footer p,
 #about-page .close,
 #footer p {
@@ -511,6 +553,8 @@ body#about-page {
 }
 .page .body h2,
 .page p,
+.page li,
+.page blockquote footer,
 #about-page p {
 	font-size: 1em;
 	line-height: 1.5em; /* 24px */
