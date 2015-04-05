@@ -1045,10 +1045,15 @@ var reader = {
 		// So for each of them, find the 'body' element of the included page
 		// and set the iframe to the height of it.
 		$('iframe', $obj).each(function(idx){
-			$body = $(this).contents().find('body');
-			if ($body) {
-				$(this).height($body.outerHeight(true));
-			};
+			// Because we're on http, if the iframe contains an https request,
+			// like to youtube.com, the contents() causes an exception. For now,
+			// we'll just move on if that happens.
+			try{
+				$body = $(this).contents().find('body');
+				if ($body) {
+					$(this).height($body.outerHeight(true));
+				};
+			} catch(e) {};
 		});
 
 		// The height of all the elements that don't change from one article to
