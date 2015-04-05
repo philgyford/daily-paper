@@ -321,14 +321,21 @@ var reader = {
 		// articleIdx.
 		reader.moveToArticle(initialArticleIdx);
 
+		$('div#page-'+initialArticleIdx+' div.body').livequery(function(){
+			// For some reason the first article doesn't finish loading
+			// when resizePage() is first called on iPad etc, so we call it
+			// again once we know things have loaded.
+
+			// But, also, newer: If the first page contains iframe(s) containing
+			// a page with an image in, then those iframes won't be sized correctly
+			// by our sizing JS (in resizeArticle()). We'd have to move to another
+			// page and back again for it to work. But it seems like calling
+			// resizePage() again fixes the problem.
+			reader.resizePage();
+		});
+
 		if (reader.hasTouch) {
 			// iPhone etc.
-			$('div#page-'+initialArticleIdx+' div.body').livequery(function(){
-				// For some reason the first article doesn't finish loading
-				// when resizePage() is first called on iPad etc, so we call it
-				// again once we know things have loaded.
-				reader.resizePage();
-			});
 			// Occasionally we get an article that's so short it doesn't fill the
 			// full width of the page. And because we don't have any fixed widths
 			// for .touch styles (because it screws up iPhone scaling) the page
@@ -1033,6 +1040,16 @@ var reader = {
 				viewportHeight -= 3;
 			};
 		};
+
+		// Some pages include iframes that load HTML pages containing an image.
+		// So for each of them, find the 'body' element of the included page
+		// and set the iframe to the height of it.
+		$('iframe', $obj).each(function(idx){
+			$body = $(this).contents().find('body');
+			if ($body) {
+				$(this).height($body.outerHeight(true));
+			};
+		});
 
 		// The height of all the elements that don't change from one article to
 		// the next.
