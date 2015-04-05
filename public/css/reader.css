@@ -281,6 +281,21 @@ div.hr {
 	font-weight: bold;
 }
 
+.page blockquote {
+	margin-left: 25px;
+}
+.page blockquote footer {
+	margin-bottom: 1em;
+}
+.page .gu-video {
+	width: 100%;
+	margin-top: 1em;
+	margin-bottom: 1em;
+}
+div.gu_advert {
+	height: 250px;
+}
+
 /* Images and videos */
 .page figure {
 	margin: 1em auto;
@@ -310,9 +325,10 @@ div.hr {
 .page figure figcaption .element-image__credit {
 	color: #999;
 }
-.page blockquote footer {
-	margin-bottom: 1em;
+.page .element iframe {
+	overflow: hidden;
 }
+
 
 /* Distractions to hide: */
 .page .element-rich-link,
@@ -332,18 +348,6 @@ div.hr {
 .page .footer p.share input {
 	width: 12em;
 }
-.page blockquote {
-	margin-left: 25px;
-}
-.page .gu-video {
-	width: 100%;
-	margin-top: 1em;
-	margin-bottom: 1em;
-}
-div.gu_advert {
-	height: 250px;
-}
-
 
 /***************************************************
  */
