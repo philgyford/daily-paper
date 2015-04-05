@@ -666,7 +666,7 @@ var reader = {
 			var overlap = 40;
 
 			// Set the base scroll speed to 1000ms per 2000px.
-			var scrollSpeed = p.clientHeight / 2;
+			var scrollSpeed = p.clientHeight / 4;
 			
 			if (movement == 'top') {
 				// Going to the top of the page.
