@@ -540,6 +540,8 @@ body#about-page {
  * FONT SIZES
  */
 
+/* Note, these classes have a large size set for use on ipad, at end of file.
+ */
 #title,
 #progress span,
 .page p.byline,
@@ -612,6 +614,7 @@ body#about-page {
 .ipad #title,
 .ipad #progress span,
 .ipad .page p.byline,
+.ipad .page figure figcaption,
 .ipad .page .footer p,
 .ipad #about-page .close,
 .ipad #footer p {
