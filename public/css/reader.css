@@ -205,6 +205,10 @@ div.hr {
 	margin-left: 40px;
 	margin-right: 40px;
 	line-height: 1.5em;
+	padding: 0.5em 0;
+	font-weight: bold;
+	text-align: center;
+	font-family: "Lucida Sans", "Lucida Grande", "Lucida Sans Unicode", sans-serif;
 }
 
 /***************************************************
@@ -548,7 +552,8 @@ body#about-page {
 .page figure figcaption,
 .page .footer p,
 #about-page .close,
-#footer p {
+#footer p,
+.alert {
 	font-size: 0.625em; /* 10px */
 }
 

@@ -46,7 +46,7 @@ window.log = function(){
 
 /**
  * Capitalizes first character of a string.
- * eg 'hello'.capitalize() => 'Hello'
+ * eg 'hello'.capitalize() => 'ello'
  */
 String.prototype.capitalize = function() {
     return this.charAt(0).toUpperCase() + this.slice(1);
@@ -396,6 +396,11 @@ var reader = {
 			reader.showAbout();
 			return false;
 		});
+
+    $('a.alert-close').click(function(ev){
+      ev.preventDefault();
+      $('.alert').slideUp();
+    });
 	},
 
 
