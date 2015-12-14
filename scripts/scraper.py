@@ -1,5 +1,6 @@
 import ConfigParser
 import datetime
+import dateutil.parser
 import fcntl
 import json
 import os
@@ -57,48 +58,50 @@ class GuardianGrabber:
         # This will be set in get_list_of_articles() depending on what issue we're 
         # etching. A datetime object.
         self.issue_date = ''
-        
+
         # Will be set in start() to a path of self.archive_dir plus self.issue_date
         self.issue_archive_dir = ''
         
         # The URLs of the full list of the current issue of the Guardian and
         # Observer.
         self.source_urls = {
-            'guardian': 'http://www.theguardian.com/theguardian/all/',
-            'observer': 'http://www.theguardian.com/theobserver/all/',
+            'guardian': 'http://www.theguardian.com/theguardian',
+            'observer': 'http://www.theguardian.com/theobserver',
         }
         
         # When we've worked out what date we're on, this will be either 'guardian'
         # or 'observer'.
         self.paper_name = ''
         
+        # Will be fetched from the API.
+        self.sections = {}
         
         # Mapping the sectionId of a story to the (smaller number) of different
         # coloured sections.
-        self.section_ids = {
-            'artanddesign':     'culture',
-            'books':            'culture',
-            'business':         'business',
-            'commentisfree':    'comment',
-            'education':        'news',
-            'environment':      'environment',
-            'film':             'culture',
-            'football':         'sport',
-            'law':              'news',
-            'lifeandstyle':     'lifeandstyle',
-            'media':            'news',
-            'music':            'culture',
-            'politics':         'news',
-            'science':          'news',
-            'society':          'news',
-            'sport':            'sport',
-            'stage':            'culture',
-            'technology':       'news',
-            'theguardian':      'news',
-            'tv-and-radio':     'culture',
-            'uk':               'news',
-            'world':            'news',
-        }
+        #self.section_ids = {
+            #'artanddesign':     'culture',
+            #'books':            'culture',
+            #'business':         'business',
+            #'commentisfree':    'comment',
+            #'education':        'news',
+            #'environment':      'environment',
+            #'film':             'culture',
+            #'football':         'sport',
+            #'law':              'news',
+            #'lifeandstyle':     'lifeandstyle',
+            #'media':            'news',
+            #'music':            'culture',
+            #'politics':         'news',
+            #'science':          'news',
+            #'society':          'news',
+            #'sport':            'sport',
+            #'stage':            'culture',
+            #'technology':       'news',
+            #'theguardian':      'news',
+            #'tv-and-radio':     'culture',
+            #'uk':               'news',
+            #'world':            'news',
+        #}
 
         # Will be the lockfile we check to make sure this script doesn't run
         # multiple times.
@@ -166,10 +169,9 @@ class GuardianGrabber:
 
         self.checkForOldProcesses()
         self.makeLockfile()
-        
-        # Populate self.contents.
-        self.get_list_of_articles()
-        
+
+        self.set_issue_date()
+
         if self.issue_date != '':
             self.issue_archive_dir = self.archive_dir + self.issue_date.strftime("%Y-%m-%d") + '/'
         else:
@@ -179,6 +181,13 @@ class GuardianGrabber:
         if not os.path.exists(self.issue_archive_dir):
             os.makedirs(self.issue_archive_dir)
         
+        # Get the data about all the sections articles can be in.
+        self.fetch_sections()
+
+        print self.sections
+        exit()
+
+
         # Get all of today's articles and save HTML versions to disk.
         self.fetch_all_articles()
          
@@ -200,104 +209,106 @@ class GuardianGrabber:
         self.removeLockfile()
         
 
-    def get_list_of_articles(self):
-        """
-        Fetches all the information today's paper, including section names and
-        the list of links for every article within each section.
-        """
+    #def get_list_of_articles(self):
+        #"""
+        #Fetches all the information today's paper, including section names and
+        #the list of links for every article within each section.
+        #"""
         
-        soup = self.find_todays_content()
+        #soup = self.find_todays_content()
         
-        # Get each of the section headings (eg, 'Main section', 'Sport', 'G2').
-        headings = soup.find('ul', {'class': 'timeline'}).fetch('h2')
+        ## Get each of the section headings (eg, 'Main section', 'Sport', 'G2').
+        #headings = soup.find('ul', {'class': 'timeline'}).fetch('h2')
         
-        for h2 in headings:
-            # Set up the structure in which we'll store info about this section.
-            new_section = {
-                'meta': {
-                    'url': h2.find('a').get('href', ''),
-                    'title': h2.find(text = True)
-                }, 
-                'links':[]
-            }
+        #for h2 in headings:
+            ## Set up the structure in which we'll store info about this section.
+            #new_section = {
+                #'meta': {
+                    #'url': h2.find('a').get('href', ''),
+                    #'title': h2.find(text = True)
+                #}, 
+                #'links':[]
+            #}
             
-            # Get all the links for this section, and add to new_section['links]
-            article_links = h2.findNext('ul', {'class': 'all-articles'}).fetch('a')
-            for a in article_links:
-                article_url = a.get('href', '')
-                # We just store the absolute path, not the full URL.
-                o = urlparse.urlparse(article_url)
-                new_section['links'].append({
-                    'path': o.path,
-                    # We also store the title here, rather than use the one from the
-                    # API, in case we fail to fetch the page from the API - we'll
-                    # still want to display the title in the article's page.
-                    'title': a.string
-                })
+            ## Get all the links for this section, and add to new_section['links]
+            #article_links = h2.findNext('ul', {'class': 'all-articles'}).fetch('a')
+            #for a in article_links:
+                #article_url = a.get('href', '')
+                ## We just store the absolute path, not the full URL.
+                #o = urlparse.urlparse(article_url)
+                #new_section['links'].append({
+                    #'path': o.path,
+                    ## We also store the title here, rather than use the one from the
+                    ## API, in case we fail to fetch the page from the API - we'll
+                    ## still want to display the title in the article's page.
+                    #'title': a.string
+                #})
             
-            # Add this section to the contents.
-            self.contents['sections'].append(new_section)
+            ## Add this section to the contents.
+            #self.contents['sections'].append(new_section)
     
     
-    def find_todays_content(self):
-        """
-        Works out what date's paper we're getting.
-        Sets self.issue_date and self.paper_name, and returns a Beautiful Soup object
-        of the content of the page for the paper.
-        """
-        # Close enough to UK time. Can't work out how to get GMT/BST appropriately.
-        date_today = datetime.datetime.utcnow()
+    #def find_todays_content(self):
+        #"""
+        #Works out what date's paper we're getting.
+        #Sets self.issue_date and self.paper_name, and returns a Beautiful Soup object
+        #of the content of the page for the paper.
+        #"""
+        ## Close enough to UK time. Can't work out how to get GMT/BST appropriately.
+        #date_today = datetime.datetime.utcnow()
         
-        # Get the page of paper contents correct for this day, and put the HTML into
-        # Beautiful Soup.
-        soup = BeautifulSoup( self.fetch_page( self.paper_url(date_today) ) )
+        ## Get the page of paper contents correct for this day, and put the HTML into
+        ## Beautiful Soup.
+        #soup = BeautifulSoup( self.fetch_page( self.paper_url(date_today) ) )
         
-        # Scrape the page for the date printed on it and compare that to today's
-        # date.
-        date_diff = date_today - self.scrape_print_date(soup)
+        ## Scrape the page for the date printed on it and compare that to today's
+        ## date.
+        #date_diff = date_today - self.scrape_print_date(soup)
         
-        # What's the difference between the dates?.
-        # If it's one day out, that's fine - could be that it's currently
-        # just past midnight and yesterday's Guardian is still up.
-        # But if it's more than one day, it could be that it's just past midnight on
-        # Monday and we've fetched the Guardian's current contents but it's
-        # Saturday's. So we need to try again, and fetch Sunday's Observer instead.
-        if date_diff.days > 1:
-            print "Difference is more than one day."
-            date_yesterday = date_today - datetime.timedelta(1)
-            print "Trying "+date_yesterday.strftime('%Y-%m-%d')
-            soup = BeautifulSoup( self.fetch_page( self.paper_url(date_yesterday) ) )
+        ## What's the difference between the dates?.
+        ## If it's one day out, that's fine - could be that it's currently
+        ## just past midnight and yesterday's Guardian is still up.
+        ## But if it's more than one day, it could be that it's just past midnight on
+        ## Monday and we've fetched the Guardian's current contents but it's
+        ## Saturday's. So we need to try again, and fetch Sunday's Observer instead.
+        #if date_diff.days > 1:
+            #self.message("Difference between today and issue date is more than one day.")
+            #date_yesterday = date_today - datetime.timedelta(1)
+            #self.message("Trying "+date_yesterday.strftime('%Y-%m-%d'))
+            #soup = BeautifulSoup( self.fetch_page( self.paper_url(date_yesterday) ) )
             
-            if date_yesterday != self.scrape_print_date(soup):
-                raise ScraperError("We can't find the correct page of contents for today.")
+            #if date_yesterday != self.scrape_print_date(soup):
+                #raise ScraperError("We can't find the correct page of contents for today.")
 
-        self.issue_date = date_today
+        #self.issue_date = date_today
         
-        if self.issue_date.weekday() == 6:
-            self.paper_name = self.contents['meta']['paper_name'] = 'observer'
-        else:
-            self.paper_name = self.contents['meta']['paper_name'] = 'guardian'
+        #if self.issue_date.weekday() == 6:
+            #self.paper_name = self.contents['meta']['paper_name'] = 'observer'
+        #else:
+            #self.paper_name = self.contents['meta']['paper_name'] = 'guardian'
         
-        return soup
+        #return soup
         
     
-    def scrape_print_date(self, soup):
+    def set_issue_date(self):
         """
         Given a Beautiful Soup object of the page of a Guardian/Observer issue
         contents this will extract the date of the issue from the page and return a
         datetime object.
         """
-        # Get the URL for the issue we're looking at, from the calendar <table>.
-        today_url = soup.find('a', {'class': 'today'}).get('href', '')
-        
-        # Get the date parts, eg the '/2010/may/15' part from end of the URL.
-        match_today = re.compile(r'/(\d{4})/(\w{3})/(\d{2})$')
-        today = match_today.search(today_url).groups()
+        # Close enough to UK time. Can't work out how to get GMT/BST appropriately.
+        date_today = datetime.datetime.utcnow()
+
+        # Get the main content page for today's paper (Guardian/Observer):
+        soup = BeautifulSoup( self.fetch_page( self.paper_url(date_today) ) )
+
+        # Get the string representing the date, eg 'Sunday 13 December 2015'.
+        today_str = soup.find('div', {'class': 'fc-container__header__description'}).string
         
         # Set the issue date as a datetime object.
-        return datetime.datetime.strptime(' '.join(today), "%Y %b %d") 
+        self.issue_date = dateutil.parser.parse(today_str)
     
-    
+
     def paper_url(self, paper_date):
         """
         Given a datetime object it will return the URL of the Observer (on Sundays)
@@ -315,93 +326,146 @@ class GuardianGrabber:
         HTMLised version to disk.
         """
         
+        result_page = 1
+        total_result_pages = 9999999
+
+        while result_page <= total_result_pages:
+            total_result_pages = self.save_result_page(result_page)
+
+            result_page += 1
+
+            # Pause, be nice.
+            time.sleep(0.5)
+
+
+    def save_result_page(self, page):
+
+        # Get the dict of data from the API's 'response' element.
+        data = self.fetch_result_page(page)
+
+        for article in data['results']:
+            html = self.make_article_html(article)
+
+            # An article's ID is like
+            # "uk-news/2015/dec/13/york-pogrom-pride-flickers-again-jewish-community"
+            filename = article.id.replace('/', '_') + '.html'
+
+            if article.sectionId not in self.contents['sections']:
+                self.contents['sections'][article.sectionId] = {
+                    'meta': {
+                        'url': '',
+                        'title': ''
+                    },
+                    'links': []
+                }
+
+            # TODO: This is where we are. Need to massage all the data we've got back
+            # into, maybe, the order that the JS is expecting. All the stuff
+            # below is from the old code.
+
+
+
+            self.contents['sections'][section_index]['links'][link_index]['file'] = filename
+            self.contents['sections'][section_index]['links'][link_index]['id'] = result['response']['content']['id']
+            
+            if 'body' in result['response']['content']['fields']:
+                [words, lines] = self.count_words(result['response']['content']['fields']['body'])
+                self.contents['sections'][section_index]['links'][link_index]['words'] = words
+                if words > self.contents['meta']['max_words']:
+                    self.contents['meta']['max_words'] = words
+            else:
+                self.contents['sections'][section_index]['links'][link_index]['words'] = 0
+            
+            try:
+                article_file = open(self.issue_archive_dir + filename, 'w')
+                try:
+                    article_file.write(html.encode('utf-8'))
+                finally:
+                    article_file.close()
+            except IOError:
+                raise ScraperError("IOError when writing " + self.issue_archive_dir + filename)
+                
+
+        # Send back the total number of pages available.
+        return data['pages']
+
+
+    def fetch_result_page(self, page):
+        """Fetch a single page of results from the API, containing articles
+        from today's paper. Will quit if thigns go wrong.
+        Returns a an object representing the 'response' element of the JSON
+        returned from the API.
+        """
+        api_url = 'http://content.guardianapis.com/search'
+
         url_args = {
             'api-key': self.guardian_api_key,
             'format': 'json',
-            'show-fields': 'body,byline,headline,publication,shortUrl,standfirst,thumbnail',
-            'show-factboxes': 'all',
+            'page': page,
+            'show-fields': 'body,byline,headline,newspaperPageNumber,publication,shortUrl,standfirst,thumbnail,wordcount',
+            'use-date': 'newspaper-edition',
+            'from-date': datetime.datetime.strftime(self.issue_date, '%Y-%m-%d'),
+            'to-date': datetime.datetime.strftime(self.issue_date, '%Y-%m-%d'),
+            # Not sure what this was on older API:
+            #'show-factboxes': 'all',
         }
+
+        self.message('Fetching JSON for page %s' % page)
         
-        for section_index, section in enumerate(self.contents['sections']):
-            for link_index, link in enumerate(section['links']):
-                article_url = 'http://content.guardianapis.com' + link['path']
-                
-                self.message('Fetching JSON: ' + article_url)
+        return self.fetch_api_page(api_url, url_args)
 
-                error_message = ''
-                
-                try:
-                    response = requests.get(article_url, params=url_args,
-                                            timeout=10)
-                except requests.exceptions.ConnectionError as e:
-                    error_message = "Can't connect to domain."
-                except requests.exceptions.ConnectTimeout as e:
-                    error_message = "Connection timed out."
-                except requests.exceptions.ReadTimeout as e:
-                    error_message = "Read timed out."
 
-                try:
-                    response.raise_for_status()
-                except requests.exceptions.HTTPError as e:
-                    error_message = "HTTP Error: %s" % response.status_code
+    def fetch_sections(self):
+        api_url = 'http://content.guardianapis.com/sections'
 
-                if error_message:
-                    if response.status_code == 403:
-                        error_message = "This article can only be read on theGuardian.com due to rights issues."
-                    elif response.status_code == 404:
-                        error_message = "This article was missing when we tried to fetch it."
-                    self.message(error_message)
-                    # Fake a JSON structure, so that we still have a page for this
-                    # story.
-                    result = {
-                        'response': {
-                            'content': {
-                                'id': link['path'],
-                                'webTitle': link['title'],
-                                'webUrl': 'http://www.theguardian.com' + link['path'],
-                                'fields': {
-                                    'headline': link['title'],
-                                    'body': '<div class="error"><p>'+error_message+'</p><p><a href="http://www.theguardian.com'+link['path']+'">View on theGuardian.com</a></p></div>'
-                                }
-                            }
-                        }
-                    }
-                    
-                else:
-                    # We got a pagea successfully.
-                    result = response.json()
-                
-                html = self.make_article_html(result['response']['content'])
-                
-                # Get the last part of the article's URL
-                # eg 'trident-savings-nuclear-deterrent' from
-                # '/uk/2010/may/19/trident-savings-nuclear-deterrent'
-                match_filename = re.compile(r'/([^/]*)$')
-                filename = match_filename.search(link['path']).groups()[0] + '.html'
-                self.contents['sections'][section_index]['links'][link_index]['file'] = filename
-                self.contents['sections'][section_index]['links'][link_index]['id'] = result['response']['content']['id']
-                
-                if 'body' in result['response']['content']['fields']:
-                    [words, lines] = self.count_words(result['response']['content']['fields']['body'])
-                    self.contents['sections'][section_index]['links'][link_index]['words'] = words
-                    if words > self.contents['meta']['max_words']:
-                        self.contents['meta']['max_words'] = words
-                else:
-                    self.contents['sections'][section_index]['links'][link_index]['words'] = 0
-                
-                try:
-                    article_file = open(self.issue_archive_dir + filename, 'w')
-                    try:
-                        article_file.write(html.encode('utf-8'))
-                    finally:
-                        article_file.close()
-                except IOError:
-                    raise ScraperError("IOError when writing " + self.issue_archive_dir + filename)
-                
-                # Pause, be nice.
-                time.sleep(0.5)
-        
+        url_args = {
+            'api-key': self.guardian_api_key,
+            'format': 'json'
+        }
+
+        sections = self.fetch_api_page(api_url, url_args)
+
+        for section in sections['results']:
+            self.sections[section['id']] = section
             
+        return True
+
+
+    def fetch_api_page(self, url, args={}):
+        """Fetch a set of results from the API."""
+
+        error_message = ''
+        
+        try:
+            response = requests.get(url, params=args, timeout=10)
+        except requests.exceptions.ConnectionError as e:
+            error_message = "Can't connect to domain."
+        except requests.exceptions.ConnectTimeout as e:
+            error_message = "Connection timed out."
+        except requests.exceptions.ReadTimeout as e:
+            error_message = "Read timed out."
+
+        try:
+            response.raise_for_status()
+        except requests.exceptions.HTTPError as e:
+            error_message = "HTTP Error: %s" % response.status_code
+
+        if error_message:
+            self.message('Quitting: %s' % error_message)
+            exit()
+
+        result = response.json()
+        response = result['response']
+
+        if 'status' not in response:
+            self.message('Quitting, got a status of "%s"' % response['status'])
+            exit()
+        elif response['status'] != 'ok':
+            self.message('Quitting, no status in resposne')
+            exit()
+
+        return result['response']
+
         
     def make_article_html(self, content):
         """
