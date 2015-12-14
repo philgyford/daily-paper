@@ -1,5 +1,6 @@
 import ConfigParser
 import datetime
+import dateutil.parser
 import fcntl
 import json
 import os
@@ -12,7 +13,7 @@ import sys
 import time
 import urlparse
 import warnings
-from BeautifulSoup import BeautifulSoup
+from bs4 import BeautifulSoup
 
 
 class GuardianGrabber:
@@ -64,8 +65,8 @@ class GuardianGrabber:
         # The URLs of the full list of the current issue of the Guardian and
         # Observer.
         self.source_urls = {
-            'guardian': 'http://www.theguardian.com/theguardian/all/',
-            'observer': 'http://www.theguardian.com/theobserver/all/',
+            'guardian': 'http://www.theguardian.com/theguardian',
+            'observer': 'http://www.theguardian.com/theobserver',
         }
         
         # When we've worked out what date we're on, this will be either 'guardian'
@@ -209,20 +210,30 @@ class GuardianGrabber:
         soup = self.find_todays_content()
         
         # Get each of the section headings (eg, 'Main section', 'Sport', 'G2').
-        headings = soup.find('ul', {'class': 'timeline'}).fetch('h2')
+        sections = soup.findAll('section')
         
-        for h2 in headings:
+        for section in sections:
+            # Get the section title and link.
+            title = section.find('div', {'class': 'fc-container__header__title'})
+            try:
+                section_url = title.find('a').get('href')
+                section_title = title.find('a').string
+            except AttributeError:
+                # 'front page' has no <a> or link:
+                section_url = ''
+                section_title = title.find('span').string
+
             # Set up the structure in which we'll store info about this section.
             new_section = {
                 'meta': {
-                    'url': h2.find('a').get('href', ''),
-                    'title': h2.find(text = True)
+                    'url': section_url,
+                    'title': section_title.strip()
                 }, 
                 'links':[]
             }
             
             # Get all the links for this section, and add to new_section['links]
-            article_links = h2.findNext('ul', {'class': 'all-articles'}).fetch('a')
+            article_links = section.findNext('ul', {'class': 'fc-slice'}).findAll('a', {'class': 'fc-item__link'})
             for a in article_links:
                 article_url = a.get('href', '')
                 # We just store the absolute path, not the full URL.
@@ -232,11 +243,35 @@ class GuardianGrabber:
                     # We also store the title here, rather than use the one from the
                     # API, in case we fail to fetch the page from the API - we'll
                     # still want to display the title in the article's page.
-                    'title': a.string
+                    'title': a.get_text().strip()
                 })
             
             # Add this section to the contents.
             self.contents['sections'].append(new_section)
+
+
+        # TODO: REMOVE THIS
+        # Because the page we scrape splits stuff into lots of little
+        # sections, we're going to smush it all together into one big
+        # 'Main section' section here:
+
+        # Get the current sections:
+        sections = self.contents['sections']
+
+        # Remake the array:
+        self.contents['sections'] = [
+            {
+                'meta': {
+                    'url': '',
+                    'title': 'Main section'
+                }, 
+                'links':[]
+            }
+        ]
+        # Recreate it:
+        for section in sections:
+            for link in section['links']:
+                self.contents['sections'][0]['links'].append(link)
     
     
     def find_todays_content(self):
@@ -250,7 +285,7 @@ class GuardianGrabber:
         
         # Get the page of paper contents correct for this day, and put the HTML into
         # Beautiful Soup.
-        soup = BeautifulSoup( self.fetch_page( self.paper_url(date_today) ) )
+        soup = BeautifulSoup( self.fetch_page( self.paper_url(date_today) ), 'html.parser')
         
         # Scrape the page for the date printed on it and compare that to today's
         # date.
@@ -266,7 +301,7 @@ class GuardianGrabber:
             print "Difference is more than one day."
             date_yesterday = date_today - datetime.timedelta(1)
             print "Trying "+date_yesterday.strftime('%Y-%m-%d')
-            soup = BeautifulSoup( self.fetch_page( self.paper_url(date_yesterday) ) )
+            soup = BeautifulSoup( self.fetch_page( self.paper_url(date_yesterday) ), 'html.parser' )
             
             if date_yesterday != self.scrape_print_date(soup):
                 raise ScraperError("We can't find the correct page of contents for today.")
@@ -287,15 +322,10 @@ class GuardianGrabber:
         contents this will extract the date of the issue from the page and return a
         datetime object.
         """
-        # Get the URL for the issue we're looking at, from the calendar <table>.
-        today_url = soup.find('a', {'class': 'today'}).get('href', '')
-        
-        # Get the date parts, eg the '/2010/may/15' part from end of the URL.
-        match_today = re.compile(r'/(\d{4})/(\w{3})/(\d{2})$')
-        today = match_today.search(today_url).groups()
-        
-        # Set the issue date as a datetime object.
-        return datetime.datetime.strptime(' '.join(today), "%Y %b %d") 
+        # Get the string of the date, eg "Monday 14 December 2015".
+        today_str = soup.find('div', {'class': 'fc-container__header__description'}).string
+
+        return dateutil.parser.parse(today_str)
     
     
     def paper_url(self, paper_date):
