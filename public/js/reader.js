@@ -64,7 +64,7 @@ var reader = {
 	issueContents: {},
 	
 	// This will be a list of the data about each article file, in order.
-	// Each has keys of: file, path, title, words, id.
+	// Each has keys of: file, path, title, fields, id.
 	issueArticles: [],
 	
 	// Will map the Guardian's article IDs to the 1-based index of the articles in reader.issueArticles.
@@ -75,8 +75,8 @@ var reader = {
 	// Begins on 0 until we view a page.
 	currentPos: 0,
 	
-	// Will be the 1-based index of the current section, as used in #progress.
-	currentSection: 1,
+	// Will be the 1-based index of the current book, as used in #progress.
+	currentBook: 1,
 	
 	// The width (in pixels) of each page of content.
 	// Also set in CSS, so change there too, if you change it.
@@ -141,18 +141,18 @@ var reader = {
 	
 	
 	/**
-	 * User clicked one of the progress sections at the top of the page.
-	 * So we need to jump to the first article in that section.
-	 * section is the section number, eg from <div id="progress-1">, it's the 1.
+	 * User clicked one of the progress books at the top of the page.
+	 * So we need to jump to the first article in that book.
+	 * book is the book number, eg from <div id="progress-1">, it's the 1.
 	 */
-	changeSection: function(section) {
-		// Get the CSS ID of the first li in this section, eg 'progress-item-131'
-		var firstArticleId = $('#progress-'+section).find('li').first().attr('id');
+	changeBook: function(book) {
+		// Get the CSS ID of the first li in this book, eg 'progress-item-131'
+		var firstArticleId = $('#progress-'+book).find('li').first().attr('id');
 		// Get the index of the article to jump to, eg 131.
 		var idx = parseInt( firstArticleId.substr(firstArticleId.lastIndexOf('-')+1) );
 		
 		reader.moveToArticle(idx);
-		reader.currentSection = section;
+		reader.currentBook = book;
 	},
 	
 	
@@ -409,18 +409,18 @@ var reader = {
 	 */
 	enableKeyboardShortcuts: function() {
 		$(document).bind('keydown', 'd', function(){ reader.articleNext(); });
-		$(document).bind('keydown', 'shift+d', function(){ reader.sectionNext(); });
+		$(document).bind('keydown', 'shift+d', function(){ reader.bookNext(); });
 		$(document).bind('keydown', 'l', function(){ reader.articleNext(); });
-		$(document).bind('keydown', 'shift+l', function(){ reader.sectionNext(); });
+		$(document).bind('keydown', 'shift+l', function(){ reader.bookNext(); });
 		$(document).bind('keydown', 'right', function(){ reader.articleNext(); });
-		$(document).bind('keydown', 'shift+right', function(){ reader.sectionNext(); });
+		$(document).bind('keydown', 'shift+right', function(){ reader.bookNext(); });
 		
 		$(document).bind('keydown', 'a', function(){ reader.articlePrev(); });
-		$(document).bind('keydown', 'shift+a', function(){ reader.sectionPrev(); });
+		$(document).bind('keydown', 'shift+a', function(){ reader.bookPrev(); });
 		$(document).bind('keydown', 'h', function(){ reader.articlePrev(); });
-		$(document).bind('keydown', 'shift+h', function(){ reader.sectionPrev(); });
+		$(document).bind('keydown', 'shift+h', function(){ reader.bookPrev(); });
 		$(document).bind('keydown', 'left', function(){ reader.articlePrev(); });
-		$(document).bind('keydown', 'shift+left', function(){ reader.sectionPrev(); });
+		$(document).bind('keydown', 'shift+left', function(){ reader.bookPrev(); });
 		
 		$(document).bind('keydown', 'j', function(){ reader.movePage('down'); });
 		$(document).bind('keydown', 's', function(){ reader.movePage('down'); });
@@ -862,12 +862,12 @@ var reader = {
 
 		reader.currentPos = idx;
 		
-		// Get the ID (like 'progress-2') of the section this article is in.
-		var sectionTextId = $('#progress-item-'+reader.currentPos).parent().parent().attr('id');
-		// Set the currentSection to the numeric ID of the section.
-		reader.currentSection = parseInt(sectionTextId.substr(sectionTextId.lastIndexOf('-')+1));
+		// Get the ID (like 'progress-2') of the book this article is in.
+		var bookTextId = $('#progress-item-'+reader.currentPos).parent().parent().attr('id');
+		// Set the currentbook to the numeric ID of the book.
+		reader.currentBook = parseInt(bookTextId.substr(bookTextId.lastIndexOf('-')+1));
 
-		$('#progress-'+reader.currentSection).addClass('on');
+		$('#progress-'+reader.currentBook).addClass('on');
 		$('#progress-item-'+reader.currentPos).addClass('on');
 		
 		// Set the height of the window to the height of the article we're now viewing.
@@ -911,34 +911,34 @@ var reader = {
 	 * ALSO: Creates all the empty <div class="page">'s which will contain the article text.
 	 */
 	processContents: function() {
-		$.each(reader.issueContents.sections, function(n, section) {
+		$.each(reader.issueContents.books, function(n, book) {
 			
-      // Make section names a bit shorter by turning things like
+      // Make book names a bit shorter by turning things like
       // "Guardian review" into "Review".
-      var sectionName = section.meta.title.replace(/^(Guardian|Observer) /, '').capitalize()
+      var bookName = book.meta.webTitle.replace(/^(Guardian|Observer) /, '').capitalize()
 
-			// Make a <div> to hold the progress markers for each section.
+			// Make a <div> to hold the progress markers for each book.
 			$progressDiv = $('<div/>').attr({
 				'id': 'progress-'+(n+1)
-			}).html('<span>'+sectionName+'</span>').click(function(){
-				reader.changeSection(n+1);
+			}).html('<span>'+bookName+'</span>').click(function(){
+				reader.changeBook(n+1);
 			});
 			
 			// And this <ol> will go within that div.
 			$progressList = $('<ol/>');
 			
-			$.each(section.links, function(m, link) {
-				// Go through each article in this section and add to the progress
+			$.each(book.articles, function(m, article) {
+				// Go through each article in this book and add to the progress
 				// and contents.
 
 				// Add this one to the list of articles.
-				reader.issueArticles.push(link);
+				reader.issueArticles.push(article);
 				
 				// Map the Guardian's long IDs to the position of this article in
 				// reader.issueArticles.
-				reader.issueArticleIds[link.id] = reader.issueArticles.length;
+				reader.issueArticleIds[article.id] = reader.issueArticles.length;
 				
-				var lengthPercent = Math.round((link.words / reader.issueContents.meta.max_words) * 100);
+				var lengthPercent = Math.round((article.fields.wordcount / reader.issueContents.meta.max_words) * 100);
 				
 				// Work out the height of this <li>, in proportion to its length.
 				var maxHeight = reader.hasTouch ? 15 : 12;
@@ -967,7 +967,7 @@ var reader = {
 				}
 				$('#pages').append(
 					// No idea why we need to add some HTML to it.
-					// If we don't, then when we jump to a new section we seem to
+					// If we don't, then when we jump to a new book we seem to
 					// get the wrong page.
 					$('<div/>').addClass(className).attr({id:'page-'+reader.issueArticles.length}).html('&nbsp;')
 				);
@@ -1139,36 +1139,36 @@ var reader = {
 	
 	
 	/**
-	 * Jump ahead one section.
+	 * Jump ahead one book.
 	 */
-	sectionNext: function() {
-		var sectionToMoveTo = reader.currentSection + 1;
-		if ($('#progress-'+sectionToMoveTo).exists()) {
-			reader.changeSection(sectionToMoveTo);
+	bookNext: function() {
+		var bookToMoveTo = reader.currentBook + 1;
+		if ($('#progress-'+bookToMoveTo).exists()) {
+			reader.changeBook(bookToMoveTo);
 		}
 	},
 	
 	
 	/**
-	 * Jump back one section.
-	 * (Or to start of current section if we're not already at the start of it.)
+	 * Jump back one book.
+	 * (Or to start of current book if we're not already at the start of it.)
 	 */
-	sectionPrev: function() {
-		// Chances are we're just moving to the first article in the current section.
-		var sectionToMoveTo = reader.currentSection;
+	bookPrev: function() {
+		// Chances are we're just moving to the first article in the current book.
+		var bookToMoveTo = reader.currentBook;
 		
-		// Get CSS ID of the first article in the section before the current one.
-		var firstArticleId = $('#progress-'+reader.currentSection).find('li').first().attr('id');
+		// Get CSS ID of the first article in the book before the current one.
+		var firstArticleId = $('#progress-'+reader.currentBook).find('li').first().attr('id');
 		// Get the index of the article to jump to, eg 131.
 		var firstArticleIdx = parseInt( firstArticleId.substr(firstArticleId.lastIndexOf('-')+1) );
 		
-		// But, if we're on the first article of this section, jump back to the previous ection.
+		// But, if we're on the first article of this book, jump back to the previous ection.
 		if (reader.currentPos == firstArticleIdx) {
-			sectionToMoveTo = reader.currentSection - 1;
+			bookToMoveTo = reader.currentBook - 1;
 		}
 		
-		if ($('#progress-'+sectionToMoveTo).exists()) {
-			reader.changeSection(sectionToMoveTo);
+		if ($('#progress-'+bookToMoveTo).exists()) {
+			reader.changeBook(bookToMoveTo);
 		}
 	},
 	
