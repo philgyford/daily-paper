@@ -1,4 +1,4 @@
-<div class="section-default">
+<div class="section-default tone-{{ article['tone'] }}">
 
 	<div class="meta">
 		{% if 'publication' in article['fields'] %}
@@ -9,7 +9,7 @@
 
 		{% if 'sectionName' in article %}
 			<p class="section">
-				{{ article['sectionName'] }}
+				{{ article['sectionName'] }} / {{ article['newspaperBookSection']['webTitle'] }} / {{ article['newspaperBookSection']['sectionName'] }}
 			</p>
 		{% endif %}
 	</div>

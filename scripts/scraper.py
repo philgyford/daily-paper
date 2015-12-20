@@ -286,6 +286,7 @@ class GuardianGrabber:
 
         for article in fetched_articles:
             tags = article['tags']
+            del article['tags']
 
             if len(tags) == 0:
                 self.message("%s has no tags; unable to put into section." % article['id'])
@@ -296,12 +297,14 @@ class GuardianGrabber:
                 continue
 
             # Just get the dicts for book and book_section out of the tags list.
-            book = next((tag for tag in article['tags'] if tag['type'] == 'newspaper-book'), {})
-            book_section = next((tag for tag in article['tags'] if tag['type'] == 'newspaper-book-section'), {})
+            book = next((tag for tag in tags if tag['type'] == 'newspaper-book'), {})
+            book_section = next((tag for tag in tags if tag['type'] == 'newspaper-book-section'), {})
 
             # Save these in easy to get places for the template:
             article[u'newspaperBook'] = book
             article[u'newspaperBookSection'] = book_section
+
+            article[u'tone'] = self.get_tone(tags)
 
             if book['id'] not in self.fetched_books:
                 self.fetched_books[ book['id'] ] = {
@@ -427,7 +430,7 @@ class GuardianGrabber:
             'format': 'json',
             'show-fields': 'body,byline,headline,newspaperPageNumber,publication,shortUrl,standfirst,thumbnail,wordcount',
             'show-elements': 'all',
-            'show-tags': 'newspaper-book-section,newspaper-book',
+            'show-tags': 'newspaper-book-section,newspaper-book,tone',
             # Get the articles from today's edition:
             'use-date': 'newspaper-edition',
             'from-date': self.issue_date.strftime("%Y-%m-%d"),
@@ -465,11 +468,41 @@ class GuardianGrabber:
         if error_message == '':
             # Still OK!
             articles = data['response']['results']
-            self.message("Received %s articles." % len(articles))
+            self.message("Fetched %s articles." % len(articles))
             return articles
         else:
             self.message("ERROR: %s" % error_message)
             return False
+
+    def get_tone(self, tags):
+        """Look through all the tags (a list of dicts) we've got for an article
+        and using the 0 or more of type 'tag', assign one tone that will be
+        used to give the article a color.
+        We use these tones and ignore the others:
+        https://github.com/guardian/frontend/tree/master/static/src/stylesheets/module/content/tones
+        """
+        tones_to_use = [
+            'analysis',
+            'comment',
+            'dead',
+            'editorial',
+            'feature',
+            'letters',
+            'live',
+            'media',
+            'news',
+            'review',
+            'special-report',
+        ]
+
+        for tag in tags:
+            if tag['type'] == 'tone':
+                # tag['id'] is like "tone/features"
+                tone = tag['id'].split('/')[1]
+                if tone in tones_to_use:
+                    return tone
+
+        return 'default'
 
     def save_article_html(self, article):
         """Makes the HTML for the article and saves it to a file.
