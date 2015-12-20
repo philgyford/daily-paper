@@ -8,6 +8,7 @@ import fcntl
 from jinja2 import Environment, PackageLoader
 import json
 import os
+import pytz
 import re
 import requests
 import shutil
@@ -207,36 +208,7 @@ class GuardianGrabber:
         Works out what date's paper we're getting.
         Sets self.issue_date and self.paper_name.
         """
-        # Close enough to UK time. Can't work out how to get GMT/BST
-        # appropriately.
-        date_today = datetime.datetime.utcnow()
-
-        # Get the page of paper contents correct for this day, and put the HTML
-        # into Beautiful Soup.
-        soup = BeautifulSoup( self.fetch_page( self.paper_url(date_today) ), 'html.parser')
-
-        # Scrape the page for the date printed on it and compare that to today's
-        # date.
-        date_diff = date_today - self.scrape_print_date(soup)
-
-        # What's the difference between the dates?.
-        # If it's one day out, that's fine - could be that it's currently
-        # just past midnight and yesterday's Guardian is still up.
-        # But if it's more than one day, it could be that it's just past
-        # midnight on Monday and we've fetched the Guardian's current contents
-        # but it's Saturday's. So we need to try again, and fetch Sunday's
-        # Observer instead.
-        if date_diff.days > 1:
-
-            date_yesterday = date_today - datetime.timedelta(1)
-            self.message('Setting issue date: Difference is more than one day.')
-            self.message("Trying %s." % date_yesterday.strftime('%Y-%m-%d'))
-            soup = BeautifulSoup( self.fetch_page( self.paper_url(date_yesterday) ), 'html.parser' )
-
-            if date_yesterday != self.scrape_print_date(soup):
-                raise ScraperError("We can't find the correct page of contents for today.")
-
-        self.issue_date = date_today
+        self.issue_date = datetime.datetime.now(pytz.timezone('Europe/London'))
 
         if self.issue_date.weekday() == 6:
             self.paper_name = self.contents['meta']['paper_name'] = 'observer'
