@@ -1,4 +1,12 @@
-<div class="section-default tone-{{ article['tone'] }}">
+{# Do we show a contributor thumbnail or not? #}
+{% set has_contributor = False %}
+
+{% if article['sectionName'] == 'Opinion' and 'contributor' in article and article['contributor'] %}
+	{% set has_contributor = True %}
+{% endif %}
+
+
+<div class="section-default tone-{{ article['tone'] }}{% if has_contributor %} has-contributor{% endif %}">
 
 	<div class="meta">
 		{% if 'publication' in article['fields'] %}
@@ -22,22 +30,27 @@
 		</div>
 	{% endif %}
 
-	<div class="intro">
-		{% if 'byline' in article['fields'] %}
-			<p class="byline">
+	{% if 'byline' in article['fields'] %}
+		<div class="byline">
+			<p>
 				{{ article['fields']['byline']|typogrify }}
 			</p>
+		</div>
+	{% endif %}
+
+	<div class="body">
+		{% if has_contributor %}
+			<img class="thumbnail" src="{{ article['contributor']['bylineImageUrl'] }}" alt="Picture of {{ article['contributor']['webTitle'] }}">
 		{% endif %}
 
 		{% if 'standfirst' in article['fields'] %}
 			<p class="standfirst">
-				{{ article['fields']['standfirst']|typogrify }}
+				{# Remove p tags that are sometimes around this already. #}
+				{{ article['fields']['standfirst']|replace("<p>", "")|replace("</p>", "")|typogrify }}
 			</p>
 		{% endif %}
-	</div>
 
-	<div class="body">
-		{% if 'thumbnail' in article['fields'] %}
+		{% if not has_contributor and  'thumbnail' in article['fields'] %}
 			<img class="thumbnail" alt="Thumbnail image" src="{{ article['fields']['thumbnail'] }}">
 		{% endif %}
 

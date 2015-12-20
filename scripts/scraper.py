@@ -257,6 +257,7 @@ class GuardianGrabber:
             raise ScraperError("Error when fetching data from API.")
 
         for article in fetched_articles:
+            # We'll put any tags we want to keep in article itself:
             tags = article['tags']
             del article['tags']
 
@@ -269,12 +270,15 @@ class GuardianGrabber:
                 continue
 
             # Just get the dicts for book and book_section out of the tags list.
-            book = next((tag for tag in tags if tag['type'] == 'newspaper-book'), {})
-            book_section = next((tag for tag in tags if tag['type'] == 'newspaper-book-section'), {})
+            book = next((tag for tag in tags if tag['type'] == 'newspaper-book'), None)
+            book_section = next((tag for tag in tags if tag['type'] == 'newspaper-book-section'), None)
+            # There might be more than contributor; we're only using one:
+            contributor = next((tag for tag in tags if tag['type'] == 'contributor'), None)
 
             # Save these in easy to get places for the template:
             article[u'newspaperBook'] = book
             article[u'newspaperBookSection'] = book_section
+            article[u'contributor'] = contributor
 
             article[u'tone'] = self.get_tone(tags)
 
@@ -402,7 +406,7 @@ class GuardianGrabber:
             'format': 'json',
             'show-fields': 'body,byline,headline,newspaperPageNumber,publication,shortUrl,standfirst,thumbnail,wordcount',
             'show-elements': 'all',
-            'show-tags': 'newspaper-book-section,newspaper-book,tone',
+            'show-tags': 'contributor,newspaper-book,newspaper-book-section,tone',
             # Get the articles from today's edition:
             'use-date': 'newspaper-edition',
             'from-date': self.issue_date.strftime("%Y-%m-%d"),
