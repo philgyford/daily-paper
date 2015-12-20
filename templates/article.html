@@ -1,0 +1,73 @@
+<div class="section-default">
+
+	<div class="meta">
+		{% if 'publication' in article['fields'] %}
+			<p class="publication">
+				{{ article['fields']['publication'] }}
+			</p>
+		{% endif %}
+
+		{% if 'sectionName' in article %}
+			<p class="section">
+				{{ article['sectionName'] }}
+			</p>
+		{% endif %}
+	</div>
+
+	{% if 'headline' in article['fields'] %}
+		<div class="headline">
+			<h2>
+				{{ article['fields']['headline']|typogrify }}
+			</h2>
+		</div>
+	{% endif %}
+
+	<div class="intro">
+		{% if 'byline' in article['fields'] %}
+			<p class="byline">
+				{{ article['fields']['byline']|typogrify }}
+			</p>
+		{% endif %}
+
+		{% if 'standfirst' in article['fields'] %}
+			<p class="standfirst">
+				{{ article['fields']['standfirst']|typogrify }}
+			</p>
+		{% endif %}
+	</div>
+
+	<div class="body">
+		{% if 'thumbnail' in article['fields'] %}
+			<img class="thumbnail" alt="Thumbnail image" src="{{ article['fields']['thumbnail'] }}">
+		{% endif %}
+
+		{% if 'body' in article['fields'] %}
+			{% if article['fields']['body'] == '<!-- Redistribution rights for this field are unavailable -->' %}
+				<p class="no-rights">Redistribution rights for the article body are unavailable. <a class="see-original" href="{{ article['webUrl'] }}/print?mobile-redirect=false">See original.</a></p>
+			{% else %}
+				{# Sometimes there are empty p tags. Remove them. #}
+				{{ article['fields']['body']|replace("<p></p>", "")|typogrify }}
+			{% endif %}
+		{% else %}
+			<p class="no-body">No body text available.</p>
+		{% endif %}
+	</div>
+
+	<div class="footer">
+		<p class="paper">
+			<span>Paper: </span>p.{{ article['fields']['newspaperPageNumber'] }} in {{ article['newspaperBook']['webTitle'] }}
+		</p>
+		{% if 'webUrl' in article %}
+			<p class="original">
+				<span>Web: </span><a href="{{ article['webUrl'] }}">{{ article['webUrl'] }}</a>
+			</p>
+		{% endif %}
+		{% if 'shortUrl' in article['fields'] %}
+			<p class="share">
+				<span>Share: </span><input type="text" value="{{ article['fields']['shortUrl'] }}">
+			</p>
+		{% endif %}
+
+	</div>
+
+</div>

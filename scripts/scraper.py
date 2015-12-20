@@ -1,21 +1,22 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+from bs4 import BeautifulSoup
 import ConfigParser
 import datetime
 import dateutil.parser
 import fcntl
+from jinja2 import Environment, PackageLoader
 import json
 import os
 import re
 import requests
 import shutil
 import signal
-import smartypants
 import sys
 import time
+from typogrify.templatetags import jinja_filters
 import urlparse
 import warnings
-from bs4 import BeautifulSoup
 
 
 class GuardianGrabber:
@@ -121,6 +122,11 @@ class GuardianGrabber:
         self.archive_dir = config.get('Settings', 'archive_dir')
         
         self.verbose = config.getboolean('Settings', 'verbose')
+
+        # Set up the template we'll use to render each article to a file.
+        jinja_env = Environment(loader=PackageLoader('scraper', '../templates'))
+        jinja_env.filters['typogrify'] = jinja_filters.typogrify
+        self.template = jinja_env.get_template('article.html')
         
     def checkForOldProcesses(self):
         """
@@ -165,7 +171,6 @@ class GuardianGrabber:
         The main action. Fetches all of the required data for today's paper and
         saves it locally.
         """
-
         self.checkForOldProcesses()
         self.makeLockfile()
         
@@ -202,80 +207,6 @@ class GuardianGrabber:
             raise ScraperError("Unable to write the contents.json file.")
 
         self.removeLockfile()
-        
-
-    #def get_list_of_articles(self):
-        #"""
-        #Fetches all the information today's paper, including section names and
-        #the list of links for every article within each section.
-        #"""
-        
-        #soup = self.find_todays_content()
-        
-        ## Get each of the section headings (eg, 'Main section', 'Sport', 'G2').
-        #sections = soup.findAll('section')
-        
-        #for section in sections:
-            ## Get the section title and link.
-            #title = section.find('div', {'class': 'fc-container__header__title'})
-            #try:
-                #section_url = title.find('a').get('href')
-                #section_title = title.find('a').string
-            #except AttributeError:
-                ## 'front page' has no <a> or link:
-                #section_url = ''
-                #section_title = title.find('span').string
-
-            ## Set up the structure in which we'll store info about this section.
-            #new_section = {
-                #'meta': {
-                    #'webUrl': section_url,
-                    #'webTitle': section_title.strip()
-                #}, 
-                #'articles':[]
-            #}
-            
-            ## Get all the links for this section, and add to new_section['articles]
-            #article_links = section.findNext('ul', {'class': 'fc-slice'}).findAll('a', {'class': 'fc-item__link'})
-            #for a in article_links:
-                #article_url = a.get('href', '')
-                ## We just store the absolute path, not the full URL.
-                #o = urlparse.urlparse(article_url)
-                #new_section['articles'].append({
-                    #'path': o.path,
-                    ## We also store the title here, rather than use the one from the
-                    ## API, in case we fail to fetch the page from the API - we'll
-                    ## still want to display the title in the article's page.
-                    #'title': a.get_text().strip()
-                #})
-            
-            ## Add this section to the contents.
-            #self.contents['sections'].append(new_section)
-
-
-        ## TODO: REMOVE THIS
-        ## Because the page we scrape splits stuff into lots of little
-        ## sections, we're going to smush it all together into one big
-        ## 'Main section' section here:
-
-        ## Get the current sections:
-        #sections = self.contents['sections']
-
-        ## Remake the array:
-        #self.contents['sections'] = [
-            #{
-                #'meta': {
-                    #'webUrl': '',
-                    #'webTitle': 'Main section'
-                #}, 
-                #'articles':[]
-            #}
-        #]
-        ## Recreate it:
-        #for section in sections:
-            #for link in section['articles']:
-                #self.contents['sections'][0]['articles'].append(link)
-    
     
     def set_issue_date(self):
         """
@@ -317,7 +248,6 @@ class GuardianGrabber:
             self.paper_name = self.contents['meta']['paper_name'] = 'guardian'
         
         return True
-        
     
     def scrape_print_date(self, soup):
         """
@@ -375,12 +305,9 @@ class GuardianGrabber:
             book = next((tag for tag in article['tags'] if tag['type'] == 'newspaper-book'), {})
             book_section = next((tag for tag in article['tags'] if tag['type'] == 'newspaper-book-section'), {})
 
-            # Save some of the book section in the article for use in front end.
-            article[u'newspaperBookSection'] = {
-                u'id':       book_section['id'],
-                u'title':    book_section['webTitle'],
-                u'url':      book_section['webUrl'],
-            }
+            # Save these in easy to get places for the template:
+            article[u'newspaperBook'] = book
+            article[u'newspaperBookSection'] = book_section
 
             if book['id'] not in self.fetched_books:
                 self.fetched_books[ book['id'] ] = {
@@ -572,141 +499,19 @@ class GuardianGrabber:
 
         return filename
 
-    def make_article_html(self, content):
+    def make_article_html(self, article):
         """
-        Takes the content dictionary from the Guardian Item API call and returns a
-        simple HTML version of it.
+        Takes the dictionary for an article from the API and returns an HTML
+        version of it.
         """
+        return self.template.render(article=article)
 
         # TODO: Add colours.
         #if 'sectionId' in content and content['sectionId'] in self.section_ids:
             #html = "<div class=\"section-" + self.section_ids[content['sectionId']] + "\">\n"
         #else:
             #html = "<div class=\"section-default\">\n"
-        html = "<div class=\"section-default\">\n"
 
-
-        html += "<div class=\"meta\">\n"
-
-        if 'publication' in content['fields']:
-            html += '<p class="publication">' + content['fields']['publication'] + "</p>\n"
-
-        # Something like 'Guardian. Wednesday 26 May 2010'.
-        #html += '<p class="publication">The ' + self.paper_name.title() + '. ' + self.issue_date.strftime("%A %e %B %Y") + "</p>\n"
-
-        if 'sectionName' in content:
-            html += '<p class="section">' + content['sectionName'] + "</p>\n"
-
-        html += "</div>\n"
-
-        if 'headline' in content['fields']:
-            html += '<div class="headline"><h2>' + content['fields']['headline'] + "</h2></div>\n"
-
-        html += "<div class=\"intro\">\n"
-
-        if 'byline' in content['fields']:
-            html += '<p class="byline">' + content['fields']['byline'] + "</p>\n"
-
-        if 'standfirst' in content['fields']:
-            html += '<p class="standfirst">' + content['fields']['standfirst'] + "</p>\n"
-
-        html += "</div>\n"
-
-        html += '<div class="body">'
-
-        if 'thumbnail' in content['fields']:
-            html += '<img class="thumbnail" alt="Thumbnail" src="' + content['fields']['thumbnail'] + "\" />\n"
-
-        if 'body' in content['fields']:
-            if content['fields']['body'] == '<!-- Redistribution rights for this field are unavailable -->':
-                # We link this link to the easier-to-read print version.
-                html += '<p class="no-rights">Redistribution rights for the article body are unavailable. <a class="see-original" href="' + content['webUrl'] + '/print?mobile-redirect=false">See original.</a></p>'
-            else:
-
-                # Get rid of the empty <p> tags that are sometimes in articles, then add to html.
-                remove_blanks = re.compile(r'<p></p>')
-                html += remove_blanks.sub('', content['fields']['body'])
-        else:
-            html+= '<p class="no-body">No body text available</p>'
-
-        html +=  "</div>\n"
-
-        html += "<div class=\"footer\">\n"
-
-        if 'webUrl' in content:
-            html += '<p class="original"><span>Original: </span><a href="' + content['webUrl'] + '">' + content['webUrl'] + "</a></p>\n"
-
-        if 'shortUrl' in content['fields']:
-            html += '<p class="share"><span>Share: </span><input type="text" value="' + content['fields']['shortUrl'] + "\" /></p>\n";
-
-        html += "</div>\n</div>\n"
-
-        html = self.prettify_text( html );
-        return html
-
-
-    def prettify_text(self, text):
-        """
-        Make text more nicerer. Run it through SmartyPants and Widont.
-        """
-        text = self.widont(text)
-        text = smartypants.smartypants(text)
-        return text
-
-
-    def widont(self, text):
-        """From Typogrify http://code.google.com/p/typogrify/
-        The only difference is that we also match line endings before a <br />.
-        Comments from the original code:
-
-        Replaces the space between the last two words in a string with ``&nbsp;``
-        Works in these block tags ``(h1-h6, p, li, dd, dt)`` and also accounts for
-        potential closing inline elements ``a, em, strong, span, b, i``
-
-        >>> widont('A very simple test')
-        u'A very simple&nbsp;test'
-
-        Single word items shouldn't be changed
-        >>> widont('Test')
-        u'Test'
-        >>> widont(' Test')
-        u' Test'
-        >>> widont('<ul><li>Test</p></li><ul>')
-        u'<ul><li>Test</p></li><ul>'
-        >>> widont('<ul><li> Test</p></li><ul>')
-        u'<ul><li> Test</p></li><ul>'
-
-        >>> widont('<p>In a couple of paragraphs</p><p>paragraph two</p>')
-        u'<p>In a couple of&nbsp;paragraphs</p><p>paragraph&nbsp;two</p>'
-
-        >>> widont('<h1><a href="#">In a link inside a heading</i> </a></h1>')
-        u'<h1><a href="#">In a link inside a&nbsp;heading</i> </a></h1>'
-
-        >>> widont('<h1><a href="#">In a link</a> followed by other text</h1>')
-        u'<h1><a href="#">In a link</a> followed by other&nbsp;text</h1>'
-
-        Empty HTMLs shouldn't error
-        >>> widont('<h1><a href="#"></a></h1>')
-        u'<h1><a href="#"></a></h1>'
-
-        >>> widont('<div>Divs get no love!</div>')
-        u'<div>Divs get no love!</div>'
-
-        >>> widont('<pre>Neither do PREs</pre>')
-        u'<pre>Neither do PREs</pre>'
-
-        >>> widont('<div><p>But divs with paragraphs do!</p></div>')
-        u'<div><p>But divs with paragraphs&nbsp;do!</p></div>'
-        """
-        widont_finder = re.compile(r"""((?:</?(?:a|em|span|strong|i|b)[^>]*>)|[^<>\s]) # must be proceeded by an approved inline opening or closing tag or a nontag/nonspace
-                                       \s+                                             # the space to replace
-                                       ([^<>\s]+                                       # must be flollowed by non-tag non-space characters
-                                       \s*                                             # optional white space!
-                                       (</(a|em|span|strong|i|b)>\s*)*                 # optional closing inline tags with optional white space after each
-                                       ((</(p|h[1-6]|li|dt|dd)>|<br\s?/?>)|$))                   # end with a closing p, h1-6, li or the end of the string
-                                       """, re.VERBOSE)
-        output = widont_finder.sub(r'\1&nbsp;\2', text)
-        return output
 
     def fetch_page(self, url):
         "Used for fetching all the remote pages."
@@ -728,24 +533,6 @@ class GuardianGrabber:
             self.message("HTTP Error: %s" % response.status_code)
 
         return response.text
-
-    def count_words(self, text):
-        self.LINE_SEPS = ['\n']
-        self.WORD_SEPS = ['\s']
-        self.REPEATER_SEPS = ['-']
-        self.IGNORE = []
-
-        def ors(l): return r"|".join([re.escape(c) for c in l])
-        def retext(text, chars, sub):
-            return re.compile(ors(chars)).sub(sub, text)
-
-        lines = text and len(re.compile(ors(self.LINE_SEPS)).split(text)) or 0
-
-        text = retext(text, self.WORD_SEPS + self.LINE_SEPS, u" ")
-        text = retext(text.strip(), self.IGNORE, u"")
-        words = text and len(re.compile(r"[ ]+").split(text)) or 0
-
-        return (words, lines)
 
     def message(self, text):
         "Output debugging info, if in verbose mode."
