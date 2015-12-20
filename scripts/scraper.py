@@ -24,14 +24,13 @@ class GuardianGrabber:
     def __init__(self):
 
         self.load_config()
-        
-        
+
     def load_config(self):
         "Sets initial object variables, and loads others from the scraper.cfg file"
-        
+
         # First, variables which are set here, not in the config file.
-        
-        # The array we'll store all the data about today's issue, in this format:
+
+        # The array used to create the contents.json once all processin's done:
         #
         # {
         #     'meta': {
@@ -78,56 +77,51 @@ class GuardianGrabber:
         # Then, after fetching we'll put all the values from this into
         # self.contents['books'] in the correct order.
         self.fetched_books = {}
-        
-        # This will be set in get_list_of_articles() depending on what issue we're 
-        # etching. A datetime object.
+
+        # Will be set depending on what issue we're fetching.
+        # A datetime object.
         self.issue_date = None
-        
-        # Will be set in start() to a path of self.archive_dir plus self.issue_date
+
+        # Will be set in start() to a path of self.archive_dir plus
+        # self.issue_date
         self.issue_archive_dir = ''
-        
+
         # The URLs of the full list of the current issue of the Guardian and
         # Observer.
         self.source_urls = {
             'guardian': 'http://www.theguardian.com/theguardian',
             'observer': 'http://www.theguardian.com/theobserver',
         }
-        
-        # When we've worked out what date we're on, this will be either 'guardian'
-        # or 'observer'.
-        self.paper_name = ''
-        
-        # The 'books' are like 'Main section' or 'The Guide'.
-        self.books = {}
 
-        # 'book_sections' are like 'Film & music reviews' or 'Financial'.
-        self.book_sections = {}
+        # When we've worked out what date we're on, this will be either
+        # 'guardian' or 'observer'.
+        self.paper_name = ''
 
         # Will be the lockfile we check to make sure this script doesn't run
         # multiple times.
         self.lockfile_path = sys.path[0]+'/lock.pid'
-        
+
         # Second, load stuff from the config file.
-        
+
         config_file = sys.path[0]+'/scraper.cfg'
         config = ConfigParser.SafeConfigParser()
-        
+
         try:
             config.readfp(open(config_file))
         except IOError:
             raise ScraperError("Can't read config file: " + config_file)
 
         self.guardian_api_key = config.get('Settings', 'guardian_api_key')
-        
+
         self.archive_dir = config.get('Settings', 'archive_dir')
-        
+
         self.verbose = config.getboolean('Settings', 'verbose')
 
         # Set up the template we'll use to render each article to a file.
         jinja_env = Environment(loader=PackageLoader('scraper', '../templates'))
         jinja_env.filters['typogrify'] = jinja_filters.typogrify
         self.template = jinja_env.get_template('article.html')
-        
+
     def checkForOldProcesses(self):
         """
         Checks the lockfile to see if there's an older process running.
@@ -165,7 +159,7 @@ class GuardianGrabber:
 
     def removeLockfile(self):
         os.remove(self.lockfile_path)
-        
+
     def start(self):
         """
         The main action. Fetches all of the required data for today's paper and
@@ -173,33 +167,33 @@ class GuardianGrabber:
         """
         self.checkForOldProcesses()
         self.makeLockfile()
-        
+
         # Sets the date and paper (guardian or observer).
         self.set_issue_date()
-        
+
         if self.issue_date != '':
             self.issue_archive_dir = self.archive_dir + self.issue_date.strftime("%Y-%m-%d") + '/'
         else:
             raise ScraperError("We don't have an issue date, so can't make an archive directory.")
-        
+
         # Make the directory we'll save the HTML files in.
         if not os.path.exists(self.issue_archive_dir):
             os.makedirs(self.issue_archive_dir)
-        
+
         # Get all of today's articles and save HTML versions to disk.
         self.fetch_articles()
 
         self.sort_articles()
-         
+
         # Delete the day-before-yesterday's files.
         # (Not yesterday's, just in case someone is currently viewing them.)
         old_date = self.issue_date - datetime.timedelta(2)
         old_dir = self.archive_dir + old_date.strftime("%Y-%m-%d")
         if os.path.exists(old_dir):
             shutil.rmtree(old_dir)
- 
-        # Write all the information about this issue to a contents.json file within
-        # the dated folder.
+
+        # Write all the information about this issue to a contents.json file
+        # within the dated folder.
         try:
             with open(self.issue_archive_dir + 'contents.json', mode='w') as fp:
                 json.dump(self.contents, fp)
@@ -207,48 +201,50 @@ class GuardianGrabber:
             raise ScraperError("Unable to write the contents.json file.")
 
         self.removeLockfile()
-    
+
     def set_issue_date(self):
         """
         Works out what date's paper we're getting.
         Sets self.issue_date and self.paper_name.
         """
-        # Close enough to UK time. Can't work out how to get GMT/BST appropriately.
+        # Close enough to UK time. Can't work out how to get GMT/BST
+        # appropriately.
         date_today = datetime.datetime.utcnow()
-        
-        # Get the page of paper contents correct for this day, and put the HTML into
-        # Beautiful Soup.
+
+        # Get the page of paper contents correct for this day, and put the HTML
+        # into Beautiful Soup.
         soup = BeautifulSoup( self.fetch_page( self.paper_url(date_today) ), 'html.parser')
-        
+
         # Scrape the page for the date printed on it and compare that to today's
         # date.
         date_diff = date_today - self.scrape_print_date(soup)
-        
+
         # What's the difference between the dates?.
         # If it's one day out, that's fine - could be that it's currently
         # just past midnight and yesterday's Guardian is still up.
-        # But if it's more than one day, it could be that it's just past midnight on
-        # Monday and we've fetched the Guardian's current contents but it's
-        # Saturday's. So we need to try again, and fetch Sunday's Observer instead.
+        # But if it's more than one day, it could be that it's just past
+        # midnight on Monday and we've fetched the Guardian's current contents
+        # but it's Saturday's. So we need to try again, and fetch Sunday's
+        # Observer instead.
         if date_diff.days > 1:
 
             date_yesterday = date_today - datetime.timedelta(1)
             self.message('Setting issue date: Difference is more than one day.')
             self.message("Trying %s." % date_yesterday.strftime('%Y-%m-%d'))
             soup = BeautifulSoup( self.fetch_page( self.paper_url(date_yesterday) ), 'html.parser' )
-            
+
             if date_yesterday != self.scrape_print_date(soup):
                 raise ScraperError("We can't find the correct page of contents for today.")
 
         self.issue_date = date_today
-        
+
         if self.issue_date.weekday() == 6:
             self.paper_name = self.contents['meta']['paper_name'] = 'observer'
         else:
             self.paper_name = self.contents['meta']['paper_name'] = 'guardian'
-        
+
         return True
-    
+
     def scrape_print_date(self, soup):
         """
         Given a Beautiful Soup object of the page of a Guardian/Observer issue
@@ -259,8 +255,7 @@ class GuardianGrabber:
         today_str = soup.find('div', {'class': 'fc-container__header__description'}).string
 
         return dateutil.parser.parse(today_str)
-    
-    
+
     def paper_url(self, paper_date):
         """
         Given a datetime object it will return the URL of the Observer (on Sundays)
@@ -270,8 +265,7 @@ class GuardianGrabber:
             return self.source_urls['observer']   # Sunday
         else:
             return self.source_urls['guardian']   # Monday to Saturday
-        
-        
+
     def fetch_articles(self, page=1):
         """
         Fetches all of the contents of the articles from the API and saves the
@@ -323,7 +317,7 @@ class GuardianGrabber:
             words = article[u'fields'][u'wordcount']
             if words > self.contents[u'meta'][u'max_words']:
                  self.contents[u'meta'][u'max_words'] = words
-            
+
             # Save file and store its filename:
             article[u'file'] = self.save_article_html(article)
 
@@ -390,7 +384,7 @@ class GuardianGrabber:
         else:
             start_order = start_orders['weekday']
             sport_id = 'theguardian/sport'
-    
+
         # We'll put the initial books in `start`.
         # And the sport book in `end`.
         # And any others - new books or special one-offs - in `middle`.
