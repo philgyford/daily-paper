@@ -72,7 +72,7 @@
 		</p>
 		{% if 'webUrl' in article %}
 			<p class="original">
-				<span>Web: </span><a href="{{ article['webUrl'] }}">{{ article['webUrl'] }}</a>
+				<span>Web: </span><a href="{{ article['webUrl'] }}">{{ article['webUrl']|replace('http://', '') }}</a>
 			</p>
 		{% endif %}
 		{% if 'shortUrl' in article['fields'] %}
