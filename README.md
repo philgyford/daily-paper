@@ -26,12 +26,9 @@ stored in a dated directory within the archive/ directory.
 
 ## Requirements
 
-The Python script for fetching the papers' content requires:
+Install the required modules using [pip](https://pip.pypa.io/en/stable/) by doing:
 
-* [Beautiful Soup](http://www.crummy.com/software/BeautifulSoup/).
-* [Requests](http://docs.python-requests.org/en/latest/)
-* [Smartypants](http://web.chad.org/projects/smartypants.py/)
-
+	$ pip install -r requirements.txt
 
 The JavaScript requires [jQuery](http://jquery.com/) and a copy is
 automatically included from [Google's
@@ -52,30 +49,33 @@ iPhone/iPad/iPod Touch. I've never used it on an Android device.
 1. [Get an API key](http://guardian.mashery.com/) for the Guardian Open
    Platform.
 
-2. Install the BeautifulSoup, Requests and Smartypants Python libraries. It's 
-   easiest to use [pip](https://pip.pypa.io/en/latest/) and do
-   `pip install -r requirements.txt` in your shell.
+2. Install the python modules.
 
-3. Make the daily-paper/public/ directory readable from the web. You can move
+3. Make the `daily-paper/public/` directory readable from the web. You can move
    it elsewhere without breaking the Python script, although I guess that will
    confuse Git. Or you could symlink it to somewhere appropriate.
 
-4. Copy daily-paper/scripts/scraper-example.cfg to daily-paper/scripts/scraper.cfg.
+4. Copy `daily-paper/scripts/scraper-example.cfg` to `daily-paper/scripts/scraper.cfg`.
 
-5. Edit scraper.cfg and add: 
+5. Edit `scraper.cfg` and add: 
 
 	* Your API key.
 	* The path to the directory where you want the dated folders for saved HTML
-	  files to be kept. This should be called 'archive' and be within the
-	  project's 'public' directory, at the same level as 'index.html'.
-	* If the 'verbose' setting is left to 1, you will see a list of the API
-	  files fetched while the script runs. Best to leave it at 1 initially.
+	  files to be kept. This should be called `archive` and be within the
+	  project's `public` directory, at the same level as `index.html`.
+	* If the `verbose` setting is left to `1`, you will see a little debugging
+      output when the script runs, including which articles have incomplete
+	  data.
 
-6. Run the daily-paper/scripts/scraper.py script. This should leave you with
+6. Run the `daily-paper/scripts/scraper.py` script. This should leave you with
    a dated directory in the archive directory you specified in the config file.
    It should contain an HTML file for every article from today's paper.
 
-7. View public/ in your web browser. You should be able to read today's paper.
+7. View `public/` in your web browser. You should be able to read today's paper.
+   If you're not using an actual web server, you should be able to load the
+   `public/index.html` file itself in your browser and still use the site.
+
+
 
 
 
