@@ -373,16 +373,16 @@ var reader = {
 		// they're 'on'.
 		// They're not 'on' when at the beginning or end of the articles as
 		// appropriate.
-		$('.off#next').live('click', function(){return false;});
-		$('.on#next').live('click', function(){
+		$('body').on('click', '.off#next', function(){return false;});
+		$('body').on('click', '.on#next', function(){
 			if (reader.hasTouch) {
 				reader.glowNav('next', 'fast');
 			};
 			reader.articleNext();
 			return false;
 		});
-		$('.off#prev').live('click', function(){return false;});
-		$('.on#prev').live('click', function(){
+		$('body').on('click', '.off#prev', function(){return false;});
+		$('body').on('click', '.on#prev', function(){
 			if (reader.hasTouch) {
 				reader.glowNav('prev', 'fast');
 			};
@@ -1039,12 +1039,13 @@ var reader = {
 	 */
 	resizeArticle: function($obj, position) {
 
-		var viewportHeight = window.innerHeight ? window.innerHeight : $(window).height();
-		if ($.browser.msie) {
-			if(parseInt($.browser.version) == 7) {
-				viewportHeight -= 3;
-			};
-		};
+    var viewportHeight = window.innerHeight ? window.innerHeight : $(window).height();
+
+		//if ($.browser.msie) {
+			//if(parseInt($.browser.version) == 7) {
+				//viewportHeight -= 3;
+			//};
+		//};
 
 		// Some pages include iframes that load HTML pages containing an image.
 		// So for each of them, find the 'body' element of the included page
