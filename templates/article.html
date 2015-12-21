@@ -1,7 +1,7 @@
 {# Do we show a contributor thumbnail or not? #}
 {% set has_contributor = False %}
 
-{% if article['sectionName'] == 'Opinion' and 'contributor' in article and article['contributor'] %}
+{% if article['sectionName'] == 'Opinion' and 'contributor' in article and article['contributor'] and 'bylineImageUrl' in article['contributor'] %}
 	{% set has_contributor = True %}
 {% endif %}
 
