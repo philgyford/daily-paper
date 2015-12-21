@@ -231,15 +231,21 @@ div.hr {
 	padding-top: 1em;
 }
 
-.section-news .meta { border-color: #D61D00; color: #D61D00; }
-.section-sport .meta { border-color: #008000; color: #008000; }
-.section-comment .meta { border-color: #0061A6; color: #0061A6; }
-.section-culture .meta { border-color: #D1008B; color: #D1008B; }
-.section-business .meta { border-color: #3246AB; color: #3246AB; }
-.section-money .meta { border-color: #8F1AB6; color: #8F1AB6; }
-.section-life .meta { border-color: #AD532F; color: #AD532F; }
-.section-travel .meta { border-color: #066EC9; color: #066EC9; }
-.section-environment .meta { border-color: #4A7801; color: #4A7801; }
+/* List of tones:
+https://github.com/guardian/frontend/tree/master/static/src/stylesheets/module/content/tones */
+.tone-analysis .meta		{ border-color: #005689; color: #005689; }
+.tone-comment .meta			{ border-color: #e6711b; color: #e6711b; }
+.tone-dead .meta			{ border-color: #b51800; color: #b51800; }
+.tone-editorial .meta		{ border-color: #005689; color: #005689; }
+.tone-feature .meta			{ border-color: #951c55; color: #951c55; }
+.tone-letters .meta			{ border-color: #e6711b; color: #e6711b; }
+.tone-live .meta			{ border-color: #b51800; color: #b51800; }
+.tone-media .meta			{ border-color: #333333; color: #333333; }
+.tone-news .meta			{ border-color: #005689; color: #005689; }
+.tone-review .meta			{ border-color: #615b52; color: #615b52; }
+.tone-special-report .meta	{ border-color: #63717a; color: #63717a; }
+
+.tone-default .meta			{ border-color: #005689; color: #005689; }
 
 .page .meta .publication {
 	display: none;
@@ -251,35 +257,44 @@ div.hr {
 	clear: left;
 	margin-bottom: 0.667em;
 }
+
 .page .byline {
 	border-top: 1px solid #ddd;
 	border-bottom: 1px solid #ddd;
-	margin-bottom: 1.8em;
-	padding: 0.4em 0 0.4em 0;
+	margin-bottom: 1.125em;
+	padding: 0.25em 0 0.25em 0;
 	font-family: "Lucida Sans", "Lucida Grande", "Lucida Sans Unicode", sans-serif;
 	color: #666;
 	line-height: 1.2em;
 }
-.standfirst {
+.page .byline p {
+	margin: 0;
+}
+
+.page .has-contributor .byline {
 	font-weight: bold;
+}
+.page .standfirst {
+	font-weight: bold;
+	-webkit-hyphens: auto;
+	-moz-hyphens: auto;
+	hyphens: auto;
 }
 .page .body {
 	float: left;
 	width: 530px;
-	/* These probably do nothing at the moment: */
-	hyphens: auto;
 	-webkit-hyphens: auto;
 	-moz-hyphens: auto;
+	hyphens: auto;
 }
 .page .body .no-rights,
 .page .body .no-body {
 	font-style: italic;
 }
-.page .body .thumbnail {
+.page .thumbnail {
 	float: right;
 	margin: 0.3em 0 0.5em 10px;
 	width: 140px;
-	height: 84px;
 }
 .page .body h2 {
 	font-weight: bold;
@@ -305,6 +320,7 @@ div.gu_advert {
 	margin: 1em auto;
 	/* To help keep the figcaption to the right width (see below). */
 	display: table;
+	clear: both;
 }
 .page figure img,
 .page figure video {
@@ -442,18 +458,19 @@ body#about-page {
 #about-page p {
 	margin-bottom: 1.5em;
 }
-#about-page #keys {
-	width: 500px;
-	margin-left: auto;
-	margin-right: auto;
+#about-page kbd {
+	font-weight: bold;
 }
-#about-page #keys span {
+#about-page #keys .keys-key {
 	display: block;
 	margin-bottom: 0.5em;
+	text-align: center;
+}
+#about-page #keys .keys-instruction {
+	display: block;
 }
 #about-page #keys-up,
 #about-page #keys-down {
-	text-align: center;
 	clear: both;
 }
 #about-page #keys-left {
@@ -461,6 +478,18 @@ body#about-page {
 }
 #about-page #keys-right {
 	float: right;
+}
+
+
+@media (min-width: 560px) {
+	#about-page #keys {
+		width: 500px;
+		margin-left: auto;
+		margin-right: auto;
+	}
+	#about-page #keys .keys-instruction {
+		display: inline;
+	}
 }
 
 
@@ -548,7 +577,7 @@ body#about-page {
  */
 #title,
 #progress span,
-.page p.byline,
+.page .byline p,
 .page figure figcaption,
 .page .footer p,
 #about-page .close,

@@ -1,0 +1,86 @@
+{# Do we show a contributor thumbnail or not? #}
+{% set has_contributor = False %}
+
+{% if article['sectionName'] == 'Opinion' and 'contributor' in article and article['contributor'] and 'bylineImageUrl' in article['contributor'] %}
+	{% set has_contributor = True %}
+{% endif %}
+
+
+<div class="section-default tone-{{ article['tone'] }}{% if has_contributor %} has-contributor{% endif %}">
+
+	<div class="meta">
+		{% if 'publication' in article['fields'] %}
+			<p class="publication">
+				{{ article['fields']['publication'] }}
+			</p>
+		{% endif %}
+
+		{% if 'sectionName' in article %}
+			<p class="section">
+				{{ article['sectionName'] }}
+			</p>
+		{% endif %}
+	</div>
+
+	{% if 'headline' in article['fields'] %}
+		<div class="headline">
+			<h2>
+				{{ article['fields']['headline']|typogrify }}
+			</h2>
+		</div>
+	{% endif %}
+
+	{% if 'byline' in article['fields'] %}
+		<div class="byline">
+			<p>
+				{{ article['fields']['byline']|typogrify }}
+			</p>
+		</div>
+	{% endif %}
+
+	<div class="body">
+		{% if has_contributor %}
+			<img class="thumbnail" src="{{ article['contributor']['bylineImageUrl'] }}" alt="Picture of {{ article['contributor']['webTitle'] }}">
+		{% endif %}
+
+		{% if 'standfirst' in article['fields'] %}
+			<p class="standfirst">
+				{# Remove p tags that are sometimes around this already. #}
+				{{ article['fields']['standfirst']|replace("<p>", "")|replace("</p>", "")|typogrify }}
+			</p>
+		{% endif %}
+
+		{% if not has_contributor and  'thumbnail' in article['fields'] %}
+			<img class="thumbnail" alt="Thumbnail image" src="{{ article['fields']['thumbnail'] }}">
+		{% endif %}
+
+		{% if 'body' in article['fields'] %}
+			{% if article['fields']['body'] == '<!-- Redistribution rights for this field are unavailable -->' %}
+				<p class="no-rights">Redistribution rights for the article body are unavailable. <a class="see-original" href="{{ article['webUrl'] }}/print?mobile-redirect=false">See original.</a></p>
+			{% else %}
+				{# Sometimes there are empty p tags. Remove them. #}
+				{{ article['fields']['body']|replace("<p></p>", "")|typogrify }}
+			{% endif %}
+		{% else %}
+			<p class="no-body">No body text available.</p>
+		{% endif %}
+	</div>
+
+	<div class="footer">
+		<p class="paper">
+			<span>Paper: </span>p.{{ article['fields']['newspaperPageNumber'] }} in {{ article['newspaperBook']['webTitle'] }}
+		</p>
+		{% if 'webUrl' in article %}
+			<p class="original">
+				<span>Web: </span><a href="{{ article['webUrl'] }}">{{ article['webUrl'] }}</a>
+			</p>
+		{% endif %}
+		{% if 'shortUrl' in article['fields'] %}
+			<p class="share">
+				<span>Share: </span><input type="text" value="{{ article['fields']['shortUrl'] }}">
+			</p>
+		{% endif %}
+
+	</div>
+
+</div>
