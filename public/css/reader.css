@@ -458,18 +458,19 @@ body#about-page {
 #about-page p {
 	margin-bottom: 1.5em;
 }
-#about-page #keys {
-	width: 500px;
-	margin-left: auto;
-	margin-right: auto;
+#about-page kbd {
+	font-weight: bold;
 }
-#about-page #keys span {
+#about-page #keys .keys-key {
 	display: block;
 	margin-bottom: 0.5em;
+	text-align: center;
+}
+#about-page #keys .keys-instruction {
+	display: block;
 }
 #about-page #keys-up,
 #about-page #keys-down {
-	text-align: center;
 	clear: both;
 }
 #about-page #keys-left {
@@ -477,6 +478,18 @@ body#about-page {
 }
 #about-page #keys-right {
 	float: right;
+}
+
+
+@media (min-width: 560px) {
+	#about-page #keys {
+		width: 500px;
+		margin-left: auto;
+		margin-right: auto;
+	}
+	#about-page #keys .keys-instruction {
+		display: inline;
+	}
 }
 
 
