@@ -262,11 +262,11 @@ class GuardianGrabber:
             del article['tags']
 
             if len(tags) == 0:
-                self.message("%s has no tags; unable to put into section." % article['id'])
+                self.message("* %s has no tags; unable to put into section." % article['id'])
                 continue
 
             if u'newspaperPageNumber' not in article[u'fields']:
-                self.message("%s has no page number; unable to put into section." % article['id'])
+                self.message("* %s has no page number; unable to put into section." % article['id'])
                 continue
 
             # Just get the dicts for book and book_section out of the tags list.
@@ -274,6 +274,10 @@ class GuardianGrabber:
             book_section = next((tag for tag in tags if tag['type'] == 'newspaper-book-section'), None)
             # There might be more than contributor; we're only using one:
             contributor = next((tag for tag in tags if tag['type'] == 'contributor'), None)
+
+            if book is None:
+                self.message("* %s has no 'book' tag; unable to put into section." % article['id'])
+                continue
 
             # Save these in easy to get places for the template:
             article[u'newspaperBook'] = book
