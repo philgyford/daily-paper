@@ -339,7 +339,8 @@ div.gu_advert {
 	display: table-caption;
 	caption-side: bottom;
 }
-.page figure figcaption span {
+.page figure figcaption .element-image__caption,
+.page figure figcaption .element-image__credit {
 	display: block;
 }
 .page figure figcaption .element-image__credit {
