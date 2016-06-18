@@ -247,8 +247,8 @@ var reader = {
 
 		function updateTouch() {
 			var first = event.changedTouches[0] || null;
-			deltaX = first.pageX - startX;
-			deltaY = first.pageY - startY;
+			deltaX = first.clientX - startX;
+			deltaY = first.clientY - startY;
 			deltaT = (new Date).getTime() - startTime;
 		}
 	},
