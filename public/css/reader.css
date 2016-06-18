@@ -348,8 +348,30 @@ div.gu_advert {
 }
 .page .element iframe {
 	overflow: hidden;
+	width: 100%;
 }
 
+.page .element-embed {
+	position: relative;
+	display: block;
+	height: 0;
+	padding: 0;
+	overflow: hidden;
+	/* Assuming 16:9 aspect ratio: */
+	padding-bottom: 56.25%;
+}
+.page .element-embed iframe,
+.page .element-embed embed,
+.page .element-embed object,
+.page .element-embed video {
+	position: absolute;
+	top: 0;
+	left: 0;
+	bottom: 0;
+	height: 100%;
+	width: 100%;
+	border: 0;
+}
 
 /* Distractions to hide: */
 .page .element-rich-link,
