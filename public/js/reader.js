@@ -787,7 +787,8 @@ var reader = {
 		if (reader.hasTouch) {
 			// iPhone etc.
 			
-			if (typeof WebKitTransitionEvent == "object") {
+			// "function" in iOS 10, "object" before that:
+			if (typeof WebKitTransitionEvent == "object" || typeof WebKitTransitionEvent == "function") {
 				// We have nice animations, so slide away...
 				
 				if (fromIdx == 0 && toIdx == 1) {
