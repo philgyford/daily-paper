@@ -901,8 +901,7 @@ var reader = {
 	
 	
 	openOriginal: function() {
-		var url = 'http://www.guardian.co.uk' + reader.issueArticles[reader.currentPos-1]['path'];
-		window.open(url);
+		window.open( reader.issueArticles[reader.currentPos-1]['webUrl'] );
 		return false;
 	},
 
