@@ -351,7 +351,7 @@ div.gu_advert {
 	width: 100%;
 }
 
-.page .element-embed {
+.page .element-atom {
 	position: relative;
 	display: block;
 	height: 0;
@@ -360,10 +360,10 @@ div.gu_advert {
 	/* Assuming 16:9 aspect ratio: */
 	padding-bottom: 56.25%;
 }
-.page .element-embed iframe,
-.page .element-embed embed,
-.page .element-embed object,
-.page .element-embed video {
+.page .element-atom iframe,
+.page .element-atom embed,
+.page .element-atom object,
+.page .element-atom video {
 	position: absolute;
 	top: 0;
 	left: 0;
@@ -677,5 +677,3 @@ body#about-page {
 .ipad #footer p {
 	font-size: 0.75em;
 }
-
-
