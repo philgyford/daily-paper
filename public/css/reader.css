@@ -48,6 +48,11 @@ blockquote, q {
 	quotes: "" "";
 }
 
+code {
+		font-family: monospace;
+		font-size: 1.1em;
+}
+
 .clearfix:after {
 content:".";
 display:block;
@@ -351,19 +356,45 @@ div.gu_advert {
 	width: 100%;
 }
 
+/* <figure>s containing a variety of things, usually with a <gu-atom> inside. */
 .page .element-atom {
-	position: relative;
+		clear: both;
+		width: 100%; /* Required for those that contain vieo */
+}
+
+/* Boxes containing related content, but could also be a video. */
+.page gu-atom,
+.page .element-tweet {
+	border: 1px solid #ddd;
+	width: 100%;
+	height: auto;
 	display: block;
+}
+.page gu-atom > div {
+	padding: 1em 20px 0.5em 20px;
+}
+.page .element-tweet blockquote {
+	padding: 1em 20px 1em 20px;
+	margin-left: 0;
+}
+
+/* Undo some of the above styles for video, and add new ones. */
+.page gu-atom[data-atom-type="media"] {
+	border: none;
+	position: relative;
 	height: 0;
 	padding: 0;
 	overflow: hidden;
 	/* Assuming 16:9 aspect ratio: */
 	padding-bottom: 56.25%;
 }
-.page .element-atom iframe,
-.page .element-atom embed,
-.page .element-atom object,
-.page .element-atom video {
+.page gu-atom[data-atom-type="media"] > div {
+	padding: 0;
+}
+.page gu-atom[data-atom-type="media"] iframe,
+.page gu-atom[data-atom-type="media"] embed,
+.page gu-atom[data-atom-type="media"] object,
+.page gu-atom [data-atom-type="media"] video {
 	position: absolute;
 	top: 0;
 	left: 0;
@@ -373,8 +404,10 @@ div.gu_advert {
 	border: 0;
 }
 
+
 /* Distractions to hide: */
-.page .element-rich-link,
+.page .element-rich-link, /* 'Related' links */
+.page .element-embed, /* Email signup */
 .page .element-pullquote {
 	display: none;
 }
