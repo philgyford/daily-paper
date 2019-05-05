@@ -1,0 +1,16 @@
+-i https://pypi.org/simple
+backports.functools-lru-cache==1.5 ; python_version < '3'
+beautifulsoup4==4.7.1
+certifi==2019.3.9
+chardet==3.0.4
+idna==2.8
+jinja2==2.10.1
+markupsafe==1.1.1
+python-dateutil==2.8.0
+pytz==2019.1
+requests==2.21.0
+six==1.12.0
+smartypants==2.0.1
+soupsieve==1.9.1
+typogrify==2.0.7
+urllib3==1.24.3

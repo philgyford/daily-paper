@@ -26,7 +26,11 @@ stored in a dated directory within the archive/ directory.
 
 ## Requirements
 
-Install the required modules using [pip](https://pip.pypa.io/en/stable/) by doing:
+Install the required modules using [pipenv](https://pipenv.readthedocs.io):
+
+    $ pipenv install
+
+Or [pip](https://pip.pypa.io/en/stable/):
 
 	$ pip install -r requirements.txt
 
