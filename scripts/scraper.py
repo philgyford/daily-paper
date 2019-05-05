@@ -421,20 +421,22 @@ class GuardianGrabber:
         self.message('Fetching page %s of up to %s articles.' % (page, page_size))
 
         error_message = ''
+        response = None
 
         try:
             response = requests.get(api_url, params=url_args, timeout=20)
-        except requests.exceptions.ConnectionError as e:
-            error_message = "Can't connect to domain."
-        except requests.exceptions.ConnectTimeout as e:
-            error_message = "Connection timed out."
-        except requests.exceptions.ReadTimeout as e:
-            error_message = "Read timed out."
-
-        try:
             response.raise_for_status()
         except requests.exceptions.HTTPError as e:
             error_message = "HTTP Error: %s" % response.status_code
+        except requests.exceptions.ConnectionError as e:
+            error_message = "Can't connect to domain: %s" % e
+        except requests.exceptions.ConnectTimeout as e:
+            error_message = "Connection timed out: %s" % e
+        except requests.exceptions.ReadTimeout as e:
+            error_message = "Read timed out: %s" % e
+        except requests.exceptions.RequestException as e:
+            # Catches any other requests exceptions.
+            error_message = "RequestException: %s" % e
 
         if error_message == '':
             # All good so far. Check the returned data.
