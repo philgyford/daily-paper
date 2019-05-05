@@ -4,12 +4,12 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-"beautifulsoup4" = "==4.4.1"
-python-dateutil = "==2.4.2"
-pytz = "==2015.7"
-requests = "==2.5.1"
-typogrify = "==2.0.7"
-"Jinja2" = "==2.8"
+"beautifulsoup4" = "*"
+python-dateutil = "*"
+pytz = "*"
+requests = "*"
+typogrify = "*"
+"Jinja2" = "*"
 
 [dev-packages]
 
