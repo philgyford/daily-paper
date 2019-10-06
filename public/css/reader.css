@@ -70,10 +70,17 @@ visibility:hidden;
  * MAIN STRUCTURE
  */
 
+html {
+  height: 100%;
+  overflow: hidden;
+}
 body {
 	font-family: Georgia, Times, "Times New Roman", serif;
 	position: relative;
 	background: #fbfbfb;
+  height: 100%;
+  overflow: auto;
+  -webkit-overflow-scrolling: touch;
 }
 #wrapper {
 	margin: 0 auto;
