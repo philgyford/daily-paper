@@ -695,9 +695,8 @@ input {
 	padding-right: 20px;
 }
 
-.iphone .page p.byline,
-.iphone .page .footer p,
-.iphone .page #footer p {
+.iphone .page .byline p,
+.iphone .page .footer p {
 	font-size: 0.5625em; /* 9px */
 	font-size: 0.5625rem; /* 9px */
 }
@@ -711,6 +710,11 @@ input {
 .iphone #about-page p {
 	font-size: 1em; /* 16px */
 	font-size: 1rem; /* 16px */
+}
+.iphone .page #footer p {
+	font-size: 0.4375em; /* 7px */
+	font-size: 0.4375rem; /* 7px */
+	line-height: 1.1em;
 }
 
 /* iPad */
