@@ -647,13 +647,16 @@ body#about-page {
 .page .footer p,
 #about-page .close,
 #footer p,
-.alert {
-	font-size: 0.75em; /* 10px */
+.alert,
+input {
+	font-size: 0.75em; /* 12px */
+	font-size: 0.75rem; /* 12px */
 }
 
 .page h2,
 #about-page h1 {
 	font-size: 1.5em; /* 24px */
+	font-size: 1.5rem; /* 24px */
 	line-height: 1.333em; /* 36px */
 }
 .page .body h2,
@@ -662,6 +665,7 @@ body#about-page {
 .page blockquote footer,
 #about-page p {
 	font-size: 1em;
+	font-size: 1rem;
 	line-height: 1.5em; /* 24px */
 }
 
@@ -693,7 +697,8 @@ body#about-page {
 
 .iphone .page p.byline,
 .iphone .page .footer p {
-	font-size: 0.5625em;
+	font-size: 0.5625em; /* 9px */
+	font-size: 0.5625rem; /* 9px */
 }
 .iphone .page h2,
 .iphone #about-page h1 {
@@ -703,9 +708,11 @@ body#about-page {
 .iphone .page p,
 .iphone #about-page p {
 	font-size: 0.8125em; /* 13px */
+	font-size: 0.8125rem; /* 13px */
 }
 .iphone #footer p {
-	font-size: 0.35em;
+	font-size: 0.35em; /* 5.6px */
+	font-size: 0.35rem; /* 5.6px */
 	line-height: 1.1em;
 }
 
@@ -717,5 +724,6 @@ body#about-page {
 .ipad .page .footer p,
 .ipad #about-page .close,
 .ipad #footer p {
-	font-size: 0.75em;
+	font-size: 0.75em; /* 12px */
+	font-size: 0.75rem; /* 12px */
 }
