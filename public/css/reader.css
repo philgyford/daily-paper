@@ -696,9 +696,10 @@ input {
 }
 
 .iphone .page .byline p,
-.iphone .page .footer p {
-	font-size: 0.5625em; /* 9px */
-	font-size: 0.5625rem; /* 9px */
+.iphone .page .footer p,
+input {
+	font-size: 0.75em; /* 12px */
+	font-size: 0.75rem; /* 12px */
 }
 .iphone .page h2,
 .iphone #about-page h1 {
@@ -711,9 +712,9 @@ input {
 	font-size: 1em; /* 16px */
 	font-size: 1rem; /* 16px */
 }
-.iphone .page #footer p {
-	font-size: 0.4375em; /* 7px */
-	font-size: 0.4375rem; /* 7px */
+.iphone #footer p {
+	font-size: 0.45em; /* 12px */
+	font-size: 0.45rem; /* 12px for some reason */
 	line-height: 1.1em;
 }
 
