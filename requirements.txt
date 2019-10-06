@@ -1,5 +1,5 @@
 -i https://pypi.org/simple
-backports.functools-lru-cache==1.5 ; python_version < '3'
+#backports.functools-lru-cache==1.5 ; python_version < '3'
 beautifulsoup4==4.7.1
 certifi==2019.3.9
 chardet==3.0.4
