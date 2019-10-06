@@ -648,7 +648,7 @@ body#about-page {
 #about-page .close,
 #footer p,
 .alert {
-	font-size: 0.625em; /* 10px */
+	font-size: 0.75em; /* 10px */
 }
 
 .page h2,
