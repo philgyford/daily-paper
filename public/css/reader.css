@@ -332,6 +332,7 @@ div.gu_advert {
 /* Images and videos */
 .page figure {
 	margin: 1em auto;
+	width: 100%; /* Needed to make videos not be square and too narrow. */
 	/* To help keep the figcaption to the right width (see below). */
 	display: table;
 	clear: both;
