@@ -9,48 +9,48 @@ small, strike, strong, sub, sup, tt, var,
 dl, dt, dd, ol, ul, li,
 fieldset, form, label, legend,
 table, caption, tbody, tfoot, thead, tr, th, td {
-	margin: 0;
-	padding: 0;
-	border: 0;
-	outline: 0;
-	font-weight: inherit;
-	font-style: inherit;
-	font-size: 100%;
-	font-family: inherit;
-	vertical-align: baseline;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  outline: 0;
+  font-weight: inherit;
+  font-style: inherit;
+  font-size: 100%;
+  font-family: inherit;
+  vertical-align: baseline;
 }
 /* remember to define focus styles! */
 :focus {
-	outline: 0;
+  outline: 0;
 }
 body {
-	line-height: 1;
-	color: black;
-	background: white;
+  line-height: 1;
+  color: black;
+  background: white;
 }
 ol, ul {
-	list-style: none;
+  list-style: none;
 }
 /* tables still need 'cellspacing="0"' in the markup */
 table {
-	border-collapse: separate;
-	border-spacing: 0;
+  border-collapse: separate;
+  border-spacing: 0;
 }
 caption, th, td {
-	text-align: left;
-	font-weight: normal;
+  text-align: left;
+  font-weight: normal;
 }
 blockquote:before, blockquote:after,
 q:before, q:after {
-	content: "";
+  content: "";
 }
 blockquote, q {
-	quotes: "" "";
+  quotes: "" "";
 }
 
 code {
-		font-family: monospace;
-		font-size: 1.1em;
+    font-family: monospace;
+    font-size: 1.1em;
 }
 
 .clearfix:after {
@@ -76,50 +76,50 @@ html {
   overflow: hidden;
 }
 body {
-	font-family: Georgia, Times, "Times New Roman", serif;
-	position: relative;
-	background: #fbfbfb;
+  font-family: Georgia, Times, "Times New Roman", serif;
+  position: relative;
+  background: #fbfbfb;
   /* Part 2 of fixing background colour scrolling issue on iPad: */
   height: 100%;
   overflow: auto;
   -webkit-overflow-scrolling: touch;
 }
 #wrapper {
-	margin: 0 auto;
-	width: 610px;
+  margin: 0 auto;
+  width: 610px;
 }
 #main {
-	text-align: left;
-	width: 610px;
-	padding: 1em 0;
-	color: #080000;
-	background: #fbfbfb;
+  text-align: left;
+  width: 610px;
+  padding: 1em 0;
+  color: #080000;
+  background: #fbfbfb;
 }
 #window {
-	width: 610px;
-	overflow: hidden;
-	position: relative;
+  width: 610px;
+  overflow: hidden;
+  position: relative;
 }
 #pages {
-	/*width: 1830px;*/ /* #window width * 3 */
-	position: relative;
-	top: 0;
-	left: 0;
+  /*width: 1830px;*/ /* #window width * 3 */
+  position: relative;
+  top: 0;
+  left: 0;
 }
 #pages div.page {
-	width: 530px; /* The page width is also set in reader.js, so change there too if you change it. */
-	padding: 0 40px;
-	float: left;
+  width: 530px; /* The page width is also set in reader.js, so change there too if you change it. */
+  padding: 0 40px;
+  float: left;
 }
 #error {
-	position: absolute;
-	top: 40px;
-	left: 100px;
-	color: #933;
-	background: #fff;
-	padding: 1em 20px;
-	display: none;
-	border: 1px solid #666;
+  position: absolute;
+  top: 40px;
+  left: 100px;
+  color: #933;
+  background: #fff;
+  padding: 1em 20px;
+  display: none;
+  border: 1px solid #666;
 }
 
 
@@ -127,26 +127,26 @@ body {
  * UNIVERSAL ELEMENTS
  */
 a {
-	color: #092499;
-	text-decoration: underline;
+  color: #092499;
+  text-decoration: underline;
 }
 
 strong {
-	font-weight: bold;
+  font-weight: bold;
 }
 em,
 cite {
-	font-style: italic;
+  font-style: italic;
 }
 
 hr {
-	display: none;
+  display: none;
 }
 div.hr {
-	height: 1px;
-	margin-top: 1em;
-	border-top: 1px solid #ccc;
-	padding-top: 1em;
+  height: 1px;
+  margin-top: 1em;
+  border-top: 1px solid #ccc;
+  padding-top: 1em;
 }
 
 
@@ -155,74 +155,74 @@ div.hr {
  */
 
 #title {
-	margin: 0 40px 0.5em 40px;
-	width: 530px;
-	color: #999;
-	font-family: "Lucida Sans", "Lucida Grande", "Lucida Sans Unicode", sans-serif;
-	border-bottom: 1px solid #ccc;
+  margin: 0 40px 0.5em 40px;
+  width: 530px;
+  color: #999;
+  font-family: "Lucida Sans", "Lucida Grande", "Lucida Sans Unicode", sans-serif;
+  border-bottom: 1px solid #ccc;
 }
 #title #paper-date {
-	float: left;
-	width: 80%;
-	height: 1.3em
+  float: left;
+  width: 80%;
+  height: 1.3em
 }
 #title #nav {
-	float: right;
-	width: 15%;
-	text-align: right;
-	height: 1.3em;
+  float: right;
+  width: 15%;
+  text-align: right;
+  height: 1.3em;
 }
 
 #progress {
- 	width: 530px;
-	margin: 0.5em 40px 1.5em 40px;
+   width: 530px;
+  margin: 0.5em 40px 1.5em 40px;
 }
 #progress div {
-	float: left;
-	margin-right: 10px;
-	cursor: pointer;
+  float: left;
+  margin-right: 10px;
+  cursor: pointer;
 }
 #progress div {
-	color: #999;
+  color: #999;
 }
 #progress div.on,
 #progress div:hover {
-	color: #666;
+  color: #666;
 }
 #progress div span {
-	font-family: "Lucida Sans", "Lucida Grande", "Lucida Sans Unicode", sans-serif;
-	white-space: nowrap;
-	overflow: visible;
+  font-family: "Lucida Sans", "Lucida Grande", "Lucida Sans Unicode", sans-serif;
+  white-space: nowrap;
+  overflow: visible;
 }
 #progress li {
-	padding: 4px 0;
-	height: 12px;
-	float: left;
+  padding: 4px 0;
+  height: 12px;
+  float: left;
 }
 #progress li span {
-	width: 2px;
-	background: #999;
-	display: block;
+  width: 2px;
+  background: #999;
+  display: block;
 }
 #progress.compact li span {
-	width: 1px;
+  width: 1px;
 }
 #progress li.on {
-	background: #f99;
+  background: #f99;
 }
 #progress div.on li span,
 #progress div:hover li span {
-	background: #666;
+  background: #666;
 }
 
 .alert {
-	margin-left: 40px;
-	margin-right: 40px;
-	line-height: 1.5em;
-	padding: 0.5em 0;
-	font-weight: bold;
-	text-align: center;
-	font-family: "Lucida Sans", "Lucida Grande", "Lucida Sans Unicode", sans-serif;
+  margin-left: 40px;
+  margin-right: 40px;
+  line-height: 1.5em;
+  padding: 0.5em 0;
+  font-weight: bold;
+  text-align: center;
+  font-family: "Lucida Sans", "Lucida Grande", "Lucida Sans Unicode", sans-serif;
 }
 
 /***************************************************
@@ -230,188 +230,188 @@ div.hr {
  */
 
 .page p {
-	margin-bottom: 1em;
+  margin-bottom: 1em;
 }
 .page .meta {
-	width: 530px;
-	border-bottom: 3px solid #333;
-	color: #333;
-	margin-bottom: 0.8em;
-	height: 1.5em;
+  width: 530px;
+  border-bottom: 3px solid #333;
+  color: #333;
+  margin-bottom: 0.8em;
+  height: 1.5em;
 }
 .page .error {
-	color: #999;
-	border-top: 1px solid #ddd;
-	padding-top: 1em;
+  color: #999;
+  border-top: 1px solid #ddd;
+  padding-top: 1em;
 }
 
 /* List of tones:
 https://github.com/guardian/frontend/tree/master/static/src/stylesheets/module/content/tones */
-.tone-analysis .meta		{ border-color: #005689; color: #005689; }
-.tone-comment .meta			{ border-color: #e6711b; color: #e6711b; }
-.tone-dead .meta			{ border-color: #b51800; color: #b51800; }
-.tone-editorial .meta		{ border-color: #005689; color: #005689; }
-.tone-feature .meta			{ border-color: #951c55; color: #951c55; }
-.tone-letters .meta			{ border-color: #e6711b; color: #e6711b; }
-.tone-live .meta			{ border-color: #b51800; color: #b51800; }
-.tone-media .meta			{ border-color: #333333; color: #333333; }
-.tone-news .meta			{ border-color: #005689; color: #005689; }
-.tone-review .meta			{ border-color: #615b52; color: #615b52; }
-.tone-special-report .meta	{ border-color: #63717a; color: #63717a; }
+.tone-analysis .meta    { border-color: #005689; color: #005689; }
+.tone-comment .meta      { border-color: #e6711b; color: #e6711b; }
+.tone-dead .meta      { border-color: #b51800; color: #b51800; }
+.tone-editorial .meta    { border-color: #005689; color: #005689; }
+.tone-feature .meta      { border-color: #951c55; color: #951c55; }
+.tone-letters .meta      { border-color: #e6711b; color: #e6711b; }
+.tone-live .meta      { border-color: #b51800; color: #b51800; }
+.tone-media .meta      { border-color: #333333; color: #333333; }
+.tone-news .meta      { border-color: #005689; color: #005689; }
+.tone-review .meta      { border-color: #615b52; color: #615b52; }
+.tone-special-report .meta  { border-color: #63717a; color: #63717a; }
 
-.tone-default .meta			{ border-color: #005689; color: #005689; }
+.tone-default .meta      { border-color: #005689; color: #005689; }
 
 .page .meta .publication {
-	display: none;
+  display: none;
 }
 .page .meta .section {
-	margin-bottom: 0;
+  margin-bottom: 0;
 }
 .page h2 {
-	clear: left;
-	margin-bottom: 0.667em;
+  clear: left;
+  margin-bottom: 0.667em;
 }
 
 .page .byline {
-	border-top: 1px solid #ddd;
-	border-bottom: 1px solid #ddd;
-	margin-bottom: 1.125em;
-	padding: 0.25em 0 0.25em 0;
-	font-family: "Lucida Sans", "Lucida Grande", "Lucida Sans Unicode", sans-serif;
-	color: #666;
-	line-height: 1.2em;
+  border-top: 1px solid #ddd;
+  border-bottom: 1px solid #ddd;
+  margin-bottom: 1.125em;
+  padding: 0.25em 0 0.25em 0;
+  font-family: "Lucida Sans", "Lucida Grande", "Lucida Sans Unicode", sans-serif;
+  color: #666;
+  line-height: 1.2em;
 }
 .page .byline p {
-	margin: 0;
+  margin: 0;
 }
 
 .page .has-contributor .byline {
-	font-weight: bold;
+  font-weight: bold;
 }
 .page .standfirst {
-	font-weight: bold;
-	-webkit-hyphens: auto;
-	-moz-hyphens: auto;
-	hyphens: auto;
+  font-weight: bold;
+  -webkit-hyphens: auto;
+  -moz-hyphens: auto;
+  hyphens: auto;
 }
 .page .body {
-	float: left;
-	width: 530px;
-	-webkit-hyphens: auto;
-	-moz-hyphens: auto;
-	hyphens: auto;
+  float: left;
+  width: 530px;
+  -webkit-hyphens: auto;
+  -moz-hyphens: auto;
+  hyphens: auto;
 }
 .page .body .no-rights,
 .page .body .no-body {
-	font-style: italic;
+  font-style: italic;
 }
 .page .thumbnail {
-	float: right;
-	margin: 0.3em 0 0.5em 10px;
-	width: 140px;
+  float: right;
+  margin: 0.3em 0 0.5em 10px;
+  width: 140px;
 }
 .page .body h2 {
-	font-weight: bold;
+  font-weight: bold;
 }
 
 .page blockquote {
-	margin-left: 25px;
+  margin-left: 25px;
 }
 .page blockquote footer {
-	margin-bottom: 1em;
+  margin-bottom: 1em;
 }
 .page .gu-video {
-	width: 100%;
-	margin-top: 1em;
-	margin-bottom: 1em;
+  width: 100%;
+  margin-top: 1em;
+  margin-bottom: 1em;
 }
 div.gu_advert {
-	height: 250px;
+  height: 250px;
 }
 
 /* Images and videos */
 .page figure {
-	margin: 1em auto;
-	width: 100%; /* Needed to make videos not be square and too narrow. */
-	/* To help keep the figcaption to the right width (see below). */
-	display: table;
-	clear: both;
+  margin: 1em auto;
+  width: 100%; /* Needed to make videos not be square and too narrow. */
+  /* To help keep the figcaption to the right width (see below). */
+  display: table;
+  clear: both;
 }
 .page figure img,
 .page figure video {
-	display: block;
-	margin: 0 auto;
-	max-width: 100%;
-	width: 100%;
-	height: auto;
+  display: block;
+  margin: 0 auto;
+  max-width: 100%;
+  width: 100%;
+  height: auto;
 }
 .page figure figcaption {
-	margin-top: 0.3em;
-	font-family: "Lucida Sans", "Lucida Grande", "Lucida Sans Unicode", sans-serif;
-	line-height: 1.5em;
-	min-width: 200px; /* So it doesn't get too thin, if image is thin. */
-	/* Keeps it the same width as the image. */
-	display: table-caption;
-	caption-side: bottom;
+  margin-top: 0.3em;
+  font-family: "Lucida Sans", "Lucida Grande", "Lucida Sans Unicode", sans-serif;
+  line-height: 1.5em;
+  min-width: 200px; /* So it doesn't get too thin, if image is thin. */
+  /* Keeps it the same width as the image. */
+  display: table-caption;
+  caption-side: bottom;
 }
 .page figure figcaption .element-image__caption,
 .page figure figcaption .element-image__credit {
-	display: block;
+  display: block;
 }
 .page figure figcaption .element-image__credit {
-	color: #999;
+  color: #999;
 }
 .page .element iframe {
-	overflow: hidden;
-	width: 100%;
+  overflow: hidden;
+  width: 100%;
 }
 
 /* <figure>s containing a variety of things, usually with a <gu-atom> inside. */
 .page .element-atom {
-		clear: both;
-		width: 100%; /* Required for those that contain vieo */
+    clear: both;
+    width: 100%; /* Required for those that contain vieo */
 }
 
 /* Boxes containing related content, but could also be a video. */
 .page gu-atom,
 .page .element-tweet {
-	border: 1px solid #ddd;
-	width: 100%;
-	height: auto;
-	display: block;
+  border: 1px solid #ddd;
+  width: 100%;
+  height: auto;
+  display: block;
 }
 .page gu-atom > div {
-	padding: 1em 20px 0.5em 20px;
+  padding: 1em 20px 0.5em 20px;
 }
 .page .element-tweet blockquote {
-	padding: 1em 20px 1em 20px;
-	margin-left: 0;
+  padding: 1em 20px 1em 20px;
+  margin-left: 0;
 }
 
 /* Undo some of the above styles for video, and add new ones. */
 .page gu-atom[data-atom-type="media"] {
-	border: none;
-	position: relative;
-	height: 0;
-	padding: 0;
-	overflow: hidden;
-	/* Assuming 16:9 aspect ratio: */
-	padding-bottom: 56.25%;
+  border: none;
+  position: relative;
+  height: 0;
+  padding: 0;
+  overflow: hidden;
+  /* Assuming 16:9 aspect ratio: */
+  padding-bottom: 56.25%;
 }
 .page gu-atom[data-atom-type="media"] > div {
-	padding: 0;
+  padding: 0;
 }
 .page gu-atom[data-atom-type="media"] iframe,
 .page gu-atom[data-atom-type="media"] embed,
 .page gu-atom[data-atom-type="media"] object,
 .page gu-atom [data-atom-type="media"] video {
-	position: absolute;
-	top: 0;
-	left: 0;
-	bottom: 0;
-	height: 100%;
-	width: 100%;
-	border: 0;
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  height: 100%;
+  width: 100%;
+  border: 0;
 }
 
 
@@ -419,20 +419,20 @@ div.gu_advert {
 .page .element-rich-link, /* 'Related' links */
 .page .element-embed, /* Email signup */
 .page .element-pullquote {
-	display: none;
+  display: none;
 }
 
 /* Page footer */
 .page .footer {
-	clear: both;
-	float: left;
-	margin-top: 1.5em;
-	width: 530px;
-	overflow: hidden;
-	font-family: "Lucida Sans", "Lucida Grande", "Lucida Sans Unicode", sans-serif;
+  clear: both;
+  float: left;
+  margin-top: 1.5em;
+  width: 530px;
+  overflow: hidden;
+  font-family: "Lucida Sans", "Lucida Grande", "Lucida Sans Unicode", sans-serif;
 }
 .page .footer p.share input {
-	width: 12em;
+  width: 12em;
 }
 
 /***************************************************
@@ -440,49 +440,49 @@ div.gu_advert {
 
 #prev,
 #next {
-	display: block;
-	position: fixed;
-	top: 0;
-	background: #ddd;
-	text-align: center;
-	font-size: 4em;
-	cursor: default;
-	font-family: "Times New Roman", Georgia, serif;
-	text-decoration: none;
+  display: block;
+  position: fixed;
+  top: 0;
+  background: #ddd;
+  text-align: center;
+  font-size: 4em;
+  cursor: default;
+  font-family: "Times New Roman", Georgia, serif;
+  text-decoration: none;
 }
 #prev span,
 #next span {
-	display: none;
+  display: none;
 }
 .on#next,
 .on#prev {
-	cursor: pointer;
+  cursor: pointer;
 }
 #prev {
-	left: 0;
-	background: #eee url(img/bg_prev.png) right top repeat-y;
+  left: 0;
+  background: #eee url(img/bg_prev.png) right top repeat-y;
 }
 #next {
-	right: 0;
-	background: #eee url(img/bg_next.png) left top repeat-y;
+  right: 0;
+  background: #eee url(img/bg_next.png) left top repeat-y;
 }
 
 /***************************************************
  * FOOTER.
  */
 #footer {
-	margin-top: 1em;
-	padding-bottom: 1em;
-	width: 100%;
-	float: left;
-	color: #999;
-	font-family: "Lucida Sans", "Lucida Grande", "Lucida Sans Unicode", sans-serif;
+  margin-top: 1em;
+  padding-bottom: 1em;
+  width: 100%;
+  float: left;
+  color: #999;
+  font-family: "Lucida Sans", "Lucida Grande", "Lucida Sans Unicode", sans-serif;
 }
 #footer p {
-	border-top: 1px solid #ccc;
-	padding-top: 1em;
-	line-height: 1.4em;
-	margin: 0 40px;
+  border-top: 1px solid #ccc;
+  padding-top: 1em;
+  line-height: 1.4em;
+  margin: 0 40px;
 }
 
 /***************************************************
@@ -490,72 +490,72 @@ div.gu_advert {
  */
 
 #about-page {
-	display: none;
-	background: #fff;
-	height: auto;
-	position: absolute;
-	top: 10px;
-	left: 0;
-	text-align: left;
-	box-shadow: 5px 5px 10px #999;
-	-webkit-box-shadow: 5px 5px 10px #999;
-	-moz-box-shadow: 5px 5px 10px #999;
-	overflow: auto;
-	border: 1px solid #ccc;
-	padding: 1.5em 30px 1em 30px;
-	z-index: 1000;
+  display: none;
+  background: #fff;
+  height: auto;
+  position: absolute;
+  top: 10px;
+  left: 0;
+  text-align: left;
+  box-shadow: 5px 5px 10px #999;
+  -webkit-box-shadow: 5px 5px 10px #999;
+  -moz-box-shadow: 5px 5px 10px #999;
+  overflow: auto;
+  border: 1px solid #ccc;
+  padding: 1.5em 30px 1em 30px;
+  z-index: 1000;
 }
 body#about-page {
-	display: block;
-	box-shadow: none;
-	-webkit-box-shadow: none;
-	-mox-box-shadow: none;
-	border: none;
+  display: block;
+  box-shadow: none;
+  -webkit-box-shadow: none;
+  -mox-box-shadow: none;
+  border: none;
 }
 #about-page .close {
-	position: absolute;
-	top: 10px;
-	right: 20px;
-	font-family: "Lucida Sans", "Lucida Grande", "Lucida Sans Unicode", sans-serif;
+  position: absolute;
+  top: 10px;
+  right: 20px;
+  font-family: "Lucida Sans", "Lucida Grande", "Lucida Sans Unicode", sans-serif;
 }
 #about-page h1 {
-	margin-bottom: 0.8em;
+  margin-bottom: 0.8em;
 }
 #about-page p {
-	margin-bottom: 1.5em;
+  margin-bottom: 1.5em;
 }
 #about-page kbd {
-	font-weight: bold;
+  font-weight: bold;
 }
 #about-page #keys .keys-key {
-	display: block;
-	margin-bottom: 0.5em;
-	text-align: center;
+  display: block;
+  margin-bottom: 0.5em;
+  text-align: center;
 }
 #about-page #keys .keys-instruction {
-	display: block;
+  display: block;
 }
 #about-page #keys-up,
 #about-page #keys-down {
-	clear: both;
+  clear: both;
 }
 #about-page #keys-left {
-	float: left;
+  float: left;
 }
 #about-page #keys-right {
-	float: right;
+  float: right;
 }
 
 
 @media (min-width: 560px) {
-	#about-page #keys {
-		width: 500px;
-		margin-left: auto;
-		margin-right: auto;
-	}
-	#about-page #keys .keys-instruction {
-		display: inline;
-	}
+  #about-page #keys {
+    width: 500px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  #about-page #keys .keys-instruction {
+    display: inline;
+  }
 }
 
 
@@ -570,8 +570,8 @@ body#about-page {
 .touch #wrapper,
 .touch #main,
 .touch #window {
-	width: auto;
-	max-width: 610px;
+  width: auto;
+  max-width: 610px;
 }
 .touch #pages div.page,
 .touch #title,
@@ -579,60 +579,60 @@ body#about-page {
 .touch .page .meta,
 .touch .page .body,
 .touch .page .footer {
-	width: auto;
-	max-width: 590px;
+  width: auto;
+  max-width: 590px;
 }
 .touch #about-page #keys {
-	width: auto;
-	max-width: 500px;
+  width: auto;
+  max-width: 500px;
 }
 
 .touch #pages div.page {
-	float: none;
-	position: absolute;
-	top: 0;
-	left: 0;
-	display: block;
-	padding-left: 10px;
-	padding-right: 10px;
-	-webkit-transition: -webkit-transform 200ms linear;
-	-webkit-transform: translate3d(0, 0, 0);
+  float: none;
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: block;
+  padding-left: 10px;
+  padding-right: 10px;
+  -webkit-transition: -webkit-transform 200ms linear;
+  -webkit-transform: translate3d(0, 0, 0);
 }
 
 .touch #pages div.page.right {
-	-webkit-transform: translate3d(100%, 0, 0);
+  -webkit-transform: translate3d(100%, 0, 0);
 }
 .touch #pages div.page.current {
 }
 .touch #pages div.page.left {
-	-webkit-transform: translate3d(-100%, 0, 0);
+  -webkit-transform: translate3d(-100%, 0, 0);
 }
 .touch #title,
 .touch #progress,
 .touch #footer p {
-	margin-left: 10px;
-	margin-right: 10px;
+  margin-left: 10px;
+  margin-right: 10px;
 }
 .touch #progress {
-	margin-top: 1em;
+  margin-top: 1em;
 }
 .touch #about-page {
-	width: auto;
-	max-width: 530px;
-	height: auto;
+  width: auto;
+  max-width: 530px;
+  height: auto;
 }
 .touch #about-page h1 {
-	font-weight: bold;
+  font-weight: bold;
 }
 
 .touch .meta p,
 #about-page #keys {
-	-webkit-text-size-adjust: none;
+  -webkit-text-size-adjust: none;
 }
 
 .touch #prev,
 .touch #next {
-	background: none;
+  background: none;
 }
 
 /***************************************************
@@ -650,24 +650,24 @@ body#about-page {
 #footer p,
 .alert,
 input {
-	font-size: 0.75em; /* 12px */
-	font-size: 0.75rem; /* 12px */
+  font-size: 0.75em; /* 12px */
+  font-size: 0.75rem; /* 12px */
 }
 
 .page h2,
 #about-page h1 {
-	font-size: 1.5em; /* 24px */
-	font-size: 1.5rem; /* 24px */
-	line-height: 1.333em; /* 36px */
+  font-size: 1.5em; /* 24px */
+  font-size: 1.5rem; /* 24px */
+  line-height: 1.333em; /* 36px */
 }
 .page .body h2,
 .page p,
 .page li,
 .page blockquote footer,
 #about-page p {
-	font-size: 1em;
-	font-size: 1rem;
-	line-height: 1.5em; /* 24px */
+  font-size: 1em;
+  font-size: 1rem;
+  line-height: 1.5em; /* 24px */
 }
 
 
@@ -676,47 +676,47 @@ input {
 
 /* iPhone */
 .iphone #progress {
-	margin-top: 0;
-	margin-bottom: 0.5em;
+  margin-top: 0;
+  margin-bottom: 0.5em;
 }
 .iphone #progress.compact li span {
-	width: 1px;
+  width: 1px;
 }
 .iphone .page .meta {
-	height: 1.2em;
+  height: 1.2em;
 }
 .iphone .page .byline {
-	margin-bottom: 1em;
+  margin-bottom: 1em;
 }
 .iphone #controls {
-	display: none;
+  display: none;
 }
 .iphone #about-page {
-	padding-left: 20px;
-	padding-right: 20px;
+  padding-left: 20px;
+  padding-right: 20px;
 }
 
 .iphone .page .byline p,
 .iphone .page .footer p,
 input {
-	font-size: 0.75em; /* 12px */
-	font-size: 0.75rem; /* 12px */
+  font-size: 0.75em; /* 12px */
+  font-size: 0.75rem; /* 12px */
 }
 .iphone .page h2,
 .iphone #about-page h1 {
-	font-size: 1.125em; /* 18px */
-	font-size: 1.125rem; /* 18px */
+  font-size: 1.125em; /* 18px */
+  font-size: 1.125rem; /* 18px */
 }
 .iphone .page .body h2,
 .iphone .page p,
 .iphone #about-page p {
-	font-size: 1em; /* 16px */
-	font-size: 1rem; /* 16px */
+  font-size: 1em; /* 16px */
+  font-size: 1rem; /* 16px */
 }
 .iphone #footer p {
-	font-size: 0.45em; /* 12px */
-	font-size: 0.45rem; /* 12px for some reason */
-	line-height: 1.1em;
+  font-size: 0.45em; /* 12px */
+  font-size: 0.45rem; /* 12px for some reason */
+  line-height: 1.1em;
 }
 
 /* iPad */
@@ -727,6 +727,6 @@ input {
 .ipad .page .footer p,
 .ipad #about-page .close,
 .ipad #footer p {
-	font-size: 0.75em; /* 12px */
-	font-size: 0.75rem; /* 12px */
+  font-size: 0.75em; /* 12px */
+  font-size: 0.75rem; /* 12px */
 }
