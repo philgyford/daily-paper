@@ -307,8 +307,9 @@ https://github.com/guardian/frontend/tree/master/static/src/stylesheets/module/c
 }
 .page .thumbnail {
   float: right;
-  margin: 0.3em 0 0.5em 10px;
-  width: 140px;
+  margin: 0.3em 0 0.5em 15px;
+  max-width: 50%;
+  height: auto;
 }
 .page .body h2 {
   font-weight: bold;
