@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-import ConfigParser
+import configparser
 import datetime
 import dateutil.parser
 from jinja2 import Environment, PackageLoader
@@ -94,10 +94,10 @@ class GuardianGrabber:
         # Second, load stuff from the config file.
 
         config_file = sys.path[0] + "/scraper.cfg"
-        config = ConfigParser.SafeConfigParser()
+        config = configparser.ConfigParser()
 
         try:
-            config.readfp(open(config_file))
+            config.read_file(open(config_file))
         except IOError:
             raise ScraperError("Can't read config file: " + config_file)
 
@@ -403,7 +403,7 @@ class GuardianGrabber:
         if sport_id in self.fetched_books:
             end.append(self.fetched_books.pop(sport_id))
 
-        for book, bookdata in self.fetched_books.iteritems():
+        for book, bookdata in self.fetched_books.items():
             middle.append(bookdata)
 
         # Put all the books together in the correct order.
@@ -530,7 +530,7 @@ class GuardianGrabber:
         try:
             article_file = open(self.issue_archive_dir + filename, "w")
             try:
-                article_file.write(html.encode("utf-8"))
+                article_file.write(html)
             finally:
                 article_file.close()
         except IOError:
