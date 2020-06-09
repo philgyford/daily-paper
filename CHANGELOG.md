@@ -6,6 +6,11 @@
 * None
 
 
+## [v2.0.2] - 2020-06-09
+
+* Remove broken loading of CDN version of jQuery; just use local file.
+
+
 ## [v2.0.1] - 2020-06-09
 
 * Remove unused beautifulsoup requirement
