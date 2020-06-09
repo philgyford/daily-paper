@@ -6,6 +6,11 @@
 * None
 
 
+## [v2.0.1] - 2020-06-09
+
+* Remove unused beautifulsoup requirement
+
+
 ## [v2.0.0] - 2020-06-09
 
 * Now uses python 3.7 (instead of 2.7)
