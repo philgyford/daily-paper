@@ -26,6 +26,8 @@ stored in a dated directory within the archive/ directory.
 
 ## Requirements
 
+Uses Python 3.7.
+
 Install the required modules using [pipenv](https://pipenv.readthedocs.io):
 
     $ pipenv install
@@ -78,11 +80,3 @@ iPhone/iPad/iPod Touch. I've never used it on an Android device.
 7. View `public/` in your web browser. You should be able to read today's paper.
    If you're not using an actual web server, you should be able to load the
    `public/index.html` file itself in your browser and still use the site.
-
-
-
-
-
-
-
-
