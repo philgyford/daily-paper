@@ -3,7 +3,7 @@
 
 ## [Unreleased]
 
-* None
+* Updated links in the About page and README.
 
 
 ## [v2.0.2] - 2020-06-09
