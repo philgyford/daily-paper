@@ -52,7 +52,7 @@ iPhone/iPad/iPod Touch. I've never used it on an Android device.
 
 ## Installation
 
-1. [Get an API key](http://guardian.mashery.com/) for the Guardian Open
+1. [Get an API key](https://open-platform.theguardian.com/access/) for the Guardian Open
    Platform.
 
 2. Install the python modules.
