@@ -1,8 +1,8 @@
 # Daily Paper
 
 An interface for viewing a daily issue of the Guardian and Observer newspapers.  
-Using the [Guardian Open Platform](http://www.guardian.co.uk/open-platform).  
-As used at [Today's Guardian](http://guardian.gyford.com/).
+Using the [Guardian Open Platform](https://open-platform.theguardian.com).  
+As used at [Today's Guardian](https://guardian.gyford.com/).
 
 
 ## Introduction
@@ -36,9 +36,7 @@ Or [pip](https://pip.pypa.io/en/stable/):
 
 	$ pip install -r requirements.txt
 
-The JavaScript requires [jQuery](http://jquery.com/) and a copy is
-automatically included from [Google's
-Libraries API](http://code.google.com/apis/libraries/).
+The JavaScript requires [jQuery](https://jquery.com/) (which is included).
 
 
 ## Issues
