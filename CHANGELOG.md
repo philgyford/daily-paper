@@ -1,6 +1,11 @@
 # Changelog
 
 
+## NOTE: 2020-06-20
+
+* Renamed `master` branch to `main`
+
+
 ## [Unreleased]
 
 * Updated links in the About page and README.
