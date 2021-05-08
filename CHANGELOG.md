@@ -8,6 +8,13 @@
 
 ## [Unreleased]
 
+* None
+
+
+## [v2.0.3] - 2021-05-08
+
+* Fixed an error saving files locally when the article ID is longer than 250 characters.
+
 * Updated links in the About page and README.
 
 
