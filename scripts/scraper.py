@@ -2,6 +2,7 @@
 import configparser
 import datetime
 import dateutil.parser
+import hashlib
 from jinja2 import Environment, PackageLoader
 import json
 import os
@@ -524,8 +525,11 @@ class GuardianGrabber:
         """
         html = self.make_article_html(article)
 
-        # eg, 'society_2015_dec_11_barbro-loader-obituary.html'
-        filename = "%s.%s" % (article["id"].replace("/", "_"), "html")
+        # There was once an article ID that was 300 characters long, and the maximum
+        # filename length is 255. So we gave up on saving the files with nice readable
+        # names and instead make a hash of the ID and use that.
+        filename_hash = hashlib.md5(article["id"].encode('utf-8')).hexdigest()
+        filename = "%s.%s" % (filename_hash, "html")
 
         try:
             article_file = open(self.issue_archive_dir + filename, "w")
