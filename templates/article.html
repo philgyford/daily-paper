@@ -52,7 +52,13 @@
 
 		{% if 'standfirst' in article['fields'] and article['fields']['standfirst'] != '' %}
 			<div class="standfirst">
+				{% if article['fields']['standfirst'][0] != "<" %}
+					<p>
+				{% endif %}
 				{{ article['fields']['standfirst']|typogrify }}
+				{% if article['fields']['standfirst'][0] != "<" %}
+					</p>
+				{% endif %}
 			</div>
 		{% endif %}
 
