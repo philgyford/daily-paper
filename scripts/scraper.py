@@ -505,6 +505,7 @@ class GuardianGrabber:
             "live",
             "media",
             "news",
+            "obituaries",
             "review",
             "special-report",
         ]

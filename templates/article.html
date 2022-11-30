@@ -15,10 +15,10 @@
 			</p>
 		{% endif %}
 
-		{% if article['tone'] == 'letters' %}
-			{# Special case, because otherwise there's no clear indication this is the letters 'section'. #}
+		{% if article['tone'] == 'letters' or article['tone'] == 'obituaries' %}
+			{# Special cases, because otherwise there's no clear indication otherwise this is in the letters/obits 'section'. #}
 			<p class="section">
-				Letters
+				{{ article['tone'][0]|upper }}{{ article['tone'][1:] }}
 			</p>
 		{% elif 'sectionName' in article %}
 			<p class="section">
