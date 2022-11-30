@@ -201,6 +201,7 @@ div.hr {
 }
 #progress ol {
   list-style: none;
+  padding-left: 0;
 }
 #progress li {
   padding: 4px 0;
