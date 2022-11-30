@@ -15,7 +15,12 @@
 			</p>
 		{% endif %}
 
-		{% if 'sectionName' in article %}
+		{% if article['tone'] == 'letters' %}
+			{# Special case, because otherwise there's no clear indication this is the letters 'section'. #}
+			<p class="section">
+				Letters
+			</p>
+		{% elif 'sectionName' in article %}
 			<p class="section">
 				{{ article['sectionName'] }}
 			</p>
@@ -36,7 +41,7 @@
 				{{ article['fields']['byline']|typogrify }}
 			</p>
 		</div>
-	{% else }
+	{% else %}
 		<div class="hr"></div>
 	{% endif %}
 
