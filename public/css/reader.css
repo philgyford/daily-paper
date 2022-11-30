@@ -326,6 +326,11 @@ https://github.com/guardian/frontend/tree/master/static/src/stylesheets/module/c
 }
 .page .body h2 {
   font-weight: bold;
+  /* Trying no bottom margin, because there are places like "TV Tonight" where
+  they have two adjacent h2s, for show title and time/channel, which looks
+  weird with space between and after. Not sure if this will look weird for
+  any normal use of h2. */
+  margin-bottom: 0;
 }
 
 .page blockquote {
@@ -441,6 +446,8 @@ div.gu_advert {
   clear: both;
   float: left;
   margin-top: 1.5em;
+  border-top: 1px solid #ccc;
+  padding-top: 1em;
   width: 530px;
   overflow: hidden;
   font-family: "Lucida Sans", "Lucida Grande", "Lucida Sans Unicode", sans-serif;

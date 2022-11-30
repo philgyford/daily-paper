@@ -30,12 +30,14 @@
 		</div>
 	{% endif %}
 
-	{% if 'byline' in article['fields'] %}
+	{% if 'byline' in article['fields'] and article['fields']['byline'] != '' %}
 		<div class="byline">
 			<p>
 				{{ article['fields']['byline']|typogrify }}
 			</p>
 		</div>
+	{% else }
+		<div class="hr"></div>
 	{% endif %}
 
 	<div class="body">
@@ -43,7 +45,7 @@
 			<img class="thumbnail" src="{{ article['contributor']['bylineImageUrl'] }}" alt="Picture of {{ article['contributor']['webTitle'] }}">
 		{% endif %}
 
-		{% if 'standfirst' in article['fields'] %}
+		{% if 'standfirst' in article['fields'] and article['fields']['standfirst'] != '' %}
 			<div class="standfirst">
 				{{ article['fields']['standfirst']|typogrify }}
 			</div>
