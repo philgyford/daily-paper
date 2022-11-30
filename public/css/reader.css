@@ -28,9 +28,7 @@ body {
   color: black;
   background: white;
 }
-ol, ul {
-  list-style: none;
-}
+
 /* tables still need 'cellspacing="0"' in the markup */
 table {
   border-collapse: separate;
@@ -51,6 +49,13 @@ blockquote, q {
 code {
     font-family: monospace;
     font-size: 1.1em;
+}
+
+ul {
+  padding-left: 20px;
+}
+ol {
+  padding-left: 2em;
 }
 
 .clearfix:after {
@@ -194,6 +199,9 @@ div.hr {
   white-space: nowrap;
   overflow: visible;
 }
+#progress ol {
+  list-style: none;
+}
 #progress li {
   padding: 4px 0;
   height: 12px;
@@ -293,7 +301,12 @@ https://github.com/guardian/frontend/tree/master/static/src/stylesheets/module/c
   -webkit-hyphens: auto;
   -moz-hyphens: auto;
   hyphens: auto;
+  margin-bottom: 1em;
 }
+.page .standfirst p:last-child {
+  margin-bottom: 0;
+}
+
 .page .body {
   float: left;
   width: 530px;

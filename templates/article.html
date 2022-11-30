@@ -44,10 +44,9 @@
 		{% endif %}
 
 		{% if 'standfirst' in article['fields'] %}
-			<p class="standfirst">
-				{# Remove p tags that are sometimes around this already. #}
-				{{ article['fields']['standfirst']|replace("<p>", "")|replace("</p>", "")|typogrify }}
-			</p>
+			<div class="standfirst">
+				{{ article['fields']['standfirst']|typogrify }}
+			</div>
 		{% endif %}
 
 		{% if not has_contributor and  'thumbnail' in article['fields'] %}
