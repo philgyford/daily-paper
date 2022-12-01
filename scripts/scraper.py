@@ -495,27 +495,36 @@ class GuardianGrabber:
         We use these tones and ignore the others:
         https://github.com/guardian/frontend/tree/master/static/src/stylesheets/module/content/tones
         """
+        # If an article has more than one tone, the first matching one will be returned.
         tones_to_use = [
             "analysis",
             "comment",
             "dead",
             "editorial",
             "feature",
+            # obituaries has priority over letters
+            # (for when there's a letter about an obituary, in obits)
+            "obituaries",
             "letters",
             "live",
             "media",
             "news",
-            "obituaries",
             "review",
             "special-report",
         ]
 
+        # Get an array of simple tone strings for article, like "media", "news":
+        tones_found = []
         for tag in tags:
             if tag["type"] == "tone":
                 # tag['id'] is like "tone/features"
                 tone = tag["id"].split("/")[1]
-                if tone in tones_to_use:
-                    return tone
+                tones_found.append(tone)
+
+        # Return the first one that's in our list, if any:
+        for tone in tones_to_use:
+            if tone in tones_found:
+                return tone
 
         return "default"
 
