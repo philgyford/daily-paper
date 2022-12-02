@@ -433,7 +433,7 @@ class GuardianGrabber:
             "format": "json",
             "show-fields": (
                 "body,byline,headline,newspaperPageNumber,publication,shortUrl,"
-                "standfirst,thumbnail,wordcount"
+                "standfirst,starRating,thumbnail,wordcount"
             ),
             "show-elements": "all",
             "show-tags": "contributor,newspaper-book,newspaper-book-section,tone",

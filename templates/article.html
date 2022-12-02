@@ -50,6 +50,33 @@
 			<img class="thumbnail" src="{{ article['contributor']['bylineImageUrl'] }}" alt="Picture of {{ article['contributor']['webTitle'] }}">
 		{% endif %}
 
+		{% if 'starRating' in article['fields'] %}
+			{% with rating=article['fields']['starRating'] %}
+				<p class="rating">
+					<span aria-hidden="true">
+						{% if rating == '5' %}
+							★★★★★
+						{% elif rating == '4' %}
+							★★★★☆
+						{% elif rating == '3' %}
+							★★★☆☆
+						{% elif rating == '2' %}
+							★★☆☆☆
+						{% elif rating == '1' %}
+							★☆☆☆☆
+						{% elif rating == '0' %}
+							☆☆☆☆☆
+						{% else %}
+							{{ rating }} stars
+						{% endif %}
+					</span>
+					<span class="visually-hidden">
+						{{ rating }} stars out of 5
+					<span>
+				</p>
+			{% endwith %}
+		{% endif %}
+
 		{% if 'standfirst' in article['fields'] and (article['fields']['standfirst'] != '' and article['fields']['standfirst'] != '<p></p>') %}
 			<div class="standfirst">
 				{% if article['fields']['standfirst'][0] != "<" %}
