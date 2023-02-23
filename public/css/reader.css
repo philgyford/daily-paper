@@ -404,9 +404,12 @@ div.gu_advert {
     width: 100%; /* Required for those that contain vieo */
 }
 
-/* Boxes containing related content, but could also be a video. */
+/* Boxes containing related content, but could also be a video.
+Also our custom .interactive element that we put in in place of "interactive" gu-atom elements.
+ */
 .page gu-atom,
-.page .element-tweet {
+.page .element-tweet,
+.page figure .interactive {
   border: 1px solid #ddd;
   width: 100%;
   height: auto;
@@ -414,6 +417,9 @@ div.gu_advert {
 }
 .page gu-atom > div {
   padding: 1em 20px 0.5em 20px;
+}
+.page figure .interactive p {
+  padding: 1em 20px 0 20px;
 }
 .page .element-tweet blockquote {
   padding: 1em 20px 1em 20px;
@@ -445,7 +451,6 @@ div.gu_advert {
   width: 100%;
   border: 0;
 }
-
 
 /* Distractions to hide: */
 .page .element-rich-link, /* 'Related' links */

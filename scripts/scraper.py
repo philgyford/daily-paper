@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+import re
 import configparser
 import datetime
 import dateutil.parser
@@ -111,6 +112,22 @@ class GuardianGrabber:
         # Set up the template we'll use to render each article to a file.
         jinja_env = Environment(loader=PackageLoader("scraper", "../templates"))
         jinja_env.filters["typogrify"] = jinja_filters.typogrify
+
+        def replace_interactives(s, article_url):
+            """Jinja filter to replace the <gu-atom> "interactive" elements with link
+            to the article.
+            Because we can't do anything useful with them and they just show as
+            'default' or 'interactive' otherwise.
+            """
+            replace = (
+                '<div class="interactive"><p>'
+                f'<a href="{article_url}" target="_new">'
+                'to view ‘interactive’ open original article in new window</a></p></div>'
+            )
+            return re.sub(r'<gu-atom[^>]*?data-atom-type="interactive"(.|\n)*?</gu-atom>', replace, s)
+
+        jinja_env.filters['replace_interactives'] = replace_interactives
+
         self.template = jinja_env.get_template("article.html")
 
     def checkForOldProcesses(self):
