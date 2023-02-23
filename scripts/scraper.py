@@ -377,7 +377,11 @@ class GuardianGrabber:
 
         # The initial known books of each day's newspaper, in order:
         start_orders = {
-            "weekday": ["theguardian/mainsection", "theguardian/g2"],
+            "weekday": [
+                "theguardian/mainsection",
+                "theguardian/journal",
+                "theguardian/g2",
+            ],
             "saturday": [
                 "theguardian/mainsection",
                 "theguardian/theguide",
