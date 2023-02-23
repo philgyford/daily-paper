@@ -122,7 +122,7 @@ class GuardianGrabber:
             replace = (
                 '<div class="interactive"><p>'
                 f'<a href="{article_url}" target="_new">'
-                'to view ‘interactive’ open original article in new window</a></p></div>'
+                'To view this ‘interactive’, open the original article in new window</a></p></div>'
             )
             return re.sub(r'<gu-atom[^>]*?data-atom-type="interactive"(.|\n)*?</gu-atom>', replace, s)
 
