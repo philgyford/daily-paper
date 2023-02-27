@@ -9,6 +9,7 @@ pytz = "*"
 requests = "*"
 typogrify = "*"
 "Jinja2" = "*"
+beautifulsoup4 = "*"
 
 [dev-packages]
 

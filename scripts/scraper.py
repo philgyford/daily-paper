@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+from bs4 import BeautifulSoup
 import re
 import configparser
 import datetime
@@ -113,18 +114,50 @@ class GuardianGrabber:
         jinja_env = Environment(loader=PackageLoader("scraper", "../templates"))
         jinja_env.filters["typogrify"] = jinja_filters.typogrify
 
-        def replace_interactives(s, article_url):
+        def replace_interactives(html, article_url):
             """Jinja filter to replace the <gu-atom> "interactive" elements with link
             to the article.
             Because we can't do anything useful with them and they just show as
             'default' or 'interactive' otherwise.
             """
-            replace = (
-                '<div class="interactive"><p>'
-                f'<a href="{article_url}" target="_new">'
-                'To view this ‘interactive’, open the original article in new window</a></p></div>'
-            )
-            return re.sub(r'<gu-atom[^>]*?data-atom-type="interactive"(.|\n)*?</gu-atom>', replace, s)
+            soup = BeautifulSoup(html, 'html.parser')
+
+            def replace_element_with_link(element, url, text):
+                """
+                Replace a soup element with a paragraph and a link to a URL.
+
+                element - The element to replace
+                url - The URL to link to
+                text - The text for the link
+                """
+                p = soup.new_tag("p", **{"class": "dp-interactive"})
+                a = soup.new_tag("a", href=url, target="_new")
+                a.string = instruction
+                p.append(a)
+                element.replace_with(p)
+
+            # Replace:
+            #   <figure ...>
+            #     <gu-atom data-atom-type="interactive" ...>...</gu-atom>
+            #   </figure>
+            # There's no iframe, no interactive to link specifically to.
+            for gu_atom in soup.find_all("gu-atom", {"data-atom-type": "interactive"}):
+                figure = gu_atom.find_parent("figure")
+                instruction = "To view ‘interactive’ open article in new window"
+                replace_element_with_link(figure, article_url, instruction)
+
+            # Replace:
+            #   <figure data-canonical-url="[interactive url]" ...>
+            #     <iframe ...>...</iframe>
+            #   </figure>
+            # We can link directly to the interactive on its own page
+            for figure in soup.find_all("figure", {"class": "element-interactive"}):
+                if "data-canonical-url" in figure.attrs:
+                    interactive_url = figure.attrs["data-canonical-url"]
+                    instruction = "Open ‘interactive’ in new window"
+                    replace_element_with_link(figure, interactive_url, instruction)
+
+            return str(soup)
 
         jinja_env.filters['replace_interactives'] = replace_interactives
 
@@ -238,6 +271,9 @@ class GuardianGrabber:
         Sets self.issue_date and self.paper_name.
         """
         self.issue_date = datetime.datetime.now(pytz.timezone("Europe/London"))
+
+        # Set to a specific date for testing:
+        # self.issue_date = datetime.datetime.strptime('2023-02-26', "%Y-%m-%d")
 
         if self.issue_date.weekday() == 6:
             self.paper_name = self.contents["meta"]["paper_name"] = "observer"
@@ -384,16 +420,15 @@ class GuardianGrabber:
             ],
             "saturday": [
                 "theguardian/mainsection",
-                "theguardian/theguide",
-                "theguardian/guardianreview",
-                "theguardian/weekend",
+                "theguardian/journal",
+                "theguardian/saturday",
+                "theguardian/whatson",
                 "theguardian/travel",
-                "theguardian/cook",
-                "theguardian/family",
+                "theguardian/feast",
             ],
             "sunday": [
                 "theobserver/news",
-                "theobserver/review",
+                "theobserver/new-review",
                 "theobserver/magazine",
             ],
         }

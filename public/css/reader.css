@@ -405,11 +405,9 @@ div.gu_advert {
 }
 
 /* Boxes containing related content, but could also be a video.
-Also our custom .interactive element that we put in in place of "interactive" gu-atom elements.
  */
 .page gu-atom,
-.page .element-tweet,
-.page figure .interactive {
+.page .element-tweet {
   border: 1px solid #ddd;
   width: 100%;
   height: auto;
@@ -418,12 +416,14 @@ Also our custom .interactive element that we put in in place of "interactive" gu
 .page gu-atom > div {
   padding: 1em 20px 0.5em 20px;
 }
-.page figure .interactive p {
-  padding: 1em 20px 0 20px;
-}
 .page .element-tweet blockquote {
   padding: 1em 20px 1em 20px;
   margin-left: 0;
+}
+
+.page p.dp-interactive {
+  padding: 1em 20px 1em 20px;
+  border: 1px solid #ddd;
 }
 
 /* Undo some of the above styles for video, and add new ones. */

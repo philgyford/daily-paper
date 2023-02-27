@@ -625,6 +625,9 @@ var reader = {
 
     var d = new Date();
 
+    // Set to a specific date for testing:
+    // var d = new Date("2023-02-25");
+
     if (day == 'yesterday') {
       d.setDate(d.getDate()-1)
     }
