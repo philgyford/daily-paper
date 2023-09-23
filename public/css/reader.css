@@ -424,6 +424,8 @@ div.gu_advert {
 .page p.dp-interactive {
   padding: 1em 20px 1em 20px;
   border: 1px solid #ddd;
+  /* When it immediately follows a thumbnail image, move it underneath: */
+  clear: both;
 }
 
 /* Undo some of the above styles for video, and add new ones. */
