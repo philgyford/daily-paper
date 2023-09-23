@@ -161,6 +161,20 @@ class GuardianGrabber:
 
         jinja_env.filters['replace_interactives'] = replace_interactives
 
+        def replace_grids(html):
+            """
+            Remove any <img alt="Grid"> elements.
+            Used for the background of an interactive image thing on the website, but
+            displays as a full-width empty grid on our site.
+            """
+            soup = BeautifulSoup(html, 'html.parser')
+            for grid in soup.find_all("img", {"alt": "Grid"}):
+                figure = grid.find_parent("figure")
+                figure.decompose()
+            return str(soup)
+
+        jinja_env.filters['replace_grids'] = replace_grids
+
         self.template = jinja_env.get_template("article.html")
 
     def checkForOldProcesses(self):

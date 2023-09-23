@@ -98,7 +98,7 @@
 				<p class="no-rights">Redistribution rights for the article body are unavailable. <a class="see-original" href="{{ article['webUrl'] }}/print?mobile-redirect=false">See original.</a></p>
 			{% else %}
 				{# Sometimes there are empty p tags. Remove them. #}
-				{{ article['fields']['body']|replace("<p></p>", "")|replace_interactives(article["webUrl"])|typogrify }}
+				{{ article['fields']['body']|replace("<p></p>", "")|replace_interactives(article["webUrl"])|replace_grids|typogrify }}
 			{% endif %}
 		{% else %}
 			<p class="no-body">No body text available.</p>
