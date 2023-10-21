@@ -291,6 +291,7 @@ https://github.com/guardian/frontend/tree/master/static/src/stylesheets/module/c
 .page h2 {
   clear: left;
   margin-bottom: 0.667em;
+  text-wrap: balance;
 }
 
 .page .byline {
