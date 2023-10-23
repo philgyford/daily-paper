@@ -20,7 +20,6 @@ import warnings
 
 class GuardianGrabber:
     def __init__(self):
-
         self.load_config()
 
     def load_config(self):
@@ -120,7 +119,7 @@ class GuardianGrabber:
             Because we can't do anything useful with them and they just show as
             'default' or 'interactive' otherwise.
             """
-            soup = BeautifulSoup(html, 'html.parser')
+            soup = BeautifulSoup(html, "html.parser")
 
             def replace_element_with_link(element, url, text):
                 """
@@ -159,7 +158,7 @@ class GuardianGrabber:
 
             return str(soup)
 
-        jinja_env.filters['replace_interactives'] = replace_interactives
+        jinja_env.filters["replace_interactives"] = replace_interactives
 
         def replace_grids(html):
             """
@@ -167,13 +166,29 @@ class GuardianGrabber:
             Used for the background of an interactive image thing on the website, but
             displays as a full-width empty grid on our site.
             """
-            soup = BeautifulSoup(html, 'html.parser')
+            soup = BeautifulSoup(html, "html.parser")
             for grid in soup.find_all("img", {"alt": "Grid"}):
                 figure = grid.find_parent("figure")
                 figure.decompose()
             return str(soup)
 
-        jinja_env.filters['replace_grids'] = replace_grids
+        jinja_env.filters["replace_grids"] = replace_grids
+
+        def add_lightboxes(html, article_url):
+            soup = BeautifulSoup(html, "html.parser")
+            for img in soup.find_all("img", class_="gu-image"):
+                img_url = img["src"]
+                # Setting data-fslightbox to the article_url means each article gets
+                # its own lightbox, containing all its own images.
+                a = soup.new_tag(
+                    "a",
+                    href=img_url,
+                    **{"data-fslightbox": article_url, "data-type": "image"}
+                )
+                img.wrap(a)
+            return str(soup)
+
+        jinja_env.filters["add_lightboxes"] = add_lightboxes
 
         self.template = jinja_env.get_template("article.html")
 
@@ -608,7 +623,7 @@ class GuardianGrabber:
         # There was once an article ID that was 300 characters long, and the maximum
         # filename length is 255. So we gave up on saving the files with nice readable
         # names and instead make a hash of the ID and use that.
-        filename_hash = hashlib.md5(article["id"].encode('utf-8')).hexdigest()
+        filename_hash = hashlib.md5(article["id"].encode("utf-8")).hexdigest()
         filename = "%s.%s" % (filename_hash, "html")
 
         try:

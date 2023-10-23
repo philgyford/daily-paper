@@ -90,7 +90,10 @@
 		{% endif %}
 
 		{% if not has_contributor and  'thumbnail' in article['fields'] %}
-			<img class="thumbnail" alt="Thumbnail image" src="{{ article['fields']['thumbnail'] }}">
+			{# Thumbnails are only 500px, but replacing 500.jpg with 1000.jpg seems to work for getting the larger version. #}
+			<a data-fslightbox="{{ article['webUrl'] }}" data-type="image" href="{{ article['fields']['thumbnail']|replace("500.jpg", "1000.jpg") }}">
+				<img class="thumbnail" alt="Thumbnail image" src="{{ article['fields']['thumbnail'] }}">
+			</a>
 		{% endif %}
 
 		{% if 'body' in article['fields'] %}
@@ -98,7 +101,7 @@
 				<p class="no-rights">Redistribution rights for the article body are unavailable. <a class="see-original" href="{{ article['webUrl'] }}/print?mobile-redirect=false">See original.</a></p>
 			{% else %}
 				{# Sometimes there are empty p tags. Remove them. #}
-				{{ article['fields']['body']|replace("<p></p>", "")|replace_interactives(article["webUrl"])|replace_grids|typogrify }}
+				{{ article['fields']['body']|replace("<p></p>", "")|replace_interactives(article["webUrl"])|replace_grids|add_lightboxes(article["webUrl"])|typogrify }}
 			{% endif %}
 		{% else %}
 			<p class="no-body">No body text available.</p>
@@ -111,7 +114,7 @@
 		</p>
 		{% if 'webUrl' in article %}
 			<p class="original">
-				<span>Web: </span><a href="{{ article['webUrl'] }}">{{ article['webUrl']|replace('http://', '') }}</a>
+				<span>Web: </span><a class="js-web-url" href="{{ article['webUrl'] }}">{{ article['webUrl']|replace('http://', '') }}</a>
 			</p>
 		{% endif %}
 		{% if 'shortUrl' in article['fields'] %}

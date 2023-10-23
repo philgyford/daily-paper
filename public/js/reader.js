@@ -506,6 +506,12 @@ var reader = {
           });
           // Make the newly-loaded article the correct size.
           reader.resizeArticle($('#page-'+idx), position);
+
+          refreshFsLightbox();
+          var webUrl = $(".js-web-url").attr("href");
+          fsLightboxInstances[webUrl].props.exitFullscreenOnClose = true;
+          fsLightboxInstances[webUrl].props.loadOnlyCurrentSource = true;
+          refreshFsLightbox();
         },
         error: function(XMLHttpRequest, textStatus, errorThrown) {
           reader.error("Can't load article file: "+textStatus + ', '+errorThrown);
