@@ -26,11 +26,11 @@ stored in a dated directory within the archive/ directory.
 
 ## Requirements
 
-Uses Python 3.7.
+Uses Python 3.11.
 
-Install the required modules using [pipenv](https://pipenv.readthedocs.io):
+Install required modules using uv:
 
-    $ pipenv install
+    $ uv sync
 
 Or [pip](https://pip.pypa.io/en/stable/):
 
