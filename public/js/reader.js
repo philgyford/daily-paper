@@ -172,6 +172,14 @@ var reader = {
 
 
   /**
+   * Determine which day's paper to display.
+   * Either 'today' or (on Sundays) 'yesterday'.
+   */
+  getDayToDisplay: function() {
+    return new Date().getDay() == 0 ? 'yesterday' : 'today';
+  },
+
+  /**
    * Make one of the direction arrows glow on and off.
    * direction is 'next' or 'prev'.
    * speed is 'normal' or 'fast'.
@@ -310,7 +318,10 @@ var reader = {
     $('#paper-date').html(
       'The ' + paperName + ', ' + reader.issueDateLong()
     );
-    document.title = "Today's "+paperName;
+    var day = reader.getDayToDisplay();
+    var prefix = day == 'yesterday' ? 'Yesterday’s' : 'Today’s'
+
+    document.title = prefix + ' ' + paperName;
 
     // Gets either 1, or the ID of the article in the user's cookie.
     var initialArticleIdx = reader.getInitialArticleIdx();
@@ -533,7 +544,9 @@ var reader = {
    * Or, if that doesn't exist, load the one for yesterday.
    */
   loadContentsFile: function() {
-    var issueDate = reader.makeIssueDate('today');
+    // On Sundays we load yesterday's paper.
+    var day = reader.getDayToDisplay()
+    var issueDate = reader.makeIssueDate(day);
 
     $.ajax({
       url: 'archive/' + issueDate + '/contents.json',

@@ -1,6 +1,6 @@
 # Daily Paper
 
-An interface for viewing a daily issue of the Guardian and Observer newspapers.  
+An interface for viewing an issue of the Guardian newspaper, Monday to Saturday.   
 Using the [Guardian Open Platform](https://open-platform.theguardian.com).  
 As used at [Today's Guardian](https://guardian.gyford.com/).
 
@@ -13,7 +13,7 @@ This code consists of two main things:
   and saves each article as a separate HTML file locally.
 * An index.html file which uses JavaScript and CSS to display those HTML files.
 
-The Python script should be run at least once per day, with the Guardian/Observer's
+The Python script should be run at least once per day, with the Guardian's
 daily content rolling over roughly around midnight, UK time. The list of content
 continues to change, so it's worth having the script run every hour or so for a
 while (but not all day, or you'll hit daily API limits). Running the script 
