@@ -291,9 +291,11 @@ class GuardianGrabber:
         # self.issue_date = datetime.datetime.strptime('2023-02-26', "%Y-%m-%d")
 
         if self.issue_date.weekday() == 6:
-            self.paper_name = self.contents["meta"]["paper_name"] = "observer"
-        else:
-            self.paper_name = self.contents["meta"]["paper_name"] = "guardian"
+            # Sunday, so we'll continue to get previous day's Guardian
+            self.issue_date = self.issue_date - datetime.timedelta(days=1)
+
+        # No more Observer, so always Guardian:
+        self.paper_name = self.contents["meta"]["paper_name"] = "guardian"
 
         return True
 
