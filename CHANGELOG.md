@@ -1,15 +1,16 @@
 # Changelog
 
 
-## NOTE: 2020-06-20
-
-* Renamed `master` branch to `main`
-
-
 ## [Unreleased]
 
 * None
 
+## [v2.1.0] - 2025-04-27
+
+* The Observer is no longer part of the Guardian and so its content is no longer
+  available in the API. Therefore, on a Sunday, the previous day's Guardian
+  content is displayed.
+* Stopped using pipenv in favour of uv.
 
 ## [v2.0.3] - 2021-05-08
 
