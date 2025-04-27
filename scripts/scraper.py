@@ -262,9 +262,10 @@ class GuardianGrabber:
 
         self.sort_articles()
 
-        # Delete the day-before-yesterday's files.
-        # (Not yesterday's, just in case someone is currently viewing them.)
-        old_date = self.issue_date - datetime.timedelta(2)
+        # Delete the day-before-the-day-before-yesterday's files.
+        # (Not the day-before-yesterday's, just in case someone is
+        # currently viewing them Saturday's Guardian early on Monday.)
+        old_date = self.issue_date - datetime.timedelta(3)
         old_dir = self.archive_dir + old_date.strftime("%Y-%m-%d")
         if os.path.exists(old_dir):
             shutil.rmtree(old_dir)
